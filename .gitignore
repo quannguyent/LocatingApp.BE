@@ -4,3 +4,4 @@
 docker-compose.override.*
 
 AppCSharp/appsettings.Development.json
+/AppCSharp/LocatingApp.csproj.user
