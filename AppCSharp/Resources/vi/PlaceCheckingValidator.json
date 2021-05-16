@@ -1,0 +1,24 @@
+{
+  "PlaceChecking": {
+    "Id": {
+    },
+    "AppUserId": {
+    },
+    "PlaceId": {
+    },
+    "PlaceCheckingStatusId": {
+    },
+    "CheckInAt": {
+    },
+    "CheckOutAt": {
+    },
+    "AppUser": {
+    },
+    "Place": {
+    },
+    "PlaceCheckingStatus": {
+    },
+    "Trackings": {
+    },
+  }
+}

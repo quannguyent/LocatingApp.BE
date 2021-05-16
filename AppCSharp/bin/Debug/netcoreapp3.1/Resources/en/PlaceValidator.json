@@ -1,0 +1,30 @@
+{
+  "Place": {
+    "Id": {
+    },
+    "Name": {
+    },
+    "PlaceGroupId": {
+    },
+    "Radius": {
+    },
+    "Latitude": {
+    },
+    "Longtitude": {
+    },
+    "CreatedAt": {
+    },
+    "UpdatedAt": {
+    },
+    "DeletedAt": {
+    },
+    "Used": {
+    },
+    "PlaceGroup": {
+    },
+    "PlaceCheckings": {
+    },
+    "Trackings": {
+    },
+  }
+}

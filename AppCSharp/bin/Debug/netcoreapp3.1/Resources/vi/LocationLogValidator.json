@@ -1,0 +1,30 @@
+{
+  "LocationLog": {
+    "Id": {
+    },
+    "PreviousId": {
+    },
+    "AppUserId": {
+    },
+    "Latitude": {
+    },
+    "Longtitude": {
+    },
+    "UpdateInterval": {
+    },
+    "CreatedAt": {
+    },
+    "UpdatedAt": {
+    },
+    "DeletedAt": {
+    },
+    "Used": {
+    },
+    "AppUser": {
+    },
+    "Previous": {
+    },
+    "InversePrevious": {
+    },
+  }
+}

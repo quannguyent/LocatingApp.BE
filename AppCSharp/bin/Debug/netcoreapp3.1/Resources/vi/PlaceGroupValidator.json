@@ -1,0 +1,26 @@
+{
+  "PlaceGroup": {
+    "Id": {
+    },
+    "ParentId": {
+    },
+    "Name": {
+    },
+    "Code": {
+    },
+    "CreatedAt": {
+    },
+    "UpdatedAt": {
+    },
+    "DeletedAt": {
+    },
+    "Used": {
+    },
+    "Parent": {
+    },
+    "InverseParent": {
+    },
+    "Places": {
+    },
+  }
+}

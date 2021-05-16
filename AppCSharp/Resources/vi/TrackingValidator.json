@@ -1,0 +1,30 @@
+{
+  "Tracking": {
+    "Id": {
+    },
+    "TrackerId": {
+    },
+    "TargetId": {
+    },
+    "PlaceId": {
+    },
+    "PlaceCheckingId": {
+    },
+    "CreatedAt": {
+    },
+    "UpdatedAt": {
+    },
+    "DeletedAt": {
+    },
+    "Used": {
+    },
+    "Place": {
+    },
+    "PlaceChecking": {
+    },
+    "Target": {
+    },
+    "Tracker": {
+    },
+  }
+}

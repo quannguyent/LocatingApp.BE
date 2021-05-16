@@ -1,0 +1,36 @@
+{
+  "AppUser": {
+    "Id": {
+    },
+    "Username": {
+    },
+    "Password": {
+    },
+    "DisplayName": {
+    },
+    "Email": {
+    },
+    "Phone": {
+    },
+    "CreatedAt": {
+    },
+    "UpdatedAt": {
+    },
+    "DeletedAt": {
+    },
+    "Used": {
+    },
+    "AppUserAppUserMappingAppUsers": {
+    },
+    "AppUserAppUserMappingFriends": {
+    },
+    "LocationLogs": {
+    },
+    "PlaceCheckings": {
+    },
+    "TrackingTargets": {
+    },
+    "TrackingTrackers": {
+    },
+  }
+}
