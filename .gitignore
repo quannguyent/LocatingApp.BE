@@ -1,8 +1,6 @@
-.vs/
-AppCSharp/bin/
-AppCSharp/obj/
+/.vs/
+/AppCSharp/bin/
+/AppCSharp/obj
 docker-compose.override.*
 
 AppCSharp/appsettings.Development.json
-AppCSharp.Tests/bin/
-AppCSharp.Tests/obj/
