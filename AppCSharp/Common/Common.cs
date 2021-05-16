@@ -5,7 +5,7 @@ namespace LocatingApp.Common
 {
     public class Root
     {
-        protected const string Module = "locatingapp";
+        protected const string Module = "locating-app";
         protected const string Rpc = "rpc/";
         protected const string Rest = "rest/";
     }

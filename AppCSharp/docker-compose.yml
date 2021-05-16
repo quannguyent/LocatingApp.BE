@@ -1,4 +1,4 @@
 version: "3"
 services:
-    locatingapp-backend:
-        image: truesight.asia:8443/locatingapp-backend:latest
+    locating-app-backend:
+        image: truesight.asia:8443/locating-app-backend:latest

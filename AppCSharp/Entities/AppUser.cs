@@ -11,15 +11,22 @@ namespace LocatingApp.Entities
         public long Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public string NewPassword { get; set; }
         public string DisplayName { get; set; }
+        public long SexId { get; set; }
+        public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string OtpCode { get; set; }
+        public DateTime? OtpExpired { get; set; }
+        public string Token { get; set; }
         public bool Used { get; set; }
         public List<LocationLog> LocationLogs { get; set; }
+        public Sex Sex { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        
+
         public bool Equals(AppUser other)
         {
             if (other == null) return false;
@@ -27,6 +34,7 @@ namespace LocatingApp.Entities
             if (this.Username != other.Username) return false;
             if (this.Password != other.Password) return false;
             if (this.DisplayName != other.DisplayName) return false;
+            if (this.SexId != other.SexId) return false;
             if (this.Email != other.Email) return false;
             if (this.Phone != other.Phone) return false;
             if (this.Used != other.Used) return false;
@@ -59,6 +67,8 @@ namespace LocatingApp.Entities
         public StringFilter Username { get; set; }
         public StringFilter Password { get; set; }
         public StringFilter DisplayName { get; set; }
+        public IdFilter SexId { get; set; }
+        public DateFilter Birthday { get; set; }
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
         public DateFilter CreatedAt { get; set; }
@@ -75,8 +85,10 @@ namespace LocatingApp.Entities
         Username = 1,
         Password = 2,
         DisplayName = 3,
-        Email = 4,
-        Phone = 5,
+        Sex = 4,
+        Birthday = 5,
+        Email = 6,
+        Phone = 7,
         Used = 9,
         CreatedAt = 50,
         UpdatedAt = 51,
@@ -90,8 +102,10 @@ namespace LocatingApp.Entities
         Username = E._1,
         Password = E._2,
         DisplayName = E._3,
-        Email = E._4,
-        Phone = E._5,
+        Sex = E._4,
+        Birthday = E._5,
+        Email = E._6,
+        Phone = E._7,
         Used = E._9,
     }
 }

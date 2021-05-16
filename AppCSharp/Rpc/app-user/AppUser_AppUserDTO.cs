@@ -12,10 +12,16 @@ namespace LocatingApp.Rpc.app_user
         public string Username { get; set; }
         public string Password { get; set; }
         public string DisplayName { get; set; }
+        public long SexId { get; set; }
+        public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public string OtpCode { get; set; }
+        public DateTime OtpExpired { get; set; }
+        public string Token { get; set; }
         public bool Used { get; set; }
         public List<AppUser_LocationLogDTO> LocationLogs { get; set; }
+        public Sex Sex { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public AppUser_AppUserDTO() {}

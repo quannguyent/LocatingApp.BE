@@ -23,6 +23,7 @@ namespace LocatingApp.Models
         public virtual DbSet<SchemaDAO> Schema { get; set; }
         public virtual DbSet<ServerDAO> Server { get; set; }
         public virtual DbSet<SetDAO> Set { get; set; }
+        public virtual DbSet<SexDAO> Sex { get; set; }
         public virtual DbSet<StateDAO> State { get; set; }
         public virtual DbSet<TrackingDAO> Tracking { get; set; }
 
@@ -59,20 +60,34 @@ namespace LocatingApp.Models
 
             modelBuilder.Entity<AppUserDAO>(entity =>
             {
+                entity.Property(e => e.Birthday).HasColumnType("datetime");
+
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedAt).HasColumnType("datetime");
 
-                entity.Property(e => e.DisplayName).HasMaxLength(50);
+                entity.Property(e => e.DisplayName)
+                    .IsRequired()
+                    .HasMaxLength(50);
 
-                entity.Property(e => e.Email).HasMaxLength(4000);
+                entity.Property(e => e.Email)
+                    .IsRequired()
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.OtpCode)
+                    .IsRequired()
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.OtpExpired).HasColumnType("datetime");
 
                 entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(20)
                     .IsFixedLength();
 
-                entity.Property(e => e.Phone).HasMaxLength(4000);
+                entity.Property(e => e.Phone)
+                    .IsRequired()
+                    .HasMaxLength(4000);
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
@@ -357,6 +372,15 @@ namespace LocatingApp.Models
                 entity.Property(e => e.Value).HasMaxLength(256);
 
                 entity.Property(e => e.ExpireAt).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<SexDAO>(entity =>
+            {
+                entity.ToTable("Sex", "ENUM");
+
+                entity.Property(e => e.Code).HasMaxLength(50);
+
+                entity.Property(e => e.Name).HasMaxLength(50);
             });
 
             modelBuilder.Entity<StateDAO>(entity =>

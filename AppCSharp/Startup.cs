@@ -181,14 +181,14 @@ namespace LocatingApp
 
             app.UseSwagger(c =>
             {
-                c.RouteTemplate = "rpc/locatingapp/swagger/{documentname}/swagger.json";
+                c.RouteTemplate = "rpc/locating-app/swagger/{documentname}/swagger.json";
             });
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/rpc/locatingapp/swagger/v1/swagger.json", "locatingapp API");
-                c.RoutePrefix = "rpc/locatingapp/swagger";
+                c.SwaggerEndpoint("/rpc/locating-app/swagger/v1/swagger.json", "locating-app API");
+                c.RoutePrefix = "rpc/locating-app/swagger";
             });
-            app.UseHangfireDashboard("/rpc/dms/hangfire");
+            app.UseHangfireDashboard("/rpc/locating-app/hangfire");
             
         }
     }

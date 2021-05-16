@@ -19,6 +19,7 @@ namespace LocatingApp.Repositories
         IPlaceCheckingRepository PlaceCheckingRepository { get; }
         IPlaceRepository PlaceRepository { get; }
         IPlaceGroupRepository PlaceGroupRepository { get; }
+        ISexRepository SexRepository { get; }
         ITrackingRepository TrackingRepository { get; }
     }
 
@@ -32,6 +33,7 @@ namespace LocatingApp.Repositories
         public IPlaceCheckingRepository PlaceCheckingRepository { get; private set; }
         public IPlaceRepository PlaceRepository { get; private set; }
         public IPlaceGroupRepository PlaceGroupRepository { get; private set; }
+        public ISexRepository SexRepository { get; private set; }
         public ITrackingRepository TrackingRepository { get; private set; }
 
         public UOW(DataContext DataContext)
@@ -44,6 +46,7 @@ namespace LocatingApp.Repositories
             PlaceCheckingRepository = new PlaceCheckingRepository(DataContext);
             PlaceRepository = new PlaceRepository(DataContext);
             PlaceGroupRepository = new PlaceGroupRepository(DataContext);
+            SexRepository = new SexRepository(DataContext);
             TrackingRepository = new TrackingRepository(DataContext);
         }
         public async Task Begin()
