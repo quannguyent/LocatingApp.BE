@@ -17,6 +17,13 @@
       },
       "launchUrl": "rpc/locating-app/swagger/index.html",
       "applicationUrl": "http://localhost:5000"
+    },
+    "Docker": {
+      "commandName": "Docker",
+      "launchBrowser": true,
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/account/login",
+      "publishAllPorts": true,
+      "useSSL": true
     }
   }
 }
