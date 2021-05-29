@@ -8,13 +8,76 @@ using Microsoft.AspNetCore.Authorization;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using LocatingApp.Services.MAppUser;
+using LocatingApp.Entities;
 
 namespace LocatingApp.Rpc
 {
     [Authorize]
-    [Authorize(Policy ="Permission")]
+    [Authorize(Policy = "Permission")]
     public class RpcController : ControllerBase
     {
+        protected async Task<List<long>> FilterFriend(IAppUserService AppUserService, ICurrentContext CurrentContext)
+        {
+            if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return new List<long>();
+            List<AppUser> AppUsers = await AppUserService.List(new AppUser
+            {
+                Skip = 0,
+                Take = int.MaxValue,
+                Selects = OrganizationSelect.ALL,
+                OrderBy = OrganizationOrder.Id,
+                OrderType = OrderType.ASC
+            });
+
+            List<long> In = null;
+            List<long> NotIn = null;
+            foreach (var currentFilter in CurrentContext.Filters)
+            {
+                List<FilterPermissionDefinition> FilterPermissionDefinitions = currentFilter.Value;
+                foreach (FilterPermissionDefinition FilterPermissionDefinition in FilterPermissionDefinitions)
+                {
+                    if (FilterPermissionDefinition.Name == "OrganizationId")
+                    {
+                        if (FilterPermissionDefinition.IdFilter.Equal != null)
+                        {
+                            if (In == null) In = new List<long>();
+                            In.Add(FilterPermissionDefinition.IdFilter.Equal.Value);
+                        }
+                        if (FilterPermissionDefinition.IdFilter.In != null)
+                        {
+                            if (In == null) In = new List<long>();
+                            In.AddRange(FilterPermissionDefinition.IdFilter.In);
+                        }
+
+                        if (FilterPermissionDefinition.IdFilter.NotEqual != null)
+                        {
+                            if (NotIn == null) NotIn = new List<long>();
+                            NotIn.Add(FilterPermissionDefinition.IdFilter.NotEqual.Value);
+                        }
+                        if (FilterPermissionDefinition.IdFilter.NotIn != null)
+                        {
+                            if (NotIn == null) NotIn = new List<long>();
+                            NotIn.AddRange(FilterPermissionDefinition.IdFilter.NotIn);
+                        }
+                    }
+                }
+            }
+
+            if (In != null)
+            {
+                List<string> InPaths = Organizations.Where(o => In.Count == 0 || In.Contains(o.Id)).Select(o => o.Path).ToList();
+                Organizations = Organizations.Where(o => InPaths.Any(p => o.Path.StartsWith(p))).ToList();
+            }
+            if (NotIn != null)
+            {
+                List<string> NotInPaths = Organizations.Where(o => NotIn.Count == 0 || NotIn.Contains(o.Id)).Select(o => o.Path).ToList();
+                Organizations = Organizations.Where(o => !NotInPaths.Any(p => o.Path.StartsWith(p))).ToList();
+            }
+
+            List<long> organizationIds = Organizations.Select(o => o.Id).ToList();
+
+            return organizationIds;
+        }
     }
 
     [Authorize]
@@ -63,40 +126,7 @@ namespace LocatingApp.Rpc
             CurrentContext.TimeZone = int.TryParse(TimeZone, out int t) ? t : 0;
             CurrentContext.Language = Language ?? "vi";
             context.Succeed(requirement);
-            //List<long> permissionIds = await DataContext.AppUserPermission
-            //    .Where(p => p.AppUserId == UserId && p.Path == url)
-            //    .Select(p => p.PermissionId).ToListAsync();
-
-            //List<long> permissionIds = await DataContext.AppUserPermission
-            //    .Where(p => p.AppUserId == UserId && p.Path == url)
-            //    .Select(p => p.PermissionId).ToListAsync();
-
-            //if (permissionIds.Count == 0)
-            //{
-            //    context.Fail();
-            //    return;
-            //}
-            //List<PermissionDAO> PermissionDAOs = await DataContext.Permission.AsNoTracking()
-            //    .Include(p => p.PermissionContents).ThenInclude(pf => pf.Field)
-            //    .Where(p => permissionIds.Contains(p.Id))
-            //    .ToListAsync();
-            //CurrentContext.RoleIds = PermissionDAOs.Select(p => p.RoleId).Distinct().ToList();
-            //CurrentContext.Filters = new Dictionary<long, List<FilterPermissionDefinition>>();
-            //foreach (PermissionDAO PermissionDAO in PermissionDAOs)
-            //{
-            //    List<FilterPermissionDefinition> FilterPermissionDefinitions = new List<FilterPermissionDefinition>();
-            //    CurrentContext.Filters.Add(PermissionDAO.Id, FilterPermissionDefinitions);
-            //    foreach (PermissionContentDAO PermissionContentDAO in PermissionDAO.PermissionContents)
-            //    {
-            //        FilterPermissionDefinition FilterPermissionDefinition = FilterPermissionDefinitions.Where(f => f.Name == PermissionContentDAO.Field.Name).FirstOrDefault();
-            //        if (FilterPermissionDefinition == null)
-            //        {
-            //            FilterPermissionDefinition = new FilterPermissionDefinition(PermissionContentDAO.Field.Name, PermissionContentDAO.Field.FieldTypeId, PermissionContentDAO.PermissionOperatorId, PermissionContentDAO.Value);
-            //            FilterPermissionDefinitions.Add(FilterPermissionDefinition);
-            //        }
-            //    }
-
-            //}
+            
             context.Succeed(requirement);
         }
        

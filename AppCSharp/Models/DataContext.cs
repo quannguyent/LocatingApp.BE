@@ -17,9 +17,11 @@ namespace LocatingApp.Models
         public virtual DbSet<JobQueueDAO> JobQueue { get; set; }
         public virtual DbSet<ListDAO> List { get; set; }
         public virtual DbSet<LocationLogDAO> LocationLog { get; set; }
+        public virtual DbSet<PageDAO> Page { get; set; }
         public virtual DbSet<PlaceDAO> Place { get; set; }
         public virtual DbSet<PlaceCheckingDAO> PlaceChecking { get; set; }
         public virtual DbSet<PlaceGroupDAO> PlaceGroup { get; set; }
+        public virtual DbSet<RoleDAO> Role { get; set; }
         public virtual DbSet<SchemaDAO> Schema { get; set; }
         public virtual DbSet<ServerDAO> Server { get; set; }
         public virtual DbSet<SetDAO> Set { get; set; }
@@ -74,9 +76,7 @@ namespace LocatingApp.Models
                     .IsRequired()
                     .HasMaxLength(4000);
 
-                entity.Property(e => e.OtpCode)
-                    .IsRequired()
-                    .HasMaxLength(4000);
+                entity.Property(e => e.OtpCode).HasMaxLength(4000);
 
                 entity.Property(e => e.OtpExpired).HasColumnType("datetime");
 
@@ -258,6 +258,13 @@ namespace LocatingApp.Models
                     .HasConstraintName("FK_LocationLog_LocationLog");
             });
 
+            modelBuilder.Entity<PageDAO>(entity =>
+            {
+                entity.Property(e => e.Name).HasMaxLength(500);
+
+                entity.Property(e => e.Path).HasMaxLength(500);
+            });
+
             modelBuilder.Entity<PlaceDAO>(entity =>
             {
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -329,6 +336,17 @@ namespace LocatingApp.Models
                     .WithMany(p => p.InverseParent)
                     .HasForeignKey(d => d.ParentId)
                     .HasConstraintName("FK_PlaceGroup_PlaceGroup");
+            });
+
+            modelBuilder.Entity<RoleDAO>(entity =>
+            {
+                entity.ToTable("Role", "ENUM");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Code).HasMaxLength(100);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
             });
 
             modelBuilder.Entity<SchemaDAO>(entity =>

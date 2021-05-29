@@ -15,21 +15,22 @@ using LocatingApp.Services.MSex;
 
 namespace LocatingApp.Rpc.app_user
 {
-    public class ProfileRoot
+    public class ProfileRoute
     {
-        public const string Login = "rpc/portal/account/login";
-        public const string Logged = "rpc/portal/account/logged";
-        public const string GetForWeb = "rpc/portal/profile-web/get";
-        public const string Get = "rpc/portal/profile/get";
-        public const string GetDraft = "rpc/portal/profile/get-draft";
-        public const string Update = "rpc/portal/profile/update";
-        public const string SaveImage = "rpc/portal/profile/save-image";
-        public const string ChangePassword = "rpc/portal/profile/change-password";
-        public const string ForgotPassword = "rpc/portal/profile/forgot-password";
-        public const string VerifyOtpCode = "rpc/portal/profile/verify-otp-code";
-        public const string RecoveryPassword = "rpc/portal/profile/recovery-password";
-        public const string SingleListSex = "rpc/portal/profile/single-list-sex";
-        public const string SingleListProvince = "rpc/portal/profile/single-list-province";
+        public const string Signup = "rpc/locating-app/account/signup";
+        public const string Login = "rpc/locating-app/account/login";
+        public const string Logged = "rpc/locating-app/account/logged";
+        public const string GetForWeb = "rpc/locating-app/profile-web/get";
+        public const string Get = "rpc/locating-app/profile/get";
+        public const string GetDraft = "rpc/locating-app/profile/get-draft";
+        public const string Update = "rpc/locating-app/profile/update";
+        public const string SaveImage = "rpc/locating-app/profile/save-image";
+        public const string ChangePassword = "rpc/locating-app/profile/change-password";
+        public const string ForgotPassword = "rpc/locating-app/profile/forgot-password";
+        public const string VerifyOtpCode = "rpc/locating-app/profile/verify-otp-code";
+        public const string RecoveryPassword = "rpc/locating-app/profile/recovery-password";
+        public const string SingleListSex = "rpc/locating-app/profile/single-list-sex";
+        public const string SingleListProvince = "rpc/locating-app/profile/single-list-province";
     }
     [Authorize]
     public class ProfileController : ControllerBase
@@ -49,7 +50,32 @@ namespace LocatingApp.Rpc.app_user
         }
 
         [AllowAnonymous]
-        [Route(ProfileRoot.Login), HttpPost]
+        [Route(ProfileRoute.Signup), HttpPost]
+        public async Task<ActionResult<AppUser_AppUserDTO>> Signup([FromBody] AppUser_SignupDTO AppUser_SignupDTO)
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+
+            AppUser AppUser = new AppUser
+            {
+                Username = AppUser_SignupDTO.Username,
+                Password = AppUser_SignupDTO.Password,
+                DisplayName = AppUser_SignupDTO.DisplayName,
+                SexId = AppUser_SignupDTO.SexId,
+                Birthday = AppUser_SignupDTO.Birthday,
+                Email = AppUser_SignupDTO.Email,
+                Phone = AppUser_SignupDTO.Phone,
+            };
+            AppUser = await AppUserService.Create(AppUser);
+            AppUser_AppUserDTO AppUser_AppUserDTO = new AppUser_AppUserDTO(AppUser);
+            if (AppUser.IsValidated)
+                return AppUser_AppUserDTO;
+            else
+                return BadRequest(AppUser_AppUserDTO);
+        }
+
+        [AllowAnonymous]
+        [Route(ProfileRoute.Login), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> Login([FromBody] AppUser_LoginDTO AppUser_LoginDTO)
         {
             if (!ModelState.IsValid)
@@ -74,12 +100,13 @@ namespace LocatingApp.Rpc.app_user
                 return BadRequest(AppUser_AppUserDTO);
         }
 
-        [Route(ProfileRoot.Logged), HttpPost]
+        [Route(ProfileRoute.Logged), HttpPost]
         public bool Logged()
         {
             return true;
         }
-        [Route(ProfileRoot.ChangePassword), HttpPost]
+
+        [Route(ProfileRoute.ChangePassword), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> ChangePassword([FromBody] AppUser_ProfileChangePasswordDTO AppUser_ProfileChangePasswordDTO)
         {
             if (!ModelState.IsValid)
@@ -103,7 +130,7 @@ namespace LocatingApp.Rpc.app_user
 
         #region Forgot Password
         [AllowAnonymous]
-        [Route(ProfileRoot.ForgotPassword), HttpPost]
+        [Route(ProfileRoute.ForgotPassword), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> ForgotPassword([FromBody] AppUser_ForgotPassword AppUser_ForgotPassword)
         {
             if (!ModelState.IsValid)
@@ -126,7 +153,7 @@ namespace LocatingApp.Rpc.app_user
         }
 
         [AllowAnonymous]
-        [Route(ProfileRoot.VerifyOtpCode), HttpPost]
+        [Route(ProfileRoute.VerifyOtpCode), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> VerifyCode([FromBody] AppUser_VerifyOtpDTO AppUser_VerifyOtpDTO)
         {
             if (!ModelState.IsValid)
@@ -150,7 +177,7 @@ namespace LocatingApp.Rpc.app_user
                 return BadRequest(AppUser_AppUserDTO);
         }
 
-        [Route(ProfileRoot.RecoveryPassword), HttpPost]
+        [Route(ProfileRoute.RecoveryPassword), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> RecoveryPassword([FromBody] AppUser_RecoveryPassword AppUser_RecoveryPassword)
         {
             if (!ModelState.IsValid)
@@ -188,7 +215,7 @@ namespace LocatingApp.Rpc.app_user
         //    return str;
         //}
 
-        [Route(ProfileRoot.GetForWeb), HttpPost]
+        [Route(ProfileRoute.GetForWeb), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> GetForWeb()
         {
             if (!ModelState.IsValid)
@@ -199,7 +226,7 @@ namespace LocatingApp.Rpc.app_user
             return AppUser_AppUserDTO;
         }
 
-        [Route(ProfileRoot.Get), HttpPost]
+        [Route(ProfileRoute.Get), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> GetMe()
         {
             if (!ModelState.IsValid)
@@ -210,18 +237,18 @@ namespace LocatingApp.Rpc.app_user
             return AppUser_AppUserDTO;
         }
 
-        [Route(ProfileRoot.GetDraft), HttpPost]
-        public async Task<ActionResult<AppUser_AppUserDTO>> GetDraft()
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
-            var UserId = ExtractUserId();
-            AppUser AppUser = await AppUserService.Get(UserId);
+        //[Route(ProfileRoot.GetDraft), HttpPost]
+        //public async Task<ActionResult<AppUser_AppUserDTO>> GetDraft()
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
+        //    var UserId = ExtractUserId();
+        //    AppUser AppUser = await AppUserService.Get(UserId);
 
-            return new AppUser_AppUserDTO(AppUser);
-        }
+        //    return new AppUser_AppUserDTO(AppUser);
+        //}
 
-        [Route(ProfileRoot.Update), HttpPost]
+        [Route(ProfileRoute.Update), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> UpdateMe([FromBody] AppUser_AppUserDTO AppUser_AppUserDTO)
         {
             if (!ModelState.IsValid)
@@ -238,7 +265,7 @@ namespace LocatingApp.Rpc.app_user
                 return BadRequest(AppUser_AppUserDTO);
         }
 
-        [Route(ProfileRoot.SingleListSex), HttpPost]
+        [Route(ProfileRoute.SingleListSex), HttpPost]
         public async Task<List<AppUser_SexDTO>> SingleListSex([FromBody] AppUser_SexFilterDTO AppUser_SexFilterDTO)
         {
             SexFilter SexFilter = new SexFilter();
@@ -278,18 +305,6 @@ namespace LocatingApp.Rpc.app_user
                 Code = AppUser_AppUserDTO.Sex.Code,
                 Name = AppUser_AppUserDTO.Sex.Name,
             };
-            //AppUser.AppUserRoleMappings = AppUser_AppUserDTO.AppUserRoleMappings?
-            //    .Select(x => new AppUserRoleMapping
-            //    {
-            //        RoleId = x.RoleId,
-            //        Role = x.Role == null ? null : new Role
-            //        {
-            //            Id = x.Role.Id,
-            //            Code = x.Role.Code,
-            //            Name = x.Role.Name,
-            //            StatusId = x.Role.StatusId,
-            //        },
-            //    }).ToList();
             AppUser.BaseLanguage = CurrentContext.Language;
             return AppUser;
         }

@@ -18,6 +18,7 @@ namespace LocatingApp.Models
         public long Id { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
+        public long RoleId { get; set; }
         public string DisplayName { get; set; }
         public long SexId { get; set; }
         public DateTime Birthday { get; set; }

@@ -33,6 +33,19 @@ namespace LocatingApp.Services.MAppUser
             EmailNotExisted,
             OtpCodeInvalid,
             OtpExpired,
+            UsernameHasSpecialCharacter,
+            UsernameOverLength,
+            DisplayNameEmpty,
+            DisplayNameOverLength,
+            UsernameExisted,
+            EmailEmpty,
+            EmailInvalid,
+            EmailOverLength,
+            EmailExisted,
+            PhoneEmpty,
+            PhoneOverLength,
+            SexEmpty,
+            UsernameEmpty,
         }
 
         private IUOW UOW;
@@ -60,8 +73,104 @@ namespace LocatingApp.Services.MAppUser
             return count == 1;
         }
 
-        public async Task<bool>Create(AppUser AppUser)
+        public async Task<bool> ValidateUsername(AppUser AppUser)
         {
+            if (string.IsNullOrWhiteSpace(AppUser.Username))
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Username), ErrorCode.UsernameEmpty);
+            else
+            {
+                var Code = AppUser.Username;
+                if (AppUser.Username.Contains(" ") || !FilterExtension.ChangeToEnglishChar(Code).Equals(AppUser.Username))
+                {
+                    AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Username), ErrorCode.UsernameHasSpecialCharacter);
+                }
+                else if (AppUser.Username.Length > 255)
+                {
+                    AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Username), ErrorCode.UsernameOverLength);
+                }
+                AppUserFilter AppUserFilter = new AppUserFilter
+                {
+                    Skip = 0,
+                    Take = 10,
+                    Id = new IdFilter { NotEqual = AppUser.Id },
+                    Username = new StringFilter { Equal = AppUser.Username },
+                    Selects = AppUserSelect.Username
+                };
+
+                int count = await UOW.AppUserRepository.Count(AppUserFilter);
+                if (count != 0)
+                    AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Username), ErrorCode.UsernameExisted);
+            }
+
+            return AppUser.IsValidated;
+        }
+
+        public async Task<bool> ValidateDisplayName(AppUser AppUser)
+        {
+            if (string.IsNullOrWhiteSpace(AppUser.DisplayName))
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.DisplayName), ErrorCode.DisplayNameEmpty);
+            }
+            else if (AppUser.DisplayName.Length > 255)
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.DisplayName), ErrorCode.DisplayNameOverLength);
+            }
+            return AppUser.IsValidated;
+        }
+
+        public async Task<bool> ValidateEmail(AppUser AppUser)
+        {
+            if (string.IsNullOrWhiteSpace(AppUser.Email))
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Email), ErrorCode.EmailEmpty);
+            else if (!IsValidEmail(AppUser.Email))
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Email), ErrorCode.EmailInvalid);
+            else
+            {
+                if (AppUser.Email.Length > 255)
+                    AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Email), ErrorCode.EmailOverLength);
+                AppUserFilter AppUserFilter = new AppUserFilter
+                {
+                    Skip = 0,
+                    Take = 10,
+                    Id = new IdFilter { NotEqual = AppUser.Id },
+                    Email = new StringFilter { Equal = AppUser.Email },
+                    Selects = AppUserSelect.Email
+                };
+
+                int count = await UOW.AppUserRepository.Count(AppUserFilter);
+                if (count != 0)
+                    AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Email), ErrorCode.EmailExisted);
+            }
+            return AppUser.IsValidated;
+        }
+
+        public async Task<bool> ValidatePhone(AppUser AppUser)
+        {
+            if (string.IsNullOrEmpty(AppUser.Phone))
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Phone), ErrorCode.PhoneEmpty);
+            }
+            else if (AppUser.Phone.Length > 255)
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Phone), ErrorCode.PhoneOverLength);
+            }
+            return AppUser.IsValidated;
+        }
+
+        private async Task<bool> ValidateSex(AppUser AppUser)
+        {
+            if (AppUser.SexId != Enums.SexEnum.MALE.Id && AppUser.SexId != Enums.SexEnum.FEMALE.Id)
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Sex), ErrorCode.SexEmpty);
+            return AppUser.IsValidated;
+        }
+
+        public async Task<bool> Create(AppUser AppUser)
+        {
+            await ValidateUsername(AppUser);
+            await ValidateDisplayName(AppUser);
+            await ValidateEmail(AppUser);
+            await ValidatePhone(AppUser);
+            await ValidateSex(AppUser); 
             return AppUser.IsValidated;
         }
 
@@ -69,6 +178,11 @@ namespace LocatingApp.Services.MAppUser
         {
             if (await ValidateId(AppUser))
             {
+                await ValidateUsername(AppUser);
+                await ValidateDisplayName(AppUser);
+                await ValidateEmail(AppUser);
+                await ValidatePhone(AppUser);
+                await ValidateSex(AppUser);
             }
             return AppUser.IsValidated;
         }

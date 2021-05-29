@@ -23,6 +23,11 @@ namespace LocatingApp.Entities
         public bool Used { get; set; }
         public List<LocationLog> LocationLogs { get; set; }
         public Sex Sex { get; set; }
+        public List<AppUserAppUserMapping> AppUserAppUserMappingAppUsers { get; set; }
+        public List<AppUserAppUserMapping> AppUserAppUserMappingFriends { get; set; }
+        public List<PlaceChecking> PlaceCheckings { get; set; }
+        public List<Tracking> TrackingTargets { get; set; }
+        public List<Tracking> TrackingTrackers { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }

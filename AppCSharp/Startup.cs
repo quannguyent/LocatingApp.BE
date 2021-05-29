@@ -25,7 +25,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using LocatingApp.Models;
 using LocatingApp.Rpc;
-//using LocatingApp.Handlers;
 using LocatingApp.Services;
 
 namespace LocatingApp

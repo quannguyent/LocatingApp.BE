@@ -266,6 +266,145 @@ namespace LocatingApp.Repositories
                         Used = x.Previous.Used,
                     },
                 }).ToListAsync();
+            AppUser.AppUserAppUserMappingAppUsers = await DataContext.AppUserAppUserMapping.AsNoTracking()
+                .Where(x => x.AppUserId == AppUser.Id).Where(x => x.DeletedAt == null)
+                .Select(x => new AppUserAppUserMapping
+                {
+                    AppUserId = x.AppUserId,
+                    FriendId = x.FriendId,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    AppUser = x.AppUser == null ? null : new AppUser
+                    {
+                        CreatedAt = x.AppUser.CreatedAt,
+                        UpdatedAt = x.AppUser.UpdatedAt,
+                        Id = x.AppUser.Id,
+                        Username = x.AppUser.Username,
+                        Password = x.AppUser.Password,
+                        DisplayName = x.AppUser.DisplayName,
+                        Email = x.AppUser.Email,
+                        Phone = x.AppUser.Phone,
+                        Used = x.AppUser.Used,
+                    },
+                    Friend = x.Friend == null ? null : new AppUser
+                    {
+                        CreatedAt = x.AppUser.CreatedAt,
+                        UpdatedAt = x.AppUser.UpdatedAt,
+                        Id = x.AppUser.Id,
+                        Username = x.AppUser.Username,
+                        Password = x.AppUser.Password,
+                        DisplayName = x.AppUser.DisplayName,
+                        Email = x.AppUser.Email,
+                        Phone = x.AppUser.Phone,
+                        Used = x.AppUser.Used,
+                    },
+                }).ToListAsync();
+            AppUser.AppUserAppUserMappingFriends = await DataContext.AppUserAppUserMapping.AsNoTracking()
+                .Where(x => x.FriendId == AppUser.Id).Where(x => x.DeletedAt == null)
+                .Select(x => new AppUserAppUserMapping
+                {
+                    AppUserId = x.AppUserId,
+                    FriendId = x.FriendId,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    AppUser = x.AppUser == null ? null : new AppUser
+                    {
+                        CreatedAt = x.AppUser.CreatedAt,
+                        UpdatedAt = x.AppUser.UpdatedAt,
+                        Id = x.AppUser.Id,
+                        Username = x.AppUser.Username,
+                        Password = x.AppUser.Password,
+                        DisplayName = x.AppUser.DisplayName,
+                        Email = x.AppUser.Email,
+                        Phone = x.AppUser.Phone,
+                        Used = x.AppUser.Used,
+                    },
+                    Friend = x.Friend == null ? null : new AppUser
+                    {
+                        CreatedAt = x.Friend.CreatedAt,
+                        UpdatedAt = x.Friend.UpdatedAt,
+                        Id = x.Friend.Id,
+                        Username = x.Friend.Username,
+                        Password = x.Friend.Password,
+                        DisplayName = x.Friend.DisplayName,
+                        Email = x.Friend.Email,
+                        Phone = x.Friend.Phone,
+                        Used = x.Friend.Used,
+                    }
+
+                }).ToListAsync();
+            AppUser.TrackingTargets = await DataContext.Tracking.AsNoTracking()
+                .Where(x => x.TargetId == AppUser.Id).Where(x => x.DeletedAt == null)
+                .Select(x => new Tracking
+                {
+                    Id = x.Id,
+                    TrackerId = x.TrackerId,
+                    TargetId = x.TargetId,
+                    PlaceCheckingId = x.PlaceCheckingId,
+                    PlaceId = x.PlaceId,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    Target = x.Target == null ? null : new AppUser
+                    {
+                        CreatedAt = x.Target.CreatedAt,
+                        UpdatedAt = x.Target.UpdatedAt,
+                        Id = x.Target.Id,
+                        Username = x.Target.Username,
+                        Password = x.Target.Password,
+                        DisplayName = x.Target.DisplayName,
+                        Email = x.Target.Email,
+                        Phone = x.Target.Phone,
+                        Used = x.Target.Used,
+                    },
+                    Tracker = x.Tracker == null ? null : new AppUser
+                    {
+                        CreatedAt = x.Tracker.CreatedAt,
+                        UpdatedAt = x.Tracker.UpdatedAt,
+                        Id = x.Tracker.Id,
+                        Username = x.Tracker.Username,
+                        Password = x.Tracker.Password,
+                        DisplayName = x.Tracker.DisplayName,
+                        Email = x.Tracker.Email,
+                        Phone = x.Tracker.Phone,
+                        Used = x.Tracker.Used,
+                    },
+                }).ToListAsync();
+            AppUser.TrackingTrackers = await DataContext.Tracking.AsNoTracking()
+                .Where(x => x.TrackerId == AppUser.Id).Where(x => x.DeletedAt == null)
+                .Select(x => new Tracking
+                {
+                    Id = x.Id,
+                    TrackerId = x.TrackerId,
+                    TargetId = x.TargetId,
+                    PlaceCheckingId = x.PlaceCheckingId,
+                    PlaceId = x.PlaceId,
+                    CreatedAt = x.CreatedAt,
+                    UpdatedAt = x.UpdatedAt,
+                    Target = x.Target == null ? null : new AppUser
+                    {
+                        CreatedAt = x.Target.CreatedAt,
+                        UpdatedAt = x.Target.UpdatedAt,
+                        Id = x.Target.Id,
+                        Username = x.Target.Username,
+                        Password = x.Target.Password,
+                        DisplayName = x.Target.DisplayName,
+                        Email = x.Target.Email,
+                        Phone = x.Target.Phone,
+                        Used = x.Target.Used,
+                    },
+                    Tracker = x.Tracker == null ? null : new AppUser
+                    {
+                        CreatedAt = x.Tracker.CreatedAt,
+                        UpdatedAt = x.Tracker.UpdatedAt,
+                        Id = x.Tracker.Id,
+                        Username = x.Tracker.Username,
+                        Password = x.Tracker.Password,
+                        DisplayName = x.Tracker.DisplayName,
+                        Email = x.Tracker.Email,
+                        Phone = x.Tracker.Phone,
+                        Used = x.Tracker.Used,
+                    },
+                }).ToListAsync();
 
             return AppUser;
         }
@@ -279,6 +418,8 @@ namespace LocatingApp.Repositories
             AppUserDAO.Email = AppUser.Email;
             AppUserDAO.Phone = AppUser.Phone;
             AppUserDAO.Used = AppUser.Used;
+            AppUserDAO.SexId = AppUser.SexId;
+            AppUserDAO.Birthday = AppUser.Birthday;
             AppUserDAO.CreatedAt = StaticParams.DateTimeNow;
             AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.AppUser.Add(AppUserDAO);
@@ -299,6 +440,8 @@ namespace LocatingApp.Repositories
             AppUserDAO.DisplayName = AppUser.DisplayName;
             AppUserDAO.Email = AppUser.Email;
             AppUserDAO.Phone = AppUser.Phone;
+            AppUserDAO.SexId = AppUser.SexId;
+            AppUserDAO.Birthday = AppUser.Birthday;
             AppUserDAO.Used = AppUser.Used;
             AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
@@ -382,6 +525,40 @@ namespace LocatingApp.Repositories
                     }
                 }
                 await DataContext.LocationLog.BulkMergeAsync(LocationLogDAOs);
+            }
+
+            if (AppUser.AppUserAppUserMappingAppUsers != null)
+            {
+                await DataContext.AppUserAppUserMapping
+                    .Where(x => x.AppUserId == AppUser.Id).DeleteFromQueryAsync();
+                List<AppUserAppUserMappingDAO> AppUserAppUserMappingDAOs = AppUser.AppUserAppUserMappingAppUsers
+                    .Select(x => new AppUserAppUserMappingDAO
+                    {
+                        AppUserId = AppUser.Id,
+                        FriendId = x.FriendId,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = StaticParams.DateTimeNow,
+                        DeletedAt = x.DeletedAt,
+                        Used = x.Used,
+                    }).ToList();
+                await DataContext.BulkMergeAsync(AppUserAppUserMappingDAOs);
+            }
+            
+            if (AppUser.AppUserAppUserMappingFriends != null)
+            {
+                await DataContext.AppUserAppUserMapping
+                    .Where(x => x.FriendId == AppUser.Id).DeleteFromQueryAsync();
+                List<AppUserAppUserMappingDAO> AppUserAppUserMappingDAOs = AppUser.AppUserAppUserMappingFriends
+                    .Select(x => new AppUserAppUserMappingDAO
+                    {
+                        AppUserId = x.AppUserId,
+                        FriendId = AppUser.Id,
+                        CreatedAt = x.CreatedAt,
+                        UpdatedAt = StaticParams.DateTimeNow,
+                        DeletedAt = x.DeletedAt,
+                        Used = x.Used,
+                    }).ToList();
+                await DataContext.BulkMergeAsync(AppUserAppUserMappingDAOs);
             }
         }
         
