@@ -13,11 +13,11 @@ namespace LocatingApp.Rpc.app_user
         public string Password { get; set; }
         public string DisplayName { get; set; }
         public long SexId { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string OtpCode { get; set; }
-        public DateTime OtpExpired { get; set; }
+        public DateTime? OtpExpired { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
         public bool Used { get; set; }

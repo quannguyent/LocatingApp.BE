@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using LocatingApp.Services.MAppUser;
 using LocatingApp.Entities;
+using LocatingApp.Models;
 
 namespace LocatingApp.Rpc
 {
@@ -19,64 +20,18 @@ namespace LocatingApp.Rpc
     {
         //protected async Task<List<long>> FilterFriend(IAppUserService AppUserService, ICurrentContext CurrentContext)
         //{
-        //    if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return new List<long>();
-        //    List<AppUser> AppUsers = await AppUserService.List(new AppUser
+        //    List<AppUser> AppUsers = await AppUserService.List(new AppUserFilter
         //    {
         //        Skip = 0,
         //        Take = int.MaxValue,
-        //        Selects = OrganizationSelect.ALL,
-        //        OrderBy = OrganizationOrder.Id,
+        //        Selects = AppUserAppUserMappingSelect.ALL,
+        //        OrderBy = AppUserAppUserMappingOrder.Id,
         //        OrderType = OrderType.ASC
         //    });
-
         //    List<long> In = null;
         //    List<long> NotIn = null;
-        //    foreach (var currentFilter in CurrentContext.Filters)
-        //    {
-        //        List<FilterPermissionDefinition> FilterPermissionDefinitions = currentFilter.Value;
-        //        foreach (FilterPermissionDefinition FilterPermissionDefinition in FilterPermissionDefinitions)
-        //        {
-        //            if (FilterPermissionDefinition.Name == "OrganizationId")
-        //            {
-        //                if (FilterPermissionDefinition.IdFilter.Equal != null)
-        //                {
-        //                    if (In == null) In = new List<long>();
-        //                    In.Add(FilterPermissionDefinition.IdFilter.Equal.Value);
-        //                }
-        //                if (FilterPermissionDefinition.IdFilter.In != null)
-        //                {
-        //                    if (In == null) In = new List<long>();
-        //                    In.AddRange(FilterPermissionDefinition.IdFilter.In);
-        //                }
-
-        //                if (FilterPermissionDefinition.IdFilter.NotEqual != null)
-        //                {
-        //                    if (NotIn == null) NotIn = new List<long>();
-        //                    NotIn.Add(FilterPermissionDefinition.IdFilter.NotEqual.Value);
-        //                }
-        //                if (FilterPermissionDefinition.IdFilter.NotIn != null)
-        //                {
-        //                    if (NotIn == null) NotIn = new List<long>();
-        //                    NotIn.AddRange(FilterPermissionDefinition.IdFilter.NotIn);
-        //                }
-        //            }
-        //        }
-        //    }
-
-        //    if (In != null)
-        //    {
-        //        List<string> InPaths = Organizations.Where(o => In.Count == 0 || In.Contains(o.Id)).Select(o => o.Path).ToList();
-        //        Organizations = Organizations.Where(o => InPaths.Any(p => o.Path.StartsWith(p))).ToList();
-        //    }
-        //    if (NotIn != null)
-        //    {
-        //        List<string> NotInPaths = Organizations.Where(o => NotIn.Count == 0 || NotIn.Contains(o.Id)).Select(o => o.Path).ToList();
-        //        Organizations = Organizations.Where(o => !NotInPaths.Any(p => o.Path.StartsWith(p))).ToList();
-        //    }
-
-        //    List<long> organizationIds = Organizations.Select(o => o.Id).ToList();
-
-        //    return organizationIds;
+            
+            
         //}
     }
 
@@ -96,15 +51,15 @@ namespace LocatingApp.Rpc
     public class PermissionHandler : AuthorizationHandler<PermissionRequirement>
     {
         private ICurrentContext CurrentContext;
-        //private DataContext DataContext;
+        private DataContext DataContext;
         private readonly IHttpContextAccessor httpContextAccessor;
         public PermissionHandler(
             ICurrentContext CurrentContext, 
-            //DataContext DataContext, 
+            DataContext DataContext, 
             IHttpContextAccessor httpContextAccessor)
         {
             this.CurrentContext = CurrentContext;
-            //this.DataContext = DataContext;
+            this.DataContext = DataContext;
             this.httpContextAccessor = httpContextAccessor;
         }
         protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, PermissionRequirement requirement)
@@ -126,7 +81,7 @@ namespace LocatingApp.Rpc
             CurrentContext.TimeZone = int.TryParse(TimeZone, out int t) ? t : 0;
             CurrentContext.Language = Language ?? "vi";
             context.Succeed(requirement);
-            
+
             context.Succeed(requirement);
         }
        
