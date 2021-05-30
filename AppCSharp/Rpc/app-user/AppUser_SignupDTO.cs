@@ -15,7 +15,6 @@ namespace LocatingApp.Rpc.app_user
         public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
-        public Sex Sex { get; set; }
         public AppUser_SignupDTO() {}
         public AppUser_SignupDTO(AppUser AppUser)
         {

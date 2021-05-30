@@ -65,6 +65,7 @@ namespace LocatingApp.Rpc.app_user
                 Birthday = AppUser_SignupDTO.Birthday,
                 Email = AppUser_SignupDTO.Email,
                 Phone = AppUser_SignupDTO.Phone,
+                RoleId = RoleEnum.User.Id,
             };
             AppUser = await AppUserService.Create(AppUser);
             AppUser_AppUserDTO AppUser_AppUserDTO = new AppUser_AppUserDTO(AppUser);
@@ -94,6 +95,7 @@ namespace LocatingApp.Rpc.app_user
             {
                 Response.Cookies.Append("Token", AppUser.Token);
                 AppUser_AppUserDTO.Token = AppUser.Token;
+                AppUser_AppUserDTO.RefreshToken = AppUser.RefreshToken;
                 return AppUser_AppUserDTO;
             }
             else

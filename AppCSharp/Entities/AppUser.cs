@@ -17,12 +17,15 @@ namespace LocatingApp.Entities
         public DateTime Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
+        public long RoleId { get; set; }
         public string OtpCode { get; set; }
         public DateTime? OtpExpired { get; set; }
         public string Token { get; set; }
+        public string RefreshToken { get; set; }
         public bool Used { get; set; }
         public List<LocationLog> LocationLogs { get; set; }
         public Sex Sex { get; set; }
+        public Role Role { get; set; }
         public List<AppUserAppUserMapping> AppUserAppUserMappingAppUsers { get; set; }
         public List<AppUserAppUserMapping> AppUserAppUserMappingFriends { get; set; }
         public List<PlaceChecking> PlaceCheckings { get; set; }
@@ -76,6 +79,7 @@ namespace LocatingApp.Entities
         public DateFilter Birthday { get; set; }
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
+        public IdFilter RoleId { get; set; }
         public DateFilter CreatedAt { get; set; }
         public DateFilter UpdatedAt { get; set; }
         public List<AppUserFilter> OrFilter { get; set; }
@@ -94,13 +98,14 @@ namespace LocatingApp.Entities
         Birthday = 5,
         Email = 6,
         Phone = 7,
+        Role = 8,
         Used = 9,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
 
     [Flags]
-    public enum AppUserSelect:long
+    public enum AppUserSelect : long
     {
         ALL = E.ALL,
         Id = E._0,
@@ -111,6 +116,7 @@ namespace LocatingApp.Entities
         Birthday = E._5,
         Email = E._6,
         Phone = E._7,
+        Role = E._8,
         Used = E._9,
     }
 }

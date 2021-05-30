@@ -100,6 +100,7 @@ namespace LocatingApp.Services.MAppUser
 
             try
             {
+                AppUser.Password = HashPassword(AppUser.Password);
                 await UOW.AppUserRepository.Create(AppUser);
                 AppUser = await UOW.AppUserRepository.Get(AppUser.Id);
                 await Logging.CreateAuditLog(AppUser, new { }, nameof(AppUserService));
@@ -196,6 +197,7 @@ namespace LocatingApp.Services.MAppUser
             CurrentContext.UserId = AppUser.Id;
             //await Logging.CreateAuditLog(new { }, AppUser, nameof(AppUserService));
             AppUser.Token = CreateToken(AppUser.Id, AppUser.Username);
+            AppUser.RefreshToken = CreateToken(AppUser.Id, AppUser.Username, 43200);
 
             return AppUser;
         }

@@ -51,6 +51,12 @@ namespace LocatingApp.Repositories
                 query = query.Where(q => q.Email, filter.Email);
             if (filter.Phone != null && filter.Phone.HasValue)
                 query = query.Where(q => q.Phone, filter.Phone);
+            if (filter.SexId != null && filter.SexId.HasValue)
+                query = query.Where(q => q.SexId, filter.SexId);
+            if (filter.Birthday != null && filter.Birthday.HasValue)
+                query = query.Where(q => q.Birthday, filter.Birthday);
+            if (filter.RoleId != null && filter.RoleId.HasValue)
+                query = query.Where(q => q.RoleId, filter.RoleId);
             query = OrFilter(query, filter);
             return query;
         }
@@ -75,6 +81,12 @@ namespace LocatingApp.Repositories
                     queryable = queryable.Where(q => q.Email, filter.Email);
                 if (AppUserFilter.Phone != null && AppUserFilter.Phone.HasValue)
                     queryable = queryable.Where(q => q.Phone, filter.Phone);
+                if (AppUserFilter.SexId != null && AppUserFilter.SexId.HasValue)
+                    queryable = queryable.Where(q => q.SexId, filter.SexId);
+                if (AppUserFilter.Birthday != null && AppUserFilter.Birthday.HasValue)
+                    queryable = queryable.Where(q => q.Birthday, filter.Birthday);
+                if (AppUserFilter.RoleId != null && AppUserFilter.RoleId.HasValue)
+                    queryable = queryable.Where(q => q.RoleId, filter.RoleId);
                 initQuery = initQuery.Union(queryable);
             }
             return initQuery;
@@ -108,6 +120,16 @@ namespace LocatingApp.Repositories
                         case AppUserOrder.Used:
                             query = query.OrderBy(q => q.Used);
                             break;
+                        case AppUserOrder.Sex:
+                                query = query.OrderBy(q => q.SexId);
+                                break;
+                        case AppUserOrder.Birthday:
+                                query = query.OrderBy(q => q.Birthday);
+                                break;
+                        case AppUserOrder.Role:
+                                query = query.OrderBy(q => q.RoleId);
+                                break;
+
                     }
                     break;
                 case OrderType.DESC:
@@ -134,6 +156,15 @@ namespace LocatingApp.Repositories
                         case AppUserOrder.Used:
                             query = query.OrderByDescending(q => q.Used);
                             break;
+                        case AppUserOrder.Sex:
+                            query = query.OrderBy(q => q.SexId);
+                            break;
+                        case AppUserOrder.Birthday:
+                            query = query.OrderBy(q => q.Birthday);
+                            break;
+                        case AppUserOrder.Role:
+                            query = query.OrderBy(q => q.RoleId);
+                            break;
                     }
                     break;
             }
@@ -151,6 +182,9 @@ namespace LocatingApp.Repositories
                 DisplayName = filter.Selects.Contains(AppUserSelect.DisplayName) ? q.DisplayName : default(string),
                 Email = filter.Selects.Contains(AppUserSelect.Email) ? q.Email : default(string),
                 Phone = filter.Selects.Contains(AppUserSelect.Phone) ? q.Phone : default(string),
+                SexId = filter.Selects.Contains(AppUserSelect.Sex) ? q.SexId : default(long),
+                Birthday = filter.Selects.Contains(AppUserSelect.Birthday) ? q.Birthday : default(DateTime),
+                RoleId = filter.Selects.Contains(AppUserSelect.Role) ? q.RoleId : default(long),
                 Used = filter.Selects.Contains(AppUserSelect.Used) ? q.Used : default(bool),
             }).ToListAsync();
             return AppUsers;
@@ -238,11 +272,30 @@ namespace LocatingApp.Repositories
                 DisplayName = x.DisplayName,
                 Email = x.Email,
                 Phone = x.Phone,
+                SexId = x.SexId,
+                Birthday = x.Birthday,
+                RoleId = x.RoleId,
                 Used = x.Used,
             }).FirstOrDefaultAsync();
 
             if (AppUser == null)
                 return null;
+            AppUser.Sex = await DataContext.Sex.AsNoTracking()
+                .Where(x => x.Id == AppUser.SexId)
+                .Select(x => new Sex
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Code = x.Code,
+                }).FirstOrDefaultAsync();
+            AppUser.Role = await DataContext.Role.AsNoTracking()
+                .Where(x => x.Id == AppUser.RoleId)
+                .Select(x => new Role
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Code = x.Code,
+                }).FirstOrDefaultAsync();
             AppUser.LocationLogs = await DataContext.LocationLog.AsNoTracking()
                 .Where(x => x.AppUserId == AppUser.Id)
                 .Where(x => x.DeletedAt == null)
@@ -280,7 +333,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.AppUser.UpdatedAt,
                         Id = x.AppUser.Id,
                         Username = x.AppUser.Username,
-                        Password = x.AppUser.Password,
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
@@ -292,7 +344,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.AppUser.UpdatedAt,
                         Id = x.AppUser.Id,
                         Username = x.AppUser.Username,
-                        Password = x.AppUser.Password,
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
@@ -313,7 +364,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.AppUser.UpdatedAt,
                         Id = x.AppUser.Id,
                         Username = x.AppUser.Username,
-                        Password = x.AppUser.Password,
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
@@ -325,7 +375,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.Friend.UpdatedAt,
                         Id = x.Friend.Id,
                         Username = x.Friend.Username,
-                        Password = x.Friend.Password,
                         DisplayName = x.Friend.DisplayName,
                         Email = x.Friend.Email,
                         Phone = x.Friend.Phone,
@@ -350,7 +399,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.Target.UpdatedAt,
                         Id = x.Target.Id,
                         Username = x.Target.Username,
-                        Password = x.Target.Password,
                         DisplayName = x.Target.DisplayName,
                         Email = x.Target.Email,
                         Phone = x.Target.Phone,
@@ -362,7 +410,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.Tracker.UpdatedAt,
                         Id = x.Tracker.Id,
                         Username = x.Tracker.Username,
-                        Password = x.Tracker.Password,
                         DisplayName = x.Tracker.DisplayName,
                         Email = x.Tracker.Email,
                         Phone = x.Tracker.Phone,
@@ -386,7 +433,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.Target.UpdatedAt,
                         Id = x.Target.Id,
                         Username = x.Target.Username,
-                        Password = x.Target.Password,
                         DisplayName = x.Target.DisplayName,
                         Email = x.Target.Email,
                         Phone = x.Target.Phone,
@@ -398,7 +444,6 @@ namespace LocatingApp.Repositories
                         UpdatedAt = x.Tracker.UpdatedAt,
                         Id = x.Tracker.Id,
                         Username = x.Tracker.Username,
-                        Password = x.Tracker.Password,
                         DisplayName = x.Tracker.DisplayName,
                         Email = x.Tracker.Email,
                         Phone = x.Tracker.Phone,
@@ -420,6 +465,7 @@ namespace LocatingApp.Repositories
             AppUserDAO.Used = AppUser.Used;
             AppUserDAO.SexId = AppUser.SexId;
             AppUserDAO.Birthday = AppUser.Birthday;
+            AppUserDAO.RoleId = AppUser.RoleId;
             AppUserDAO.CreatedAt = StaticParams.DateTimeNow;
             AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.AppUser.Add(AppUserDAO);
@@ -467,6 +513,9 @@ namespace LocatingApp.Repositories
                 AppUserDAO.DisplayName = AppUser.DisplayName;
                 AppUserDAO.Email = AppUser.Email;
                 AppUserDAO.Phone = AppUser.Phone;
+                AppUserDAO.Used = AppUser.Used;
+                AppUserDAO.SexId = AppUser.SexId;
+                AppUserDAO.Birthday = AppUser.Birthday;
                 AppUserDAO.Used = AppUser.Used;
                 AppUserDAO.CreatedAt = StaticParams.DateTimeNow;
                 AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;

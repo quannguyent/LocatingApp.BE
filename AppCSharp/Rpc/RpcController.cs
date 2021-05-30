@@ -17,67 +17,67 @@ namespace LocatingApp.Rpc
     [Authorize(Policy = "Permission")]
     public class RpcController : ControllerBase
     {
-        protected async Task<List<long>> FilterFriend(IAppUserService AppUserService, ICurrentContext CurrentContext)
-        {
-            if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return new List<long>();
-            List<AppUser> AppUsers = await AppUserService.List(new AppUser
-            {
-                Skip = 0,
-                Take = int.MaxValue,
-                Selects = OrganizationSelect.ALL,
-                OrderBy = OrganizationOrder.Id,
-                OrderType = OrderType.ASC
-            });
+        //protected async Task<List<long>> FilterFriend(IAppUserService AppUserService, ICurrentContext CurrentContext)
+        //{
+        //    if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return new List<long>();
+        //    List<AppUser> AppUsers = await AppUserService.List(new AppUser
+        //    {
+        //        Skip = 0,
+        //        Take = int.MaxValue,
+        //        Selects = OrganizationSelect.ALL,
+        //        OrderBy = OrganizationOrder.Id,
+        //        OrderType = OrderType.ASC
+        //    });
 
-            List<long> In = null;
-            List<long> NotIn = null;
-            foreach (var currentFilter in CurrentContext.Filters)
-            {
-                List<FilterPermissionDefinition> FilterPermissionDefinitions = currentFilter.Value;
-                foreach (FilterPermissionDefinition FilterPermissionDefinition in FilterPermissionDefinitions)
-                {
-                    if (FilterPermissionDefinition.Name == "OrganizationId")
-                    {
-                        if (FilterPermissionDefinition.IdFilter.Equal != null)
-                        {
-                            if (In == null) In = new List<long>();
-                            In.Add(FilterPermissionDefinition.IdFilter.Equal.Value);
-                        }
-                        if (FilterPermissionDefinition.IdFilter.In != null)
-                        {
-                            if (In == null) In = new List<long>();
-                            In.AddRange(FilterPermissionDefinition.IdFilter.In);
-                        }
+        //    List<long> In = null;
+        //    List<long> NotIn = null;
+        //    foreach (var currentFilter in CurrentContext.Filters)
+        //    {
+        //        List<FilterPermissionDefinition> FilterPermissionDefinitions = currentFilter.Value;
+        //        foreach (FilterPermissionDefinition FilterPermissionDefinition in FilterPermissionDefinitions)
+        //        {
+        //            if (FilterPermissionDefinition.Name == "OrganizationId")
+        //            {
+        //                if (FilterPermissionDefinition.IdFilter.Equal != null)
+        //                {
+        //                    if (In == null) In = new List<long>();
+        //                    In.Add(FilterPermissionDefinition.IdFilter.Equal.Value);
+        //                }
+        //                if (FilterPermissionDefinition.IdFilter.In != null)
+        //                {
+        //                    if (In == null) In = new List<long>();
+        //                    In.AddRange(FilterPermissionDefinition.IdFilter.In);
+        //                }
 
-                        if (FilterPermissionDefinition.IdFilter.NotEqual != null)
-                        {
-                            if (NotIn == null) NotIn = new List<long>();
-                            NotIn.Add(FilterPermissionDefinition.IdFilter.NotEqual.Value);
-                        }
-                        if (FilterPermissionDefinition.IdFilter.NotIn != null)
-                        {
-                            if (NotIn == null) NotIn = new List<long>();
-                            NotIn.AddRange(FilterPermissionDefinition.IdFilter.NotIn);
-                        }
-                    }
-                }
-            }
+        //                if (FilterPermissionDefinition.IdFilter.NotEqual != null)
+        //                {
+        //                    if (NotIn == null) NotIn = new List<long>();
+        //                    NotIn.Add(FilterPermissionDefinition.IdFilter.NotEqual.Value);
+        //                }
+        //                if (FilterPermissionDefinition.IdFilter.NotIn != null)
+        //                {
+        //                    if (NotIn == null) NotIn = new List<long>();
+        //                    NotIn.AddRange(FilterPermissionDefinition.IdFilter.NotIn);
+        //                }
+        //            }
+        //        }
+        //    }
 
-            if (In != null)
-            {
-                List<string> InPaths = Organizations.Where(o => In.Count == 0 || In.Contains(o.Id)).Select(o => o.Path).ToList();
-                Organizations = Organizations.Where(o => InPaths.Any(p => o.Path.StartsWith(p))).ToList();
-            }
-            if (NotIn != null)
-            {
-                List<string> NotInPaths = Organizations.Where(o => NotIn.Count == 0 || NotIn.Contains(o.Id)).Select(o => o.Path).ToList();
-                Organizations = Organizations.Where(o => !NotInPaths.Any(p => o.Path.StartsWith(p))).ToList();
-            }
+        //    if (In != null)
+        //    {
+        //        List<string> InPaths = Organizations.Where(o => In.Count == 0 || In.Contains(o.Id)).Select(o => o.Path).ToList();
+        //        Organizations = Organizations.Where(o => InPaths.Any(p => o.Path.StartsWith(p))).ToList();
+        //    }
+        //    if (NotIn != null)
+        //    {
+        //        List<string> NotInPaths = Organizations.Where(o => NotIn.Count == 0 || NotIn.Contains(o.Id)).Select(o => o.Path).ToList();
+        //        Organizations = Organizations.Where(o => !NotInPaths.Any(p => o.Path.StartsWith(p))).ToList();
+        //    }
 
-            List<long> organizationIds = Organizations.Select(o => o.Id).ToList();
+        //    List<long> organizationIds = Organizations.Select(o => o.Id).ToList();
 
-            return organizationIds;
-        }
+        //    return organizationIds;
+        //}
     }
 
     [Authorize]

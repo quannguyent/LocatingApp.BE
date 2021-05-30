@@ -8,9 +8,9 @@ namespace LocatingApp.Enums
 {
     public class RoleEnum
     {
-        public static GenericEnum User => new GenericEnum { Id = 1, Name = "User", Code = "USER" };
-        public static GenericEnum Admin => new GenericEnum { Id = 2, Name = "Admin", Code = "ADMIN" };
-        public static GenericEnum Analysis => new GenericEnum { Id = 3, Name = "Analysis", Code = "ANALYSIS" };
+        public static GenericEnum User => new GenericEnum { Id = 1, Name = "User", Code = "User" };
+        public static GenericEnum Admin => new GenericEnum { Id = 2, Name = "Admin", Code = "Admin" };
+        public static GenericEnum Analysis => new GenericEnum { Id = 3, Name = "Analysis", Code = "Analysis" };
         public static List<GenericEnum> SexEnumList = new List<GenericEnum>
         {
             User, Admin, Analysis

@@ -27,6 +27,7 @@ namespace LocatingApp.Models
         public virtual DbSet<SetDAO> Set { get; set; }
         public virtual DbSet<SexDAO> Sex { get; set; }
         public virtual DbSet<StateDAO> State { get; set; }
+        public virtual DbSet<StatusDAO> Status { get; set; }
         public virtual DbSet<TrackingDAO> Tracking { get; set; }
 
         public DataContext(DbContextOptions<DataContext> options) : base(options)
@@ -82,7 +83,7 @@ namespace LocatingApp.Models
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasMaxLength(20)
+                    .HasMaxLength(1000)
                     .IsFixedLength();
 
                 entity.Property(e => e.Phone)
@@ -93,7 +94,7 @@ namespace LocatingApp.Models
 
                 entity.Property(e => e.Username)
                     .IsRequired()
-                    .HasMaxLength(4000);
+                    .HasMaxLength(1000);
             });
 
             modelBuilder.Entity<AppUserAppUserMappingDAO>(entity =>
@@ -422,6 +423,15 @@ namespace LocatingApp.Models
                     .WithMany(p => p.States)
                     .HasForeignKey(d => d.JobId)
                     .HasConstraintName("FK_HangFire_State_Job");
+            });
+
+            modelBuilder.Entity<StatusDAO>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Code).HasMaxLength(100);
+
+                entity.Property(e => e.Name).HasMaxLength(100);
             });
 
             modelBuilder.Entity<TrackingDAO>(entity =>
