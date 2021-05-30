@@ -21,7 +21,7 @@ namespace LocatingApp.Models
         public long RoleId { get; set; }
         public string DisplayName { get; set; }
         public long SexId { get; set; }
-        public DateTime Birthday { get; set; }
+        public DateTime? Birthday { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }
         public string OtpCode { get; set; }

@@ -40,7 +40,7 @@ namespace LocatingApp.Rpc
         public ActionResult Init()
         {
             InitEnum();
-            //InitAdmin();
+            InitAdmin();
             return Ok();
         }
 
@@ -48,165 +48,53 @@ namespace LocatingApp.Rpc
         {
             InitStatusEnum();
             InitSexEnum();
+            InitRoleEnum();
             DataContext.SaveChanges();
             return Ok();
         }
 
         #region permission
-        //private ActionResult InitAdmin()
-        //{
-        //    RoleDAO Admin = DataContext.Role
-        //       .Where(r => r.Name == "Admin")
-        //       .FirstOrDefault();
-        //    if (Admin == null)
-        //    {
-        //        Admin = new RoleDAO
-        //        {
-        //            Name = "Admin",
-        //            Code = "Admin",
-        //        };
-        //        DataContext.Role.Add(Admin);
-        //        DataContext.SaveChanges();
-        //    }
+        private ActionResult InitAdmin()
+        {
+            RoleDAO Admin = DataContext.Role
+               .Where(r => r.Name == "Admin")
+               .FirstOrDefault();
+            if (Admin == null)
+            {
+                Admin = new RoleDAO
+                {
+                    Name = "Admin",
+                    Code = "Admin",
+                };
+                DataContext.Role.Add(Admin);
+                DataContext.SaveChanges();
+            }
 
-        //    AppUserDAO AppUser = DataContext.AppUser
-        //        .Where(au => au.Username.ToLower() == "Administrator".ToLower())
-        //        .FirstOrDefault();
-        //    if (AppUser == null)
-        //    {
-        //        OrganizationDAO OrganizationDAO = DataContext.Organization.Where(o => o.Code == OrganizationRoot).FirstOrDefault();
-        //        if (OrganizationDAO == null)
-        //        {
-        //            OrganizationDAO = new OrganizationDAO
-        //            {
-        //                Address = "",
-        //                Code = OrganizationRoot,
-        //                Name = OrganizationRoot,
-        //                CreatedAt = DateTime.Now,
-        //                UpdatedAt = DateTime.Now,
-        //                DeletedAt = null,
-        //                Email = "",
-        //                Level = 1,
-        //                ParentId = null,
-        //                Phone = "",
-        //                RowId = Guid.NewGuid(),
-        //                StatusId = 1,
-        //                Used = true,
-        //                Path = "",
-        //            };
-        //            DataContext.Organization.Add(OrganizationDAO);
-        //            DataContext.SaveChanges();
-        //            OrganizationDAO.Path = OrganizationDAO.Id + ".";
-        //            DataContext.SaveChanges();
-        //        }
-        //        AppUser = new AppUserDAO()
-        //        {
-        //            Username = "Administrator",
-        //            Address = "",
-        //            Avatar = "",
-        //            Birthday = DateTime.Now,
-        //            CreatedAt = DateTime.Now,
-        //            UpdatedAt = DateTime.Now,
-        //            Used = true,
-        //            DeletedAt = null,
-        //            Department = "",
-        //            DisplayName = "Administrator",
-        //            Email = "",
-        //            OrganizationId = OrganizationDAO.Id,
-        //            Password = HashPassword(AdminPassword),
-        //            Phone = "",
-        //            RowId = Guid.NewGuid(),
-        //            SexId = SexEnum.OTHER.Id,
-        //            StatusId = 1,
-        //        };
-        //        DataContext.AppUser.Add(AppUser);
-        //        DataContext.SaveChanges();
-        //    }
-
-        //    List<SiteDAO> SiteDAOs = DataContext.Site.ToList();
-        //    List<AppUserSiteMappingDAO> AppUserSiteMappingDAOs = SiteDAOs.Select(x => new AppUserSiteMappingDAO
-        //    {
-        //        SiteId = x.Id,
-        //        AppUserId = AppUser.Id,
-        //        Enabled = true,
-        //    }).ToList();
-        //    DataContext.AppUserSiteMapping.BulkMerge(AppUserSiteMappingDAOs);
-
-        //    AppUserRoleMappingDAO AppUserRoleMappingDAO = DataContext.AppUserRoleMapping
-        //        .Where(ur => ur.RoleId == Admin.Id && ur.AppUserId == AppUser.Id)
-        //        .FirstOrDefault();
-        //    if (AppUserRoleMappingDAO == null)
-        //    {
-        //        AppUserRoleMappingDAO = new AppUserRoleMappingDAO
-        //        {
-        //            AppUserId = AppUser.Id,
-        //            RoleId = Admin.Id,
-        //        };
-        //        DataContext.AppUserRoleMapping.Add(AppUserRoleMappingDAO);
-        //        DataContext.SaveChanges();
-        //    }
-
-        //    List<MenuDAO> Menus = DataContext.Menu.AsNoTracking()
-        //        .Include(v => v.Actions)
-        //        .ToList();
-        //    List<PermissionDAO> permissions = DataContext.Permission.AsNoTracking()
-        //        .Include(p => p.PermissionActionMappings)
-        //        .ToList();
-        //    foreach (MenuDAO Menu in Menus)
-        //    {
-        //        PermissionDAO permission = permissions
-        //            .Where(p => p.MenuId == Menu.Id && p.RoleId == Admin.Id)
-        //            .FirstOrDefault();
-        //        if (permission == null)
-        //        {
-        //            permission = new PermissionDAO
-        //            {
-        //                Code = Admin + "_" + Menu.Name,
-        //                Name = Admin + "_" + Menu.Name,
-        //                MenuId = Menu.Id,
-        //                RoleId = Admin.Id,
-        //                StatusId = StatusEnum.ACTIVE.Id,
-        //                PermissionActionMappings = new List<PermissionActionMappingDAO>(),
-        //            };
-        //            permissions.Add(permission);
-        //        }
-        //        else
-        //        {
-        //            permission.StatusId = StatusEnum.ACTIVE.Id;
-        //            if (permission.PermissionActionMappings == null)
-        //                permission.PermissionActionMappings = new List<PermissionActionMappingDAO>();
-        //        }
-        //        foreach (ActionDAO action in Menu.Actions)
-        //        {
-        //            PermissionActionMappingDAO PermissionActionMappingDAO = permission.PermissionActionMappings
-        //                .Where(ppm => ppm.ActionId == action.Id).FirstOrDefault();
-        //            if (PermissionActionMappingDAO == null)
-        //            {
-        //                PermissionActionMappingDAO = new PermissionActionMappingDAO
-        //                {
-        //                    ActionId = action.Id
-        //                };
-        //                permission.PermissionActionMappings.Add(PermissionActionMappingDAO);
-        //            }
-        //        }
-
-        //    }
-        //    DataContext.Permission.BulkMerge(permissions);
-        //    permissions.ForEach(p =>
-        //    {
-        //        foreach (var action in p.PermissionActionMappings)
-        //        {
-        //            action.PermissionId = p.Id;
-        //        }
-        //    });
-
-        //    List<PermissionActionMappingDAO> PermissionActionMappingDAOs = permissions
-        //        .SelectMany(p => p.PermissionActionMappings).ToList();
-        //    DataContext.PermissionContent.Where(pf => pf.Permission.RoleId == Admin.Id).DeleteFromQuery();
-        //    DataContext.PermissionActionMapping.Where(pf => pf.Permission.RoleId == Admin.Id).DeleteFromQuery();
-        //    DataContext.PermissionActionMapping.BulkMerge(PermissionActionMappingDAOs);
-        //    return Ok();
-        //}
+            AppUserDAO AppUser = DataContext.AppUser
+                .Where(au => au.Username.ToLower() == "Administrator".ToLower())
+                .FirstOrDefault();
+            if (AppUser == null)
+            {
+                AppUser = new AppUserDAO()
+                {
+                    Username = "Administrator",
+                    Birthday = DateTime.Now,
+                    CreatedAt = DateTime.Now,
+                    UpdatedAt = DateTime.Now,
+                    Used = true,
+                    DeletedAt = null,
+                    DisplayName = "Administrator",
+                    Email = "",
+                    Password = HashPassword(AdminPassword),
+                    Phone = "",
+                    SexId = SexEnum.OTHER.Id,
+                    RoleId = RoleEnum.Admin.Id
+                };
+                DataContext.AppUser.Add(AppUser);
+                DataContext.SaveChanges();
+            }
+            return Ok();
+        }
         #endregion
 
         private void InitStatusEnum()
@@ -242,6 +130,17 @@ namespace LocatingApp.Rpc
                 Name = x.Name,
             }).ToList();
             DataContext.Sex.BulkSynchronize(Sexes);
+        }
+
+        private void InitRoleEnum()
+        {
+            List<RoleDAO> Rolees = RoleEnum.RoleEnumList.Select(x => new RoleDAO
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+            }).ToList();
+            DataContext.Role.BulkSynchronize(Rolees);
         }
 
         private string HashPassword(string password)

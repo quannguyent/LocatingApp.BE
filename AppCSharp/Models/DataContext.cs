@@ -86,9 +86,7 @@ namespace LocatingApp.Models
                     .HasMaxLength(1000)
                     .IsFixedLength();
 
-                entity.Property(e => e.Phone)
-                    .IsRequired()
-                    .HasMaxLength(4000);
+                entity.Property(e => e.Phone).HasMaxLength(4000);
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
 
