@@ -51,34 +51,34 @@ namespace LocatingApp.Repositories
                 query = query.Where(q => q.Longtitude, filter.Longtitude);
             if (filter.UpdateInterval != null && filter.UpdateInterval.HasValue)
                 query = query.Where(q => q.UpdateInterval, filter.UpdateInterval);
-            query = OrFilter(query, filter);
+            //query = OrFilter(query, filter);
             return query;
         }
 
-        private IQueryable<LocationLogDAO> OrFilter(IQueryable<LocationLogDAO> query, LocationLogFilter filter)
-        {
-            if (filter.OrFilter == null || filter.OrFilter.Count == 0)
-                return query;
-            IQueryable<LocationLogDAO> initQuery = query.Where(q => false);
-            foreach (LocationLogFilter LocationLogFilter in filter.OrFilter)
-            {
-                IQueryable<LocationLogDAO> queryable = query;
-                if (LocationLogFilter.Id != null && LocationLogFilter.Id.HasValue)
-                    queryable = queryable.Where(q => q.Id, filter.Id);
-                if (LocationLogFilter.PreviousId != null && LocationLogFilter.PreviousId.HasValue)
-                    queryable = queryable.Where(q => q.PreviousId.HasValue).Where(q => q.PreviousId.Value, filter.PreviousId);
-                if (LocationLogFilter.AppUserId != null && LocationLogFilter.AppUserId.HasValue)
-                    queryable = queryable.Where(q => q.AppUserId, filter.AppUserId);
-                if (LocationLogFilter.Latitude != null && LocationLogFilter.Latitude.HasValue)
-                    queryable = queryable.Where(q => q.Latitude, filter.Latitude);
-                if (LocationLogFilter.Longtitude != null && LocationLogFilter.Longtitude.HasValue)
-                    queryable = queryable.Where(q => q.Longtitude, filter.Longtitude);
-                if (LocationLogFilter.UpdateInterval != null && LocationLogFilter.UpdateInterval.HasValue)
-                    queryable = queryable.Where(q => q.UpdateInterval, filter.UpdateInterval);
-                initQuery = initQuery.Union(queryable);
-            }
-            return initQuery;
-        }    
+        //private IQueryable<LocationLogDAO> OrFilter(IQueryable<LocationLogDAO> query, LocationLogFilter filter)
+        //{
+        //    if (filter.OrFilter == null || filter.OrFilter.Count == 0)
+        //        return query;
+        //    IQueryable<LocationLogDAO> initQuery = query.Where(q => false);
+        //    foreach (LocationLogFilter LocationLogFilter in filter.OrFilter)
+        //    {
+        //        IQueryable<LocationLogDAO> queryable = query;
+        //        if (LocationLogFilter.Id != null && LocationLogFilter.Id.HasValue)
+        //            queryable = queryable.Where(q => q.Id, filter.Id);
+        //        if (LocationLogFilter.PreviousId != null && LocationLogFilter.PreviousId.HasValue)
+        //            queryable = queryable.Where(q => q.PreviousId.HasValue).Where(q => q.PreviousId.Value, filter.PreviousId);
+        //        if (LocationLogFilter.AppUserId != null && LocationLogFilter.AppUserId.HasValue)
+        //            queryable = queryable.Where(q => q.AppUserId, filter.AppUserId);
+        //        if (LocationLogFilter.Latitude != null && LocationLogFilter.Latitude.HasValue)
+        //            queryable = queryable.Where(q => q.Latitude, filter.Latitude);
+        //        if (LocationLogFilter.Longtitude != null && LocationLogFilter.Longtitude.HasValue)
+        //            queryable = queryable.Where(q => q.Longtitude, filter.Longtitude);
+        //        if (LocationLogFilter.UpdateInterval != null && LocationLogFilter.UpdateInterval.HasValue)
+        //            queryable = queryable.Where(q => q.UpdateInterval, filter.UpdateInterval);
+        //        initQuery = initQuery.Union(queryable);
+        //    }
+        //    return initQuery;
+        //}    
 
         private IQueryable<LocationLogDAO> DynamicOrder(IQueryable<LocationLogDAO> query, LocationLogFilter filter)
         {

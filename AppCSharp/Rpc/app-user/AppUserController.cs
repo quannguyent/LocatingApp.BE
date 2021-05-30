@@ -39,7 +39,6 @@ namespace LocatingApp.Rpc.app_user
                 throw new BindException(ModelState);
 
             AppUserFilter AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
-            AppUserFilter = await AppUserService.ToFilter(AppUserFilter);
             int count = await AppUserService.Count(AppUserFilter);
             return count;
         }
@@ -51,7 +50,6 @@ namespace LocatingApp.Rpc.app_user
                 throw new BindException(ModelState);
 
             AppUserFilter AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
-            AppUserFilter = await AppUserService.ToFilter(AppUserFilter);
             List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
             List<AppUser_AppUserDTO> AppUser_AppUserDTOs = AppUsers
                 .Select(c => new AppUser_AppUserDTO(c)).ToList();
@@ -132,7 +130,6 @@ namespace LocatingApp.Rpc.app_user
                 throw new BindException(ModelState);
 
             AppUserFilter AppUserFilter = new AppUserFilter();
-            AppUserFilter = await AppUserService.ToFilter(AppUserFilter);
             AppUserFilter.Id = new IdFilter { In = Ids };
             AppUserFilter.Selects = AppUserSelect.Id;
             AppUserFilter.Skip = 0;
@@ -234,7 +231,6 @@ namespace LocatingApp.Rpc.app_user
                 var AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
                 AppUserFilter.Skip = 0;
                 AppUserFilter.Take = int.MaxValue;
-                AppUserFilter = await AppUserService.ToFilter(AppUserFilter);
                 List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
 
                 var AppUserHeaders = new List<string[]>()
@@ -331,7 +327,6 @@ namespace LocatingApp.Rpc.app_user
         private async Task<bool> HasPermission(long Id)
         {
             AppUserFilter AppUserFilter = new AppUserFilter();
-            AppUserFilter = await AppUserService.ToFilter(AppUserFilter);
             if (Id == 0)
             {
 

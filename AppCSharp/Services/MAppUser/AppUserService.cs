@@ -22,6 +22,7 @@ namespace LocatingApp.Services.MAppUser
     {
         Task<int> Count(AppUserFilter AppUserFilter);
         Task<List<AppUser>> List(AppUserFilter AppUserFilter);
+        Task<List<AppUser>> ListFriends(AppUser AppUser);
         Task<AppUser> Get(long Id);
         Task<AppUser> Create(AppUser AppUser);
         Task<AppUser> Update(AppUser AppUser);
@@ -33,7 +34,6 @@ namespace LocatingApp.Services.MAppUser
         Task<AppUser> ForgotPassword(AppUser AppUser);
         Task<AppUser> VerifyOtpCode(AppUser AppUser);
         Task<AppUser> RecoveryPassword(AppUser AppUser);
-        Task<AppUserFilter> ToFilter(AppUserFilter AppUserFilter);
     }
 
     public class AppUserService : BaseService, IAppUserService
@@ -78,6 +78,29 @@ namespace LocatingApp.Services.MAppUser
             {
                 List<AppUser> AppUsers = await UOW.AppUserRepository.List(AppUserFilter);
                 return AppUsers;
+            }
+            catch (Exception ex)
+            {
+                await Logging.CreateSystemLog(ex, nameof(AppUserService));
+            }
+            return null;
+        }
+
+        public async Task<List<AppUser>> ListFriends(AppUser AppUser)
+        {
+            try
+            {
+                AppUser = await UOW.AppUserRepository.Get(AppUser.Id);
+                List<long> FriendIds = new List<long>();
+                foreach (var AppUserMapping in AppUser.AppUserAppUserMappingAppUsers)
+                {
+                    if (AppUser.AppUserAppUserMappingFriends.Exists(x => x.AppUserId == AppUserMapping.FriendId))
+                    {
+                        FriendIds.Add(AppUserMapping.FriendId);
+                    }   
+                }
+                List<AppUser> AppUserFriends = await UOW.AppUserRepository.List(FriendIds);
+                return AppUserFriends;
             }
             catch (Exception ex)
             {
@@ -347,7 +370,7 @@ namespace LocatingApp.Services.MAppUser
             return appUser;
         }
 
-        public async Task<AppUserFilter> ToFilter(AppUserFilter filter)
+        public AppUserFilter ToFilter(AppUserFilter filter)
         {
             if (filter.OrFilter == null) filter.OrFilter = new List<AppUserFilter>();
             if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return filter;

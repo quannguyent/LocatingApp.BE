@@ -9,6 +9,7 @@ using OfficeOpenXml;
 using LocatingApp.Repositories;
 using LocatingApp.Entities;
 using LocatingApp.Enums;
+using LocatingApp.Services.MAppUser;
 
 namespace LocatingApp.Services.MLocationLog
 {
@@ -22,7 +23,6 @@ namespace LocatingApp.Services.MLocationLog
         Task<LocationLog> Delete(LocationLog LocationLog);
         Task<List<LocationLog>> BulkDelete(List<LocationLog> LocationLogs);
         Task<List<LocationLog>> Import(List<LocationLog> LocationLogs);
-        Task<LocationLogFilter> ToFilter(LocationLogFilter LocationLogFilter);
     }
 
     public class LocationLogService : BaseService, ILocationLogService
@@ -31,15 +31,18 @@ namespace LocatingApp.Services.MLocationLog
         private ILogging Logging;
         private ICurrentContext CurrentContext;
         private ILocationLogValidator LocationLogValidator;
+        private IAppUserService AppUserService;
 
         public LocationLogService(
             IUOW UOW,
+            IAppUserService AppUserService,
             ICurrentContext CurrentContext,
             ILocationLogValidator LocationLogValidator,
             ILogging Logging
         )
         {
             this.UOW = UOW;
+            this.AppUserService = AppUserService;
             this.Logging = Logging;
             this.CurrentContext = CurrentContext;
             this.LocationLogValidator = LocationLogValidator;
@@ -48,6 +51,12 @@ namespace LocatingApp.Services.MLocationLog
         {
             try
             {
+                LocationLogFilter.AppUserId = FilterBuilder.Merge(
+                    LocationLogFilter.AppUserId, 
+                    new IdFilter
+                    {
+                        In = await FilterAppUser(AppUserService, CurrentContext)
+                    }); 
                 int result = await UOW.LocationLogRepository.Count(LocationLogFilter);
                 return result;
             }
@@ -62,6 +71,12 @@ namespace LocatingApp.Services.MLocationLog
         {
             try
             {
+                LocationLogFilter.AppUserId = FilterBuilder.Merge(
+                    LocationLogFilter.AppUserId,
+                    new IdFilter
+                    {
+                        In = await FilterAppUser(AppUserService, CurrentContext)
+                    });
                 List<LocationLog> LocationLogs = await UOW.LocationLogRepository.List(LocationLogFilter);
                 return LocationLogs;
             }
@@ -172,43 +187,15 @@ namespace LocatingApp.Services.MLocationLog
                 await Logging.CreateSystemLog(ex, nameof(LocationLogService));
             }
             return null;
-        }     
-        
-        public async Task<LocationLogFilter> ToFilter(LocationLogFilter filter)
+        }
+
+        private async Task<List<long>> FilterAppUser(IAppUserService AppUserService, ICurrentContext CurrentContext)
         {
-            if (filter.OrFilter == null) filter.OrFilter = new List<LocationLogFilter>();
-            if (CurrentContext.Filters == null || CurrentContext.Filters.Count == 0) return filter;
-            foreach (var currentFilter in CurrentContext.Filters)
-            {
-                LocationLogFilter subFilter = new LocationLogFilter();
-                filter.OrFilter.Add(subFilter);
-                List<FilterPermissionDefinition> FilterPermissionDefinitions = currentFilter.Value;
-                foreach (FilterPermissionDefinition FilterPermissionDefinition in FilterPermissionDefinitions)
-                {
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.Id))
-                        subFilter.Id = FilterBuilder.Merge(subFilter.Id, FilterPermissionDefinition.IdFilter);
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.PreviousId))
-                        subFilter.PreviousId = FilterBuilder.Merge(subFilter.PreviousId, FilterPermissionDefinition.IdFilter);
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.AppUserId))
-                        subFilter.AppUserId = FilterBuilder.Merge(subFilter.AppUserId, FilterPermissionDefinition.IdFilter);
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.Latitude))
-                        subFilter.Latitude = FilterBuilder.Merge(subFilter.Latitude, FilterPermissionDefinition.DecimalFilter);
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.Longtitude))
-                        subFilter.Longtitude = FilterBuilder.Merge(subFilter.Longtitude, FilterPermissionDefinition.DecimalFilter);
-                    if (FilterPermissionDefinition.Name == nameof(subFilter.UpdateInterval))
-                        subFilter.UpdateInterval = FilterBuilder.Merge(subFilter.UpdateInterval, FilterPermissionDefinition.LongFilter);
-                    if (FilterPermissionDefinition.Name == nameof(CurrentContext.UserId) && FilterPermissionDefinition.IdFilter != null)
-                    {
-                        if (FilterPermissionDefinition.IdFilter.Equal.HasValue && FilterPermissionDefinition.IdFilter.Equal.Value == CurrentUserEnum.IS.Id)
-                        {
-                        }
-                        if (FilterPermissionDefinition.IdFilter.Equal.HasValue && FilterPermissionDefinition.IdFilter.Equal.Value == CurrentUserEnum.ISNT.Id)
-                        {
-                        }
-                    }
-                }
-            }
-            return filter;
+            AppUser AppUser = await AppUserService.Get(CurrentContext.UserId);
+            List<AppUser> AppUsers = await AppUserService.ListFriends(AppUser);
+            List<long> In = AppUsers.Select(x => x.Id).ToList();
+            In.Add(CurrentContext.UserId);
+            return In;
         }
     }
 }

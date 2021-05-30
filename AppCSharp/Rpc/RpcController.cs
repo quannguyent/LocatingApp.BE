@@ -18,21 +18,6 @@ namespace LocatingApp.Rpc
     [Authorize(Policy = "Permission")]
     public class RpcController : ControllerBase
     {
-        //protected async Task<List<long>> FilterFriend(IAppUserService AppUserService, ICurrentContext CurrentContext)
-        //{
-        //    List<AppUser> AppUsers = await AppUserService.List(new AppUserFilter
-        //    {
-        //        Skip = 0,
-        //        Take = int.MaxValue,
-        //        Selects = AppUserAppUserMappingSelect.ALL,
-        //        OrderBy = AppUserAppUserMappingOrder.Id,
-        //        OrderType = OrderType.ASC
-        //    });
-        //    List<long> In = null;
-        //    List<long> NotIn = null;
-            
-            
-        //}
     }
 
     [Authorize]
@@ -81,7 +66,6 @@ namespace LocatingApp.Rpc
             CurrentContext.TimeZone = int.TryParse(TimeZone, out int t) ? t : 0;
             CurrentContext.Language = Language ?? "vi";
             context.Succeed(requirement);
-
             context.Succeed(requirement);
         }
        

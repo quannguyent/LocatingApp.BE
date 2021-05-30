@@ -38,8 +38,7 @@ namespace LocatingApp.Rpc.location_log
             if (!ModelState.IsValid)
                 throw new BindException(ModelState);
 
-            LocationLogFilter LocationLogFilter = ConvertFilterDTOToFilterEntity(LocationLog_LocationLogFilterDTO);
-            LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
+            LocationLogFilter LocationLogFilter = ConvertFilterDTOToFilterEntityAsync(LocationLog_LocationLogFilterDTO);
             int count = await LocationLogService.Count(LocationLogFilter);
             return count;
         }
@@ -50,8 +49,7 @@ namespace LocatingApp.Rpc.location_log
             if (!ModelState.IsValid)
                 throw new BindException(ModelState);
 
-            LocationLogFilter LocationLogFilter = ConvertFilterDTOToFilterEntity(LocationLog_LocationLogFilterDTO);
-            LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
+            LocationLogFilter LocationLogFilter = ConvertFilterDTOToFilterEntityAsync(LocationLog_LocationLogFilterDTO);
             List<LocationLog> LocationLogs = await LocationLogService.List(LocationLogFilter);
             List<LocationLog_LocationLogDTO> LocationLog_LocationLogDTOs = LocationLogs
                 .Select(c => new LocationLog_LocationLogDTO(c)).ToList();
@@ -132,7 +130,6 @@ namespace LocatingApp.Rpc.location_log
                 throw new BindException(ModelState);
 
             LocationLogFilter LocationLogFilter = new LocationLogFilter();
-            LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
             LocationLogFilter.Id = new IdFilter { In = Ids };
             LocationLogFilter.Selects = LocationLogSelect.Id;
             LocationLogFilter.Skip = 0;
@@ -144,202 +141,205 @@ namespace LocatingApp.Rpc.location_log
                 return BadRequest(LocationLogs.Where(x => !x.IsValidated));
             return true;
         }
-        
-        [Route(LocationLogRoute.Import), HttpPost]
-        public async Task<ActionResult> Import(IFormFile file)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
-            AppUserFilter AppUserFilter = new AppUserFilter
-            {
-                Skip = 0,
-                Take = int.MaxValue,
-                Selects = AppUserSelect.ALL
-            };
-            List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
-            List<LocationLog> LocationLogs = new List<LocationLog>();
-            using (ExcelPackage excelPackage = new ExcelPackage(file.OpenReadStream()))
-            {
-                ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.FirstOrDefault();
-                if (worksheet == null)
-                    return Ok(LocationLogs);
-                int StartColumn = 1;
-                int StartRow = 1;
-                int IdColumn = 0 + StartColumn;
-                int PreviousIdColumn = 1 + StartColumn;
-                int AppUserIdColumn = 2 + StartColumn;
-                int LatitudeColumn = 3 + StartColumn;
-                int LongtitudeColumn = 4 + StartColumn;
-                int UpdateIntervalColumn = 5 + StartColumn;
-                int UsedColumn = 9 + StartColumn;
 
-                for (int i = StartRow; i <= worksheet.Dimension.End.Row; i++)
-                {
-                    if (string.IsNullOrEmpty(worksheet.Cells[i + StartRow, StartColumn].Value?.ToString()))
-                        break;
-                    string IdValue = worksheet.Cells[i + StartRow, IdColumn].Value?.ToString();
-                    string PreviousIdValue = worksheet.Cells[i + StartRow, PreviousIdColumn].Value?.ToString();
-                    string AppUserIdValue = worksheet.Cells[i + StartRow, AppUserIdColumn].Value?.ToString();
-                    string LatitudeValue = worksheet.Cells[i + StartRow, LatitudeColumn].Value?.ToString();
-                    string LongtitudeValue = worksheet.Cells[i + StartRow, LongtitudeColumn].Value?.ToString();
-                    string UpdateIntervalValue = worksheet.Cells[i + StartRow, UpdateIntervalColumn].Value?.ToString();
-                    string UsedValue = worksheet.Cells[i + StartRow, UsedColumn].Value?.ToString();
+        //Import Export
+        //[Route(LocationLogRoute.Import), HttpPost]
+        //public async Task<ActionResult> Import(IFormFile file)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
+        //    AppUserFilter AppUserFilter = new AppUserFilter
+        //    {
+        //        Skip = 0,
+        //        Take = int.MaxValue,
+        //        Selects = AppUserSelect.ALL
+        //    };
+        //    List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
+        //    List<LocationLog> LocationLogs = new List<LocationLog>();
+        //    using (ExcelPackage excelPackage = new ExcelPackage(file.OpenReadStream()))
+        //    {
+        //        ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.FirstOrDefault();
+        //        if (worksheet == null)
+        //            return Ok(LocationLogs);
+        //        int StartColumn = 1;
+        //        int StartRow = 1;
+        //        int IdColumn = 0 + StartColumn;
+        //        int PreviousIdColumn = 1 + StartColumn;
+        //        int AppUserIdColumn = 2 + StartColumn;
+        //        int LatitudeColumn = 3 + StartColumn;
+        //        int LongtitudeColumn = 4 + StartColumn;
+        //        int UpdateIntervalColumn = 5 + StartColumn;
+        //        int UsedColumn = 9 + StartColumn;
+
+        //        for (int i = StartRow; i <= worksheet.Dimension.End.Row; i++)
+        //        {
+        //            if (string.IsNullOrEmpty(worksheet.Cells[i + StartRow, StartColumn].Value?.ToString()))
+        //                break;
+        //            string IdValue = worksheet.Cells[i + StartRow, IdColumn].Value?.ToString();
+        //            string PreviousIdValue = worksheet.Cells[i + StartRow, PreviousIdColumn].Value?.ToString();
+        //            string AppUserIdValue = worksheet.Cells[i + StartRow, AppUserIdColumn].Value?.ToString();
+        //            string LatitudeValue = worksheet.Cells[i + StartRow, LatitudeColumn].Value?.ToString();
+        //            string LongtitudeValue = worksheet.Cells[i + StartRow, LongtitudeColumn].Value?.ToString();
+        //            string UpdateIntervalValue = worksheet.Cells[i + StartRow, UpdateIntervalColumn].Value?.ToString();
+        //            string UsedValue = worksheet.Cells[i + StartRow, UsedColumn].Value?.ToString();
                     
-                    LocationLog LocationLog = new LocationLog();
-                    LocationLog.Latitude = decimal.TryParse(LatitudeValue, out decimal Latitude) ? Latitude : 0;
-                    LocationLog.Longtitude = decimal.TryParse(LongtitudeValue, out decimal Longtitude) ? Longtitude : 0;
-                    LocationLog.UpdateInterval = long.TryParse(UpdateIntervalValue, out long UpdateInterval) ? UpdateInterval : 0;
-                    AppUser AppUser = AppUsers.Where(x => x.Id.ToString() == AppUserIdValue).FirstOrDefault();
-                    LocationLog.AppUserId = AppUser == null ? 0 : AppUser.Id;
-                    LocationLog.AppUser = AppUser;
+        //            LocationLog LocationLog = new LocationLog();
+        //            LocationLog.Latitude = decimal.TryParse(LatitudeValue, out decimal Latitude) ? Latitude : 0;
+        //            LocationLog.Longtitude = decimal.TryParse(LongtitudeValue, out decimal Longtitude) ? Longtitude : 0;
+        //            LocationLog.UpdateInterval = long.TryParse(UpdateIntervalValue, out long UpdateInterval) ? UpdateInterval : 0;
+        //            AppUser AppUser = AppUsers.Where(x => x.Id.ToString() == AppUserIdValue).FirstOrDefault();
+        //            LocationLog.AppUserId = AppUser == null ? 0 : AppUser.Id;
+        //            LocationLog.AppUser = AppUser;
                     
-                    LocationLogs.Add(LocationLog);
-                }
-            }
-            LocationLogs = await LocationLogService.Import(LocationLogs);
-            if (LocationLogs.All(x => x.IsValidated))
-                return Ok(true);
-            else
-            {
-                List<string> Errors = new List<string>();
-                for (int i = 0; i < LocationLogs.Count; i++)
-                {
-                    LocationLog LocationLog = LocationLogs[i];
-                    if (!LocationLog.IsValidated)
-                    {
-                        string Error = $"Dòng {i + 2} có lỗi:";
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Id)))
-                            Error += LocationLog.Errors[nameof(LocationLog.Id)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.PreviousId)))
-                            Error += LocationLog.Errors[nameof(LocationLog.PreviousId)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.AppUserId)))
-                            Error += LocationLog.Errors[nameof(LocationLog.AppUserId)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Latitude)))
-                            Error += LocationLog.Errors[nameof(LocationLog.Latitude)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Longtitude)))
-                            Error += LocationLog.Errors[nameof(LocationLog.Longtitude)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.UpdateInterval)))
-                            Error += LocationLog.Errors[nameof(LocationLog.UpdateInterval)];
-                        if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Used)))
-                            Error += LocationLog.Errors[nameof(LocationLog.Used)];
-                        Errors.Add(Error);
-                    }
-                }
-                return BadRequest(Errors);
-            }
-        }
+        //            LocationLogs.Add(LocationLog);
+        //        }
+        //    }
+        //    LocationLogs = await LocationLogService.Import(LocationLogs);
+        //    if (LocationLogs.All(x => x.IsValidated))
+        //        return Ok(true);
+        //    else
+        //    {
+        //        List<string> Errors = new List<string>();
+        //        for (int i = 0; i < LocationLogs.Count; i++)
+        //        {
+        //            LocationLog LocationLog = LocationLogs[i];
+        //            if (!LocationLog.IsValidated)
+        //            {
+        //                string Error = $"Dòng {i + 2} có lỗi:";
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Id)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.Id)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.PreviousId)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.PreviousId)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.AppUserId)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.AppUserId)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Latitude)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.Latitude)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Longtitude)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.Longtitude)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.UpdateInterval)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.UpdateInterval)];
+        //                if (LocationLog.Errors.ContainsKey(nameof(LocationLog.Used)))
+        //                    Error += LocationLog.Errors[nameof(LocationLog.Used)];
+        //                Errors.Add(Error);
+        //            }
+        //        }
+        //        return BadRequest(Errors);
+        //    }
+        //}
         
-        [Route(LocationLogRoute.Export), HttpPost]
-        public async Task<ActionResult> Export([FromBody] LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
+        //[Route(LocationLogRoute.Export), HttpPost]
+        //public async Task<ActionResult> Export([FromBody] LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
             
-            MemoryStream memoryStream = new MemoryStream();
-            using (ExcelPackage excel = new ExcelPackage(memoryStream))
-            {
-                #region LocationLog
-                var LocationLogFilter = ConvertFilterDTOToFilterEntity(LocationLog_LocationLogFilterDTO);
-                LocationLogFilter.Skip = 0;
-                LocationLogFilter.Take = int.MaxValue;
-                LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
-                List<LocationLog> LocationLogs = await LocationLogService.List(LocationLogFilter);
+        //    MemoryStream memoryStream = new MemoryStream();
+        //    using (ExcelPackage excel = new ExcelPackage(memoryStream))
+        //    {
+        //        #region LocationLog
+        //        var LocationLogFilter = ConvertFilterDTOToFilterEntityAsync(LocationLog_LocationLogFilterDTO);
+        //        LocationLogFilter.Skip = 0;
+        //        LocationLogFilter.Take = int.MaxValue;
+        //        LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
+        //        List<LocationLog> LocationLogs = await LocationLogService.List(LocationLogFilter);
 
-                var LocationLogHeaders = new List<string[]>()
-                {
-                    new string[] { 
-                        "Id",
-                        "PreviousId",
-                        "AppUserId",
-                        "Latitude",
-                        "Longtitude",
-                        "UpdateInterval",
-                        "Used",
-                    }
-                };
-                List<object[]> LocationLogData = new List<object[]>();
-                for (int i = 0; i < LocationLogs.Count; i++)
-                {
-                    var LocationLog = LocationLogs[i];
-                    LocationLogData.Add(new Object[]
-                    {
-                        LocationLog.Id,
-                        LocationLog.PreviousId,
-                        LocationLog.AppUserId,
-                        LocationLog.Latitude,
-                        LocationLog.Longtitude,
-                        LocationLog.UpdateInterval,
-                        LocationLog.Used,
-                    });
-                }
-                excel.GenerateWorksheet("LocationLog", LocationLogHeaders, LocationLogData);
-                #endregion
+        //        var LocationLogHeaders = new List<string[]>()
+        //        {
+        //            new string[] { 
+        //                "Id",
+        //                "PreviousId",
+        //                "AppUserId",
+        //                "Latitude",
+        //                "Longtitude",
+        //                "UpdateInterval",
+        //                "Used",
+        //            }
+        //        };
+        //        List<object[]> LocationLogData = new List<object[]>();
+        //        for (int i = 0; i < LocationLogs.Count; i++)
+        //        {
+        //            var LocationLog = LocationLogs[i];
+        //            LocationLogData.Add(new Object[]
+        //            {
+        //                LocationLog.Id,
+        //                LocationLog.PreviousId,
+        //                LocationLog.AppUserId,
+        //                LocationLog.Latitude,
+        //                LocationLog.Longtitude,
+        //                LocationLog.UpdateInterval,
+        //                LocationLog.Used,
+        //            });
+        //        }
+        //        excel.GenerateWorksheet("LocationLog", LocationLogHeaders, LocationLogData);
+        //        #endregion
                 
-                #region AppUser
-                var AppUserFilter = new AppUserFilter();
-                AppUserFilter.Selects = AppUserSelect.ALL;
-                AppUserFilter.OrderBy = AppUserOrder.Id;
-                AppUserFilter.OrderType = OrderType.ASC;
-                AppUserFilter.Skip = 0;
-                AppUserFilter.Take = int.MaxValue;
-                List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
+        //        #region AppUser
+        //        var AppUserFilter = new AppUserFilter();
+        //        AppUserFilter.Selects = AppUserSelect.ALL;
+        //        AppUserFilter.OrderBy = AppUserOrder.Id;
+        //        AppUserFilter.OrderType = OrderType.ASC;
+        //        AppUserFilter.Skip = 0;
+        //        AppUserFilter.Take = int.MaxValue;
+        //        List<AppUser> AppUsers = await AppUserService.List(AppUserFilter);
 
-                var AppUserHeaders = new List<string[]>()
-                {
-                    new string[] { 
-                        "Id",
-                        "Username",
-                        "Password",
-                        "DisplayName",
-                        "Email",
-                        "Phone",
-                        "Used",
-                    }
-                };
-                List<object[]> AppUserData = new List<object[]>();
-                for (int i = 0; i < AppUsers.Count; i++)
-                {
-                    var AppUser = AppUsers[i];
-                    AppUserData.Add(new Object[]
-                    {
-                        AppUser.Id,
-                        AppUser.Username,
-                        AppUser.Password,
-                        AppUser.DisplayName,
-                        AppUser.Email,
-                        AppUser.Phone,
-                        AppUser.Used,
-                    });
-                }
-                excel.GenerateWorksheet("AppUser", AppUserHeaders, AppUserData);
-                #endregion
-                excel.Save();
-            }
-            return File(memoryStream.ToArray(), "application/octet-stream", "LocationLog.xlsx");
-        }
+        //        var AppUserHeaders = new List<string[]>()
+        //        {
+        //            new string[] { 
+        //                "Id",
+        //                "Username",
+        //                "Password",
+        //                "DisplayName",
+        //                "Email",
+        //                "Phone",
+        //                "Used",
+        //            }
+        //        };
+        //        List<object[]> AppUserData = new List<object[]>();
+        //        for (int i = 0; i < AppUsers.Count; i++)
+        //        {
+        //            var AppUser = AppUsers[i];
+        //            AppUserData.Add(new Object[]
+        //            {
+        //                AppUser.Id,
+        //                AppUser.Username,
+        //                AppUser.Password,
+        //                AppUser.DisplayName,
+        //                AppUser.Email,
+        //                AppUser.Phone,
+        //                AppUser.Used,
+        //            });
+        //        }
+        //        excel.GenerateWorksheet("AppUser", AppUserHeaders, AppUserData);
+        //        #endregion
+        //        excel.Save();
+        //    }
+        //    return File(memoryStream.ToArray(), "application/octet-stream", "LocationLog.xlsx");
+        //}
 
-        [Route(LocationLogRoute.ExportTemplate), HttpPost]
-        public async Task<ActionResult> ExportTemplate([FromBody] LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
+        //[Route(LocationLogRoute.ExportTemplate), HttpPost]
+        //public async Task<ActionResult> ExportTemplate([FromBody] LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
             
-            string path = "Templates/LocationLog_Template.xlsx";
-            byte[] arr = System.IO.File.ReadAllBytes(path);
-            MemoryStream input = new MemoryStream(arr);
-            MemoryStream output = new MemoryStream();
-            dynamic Data = new ExpandoObject();
-            using (var document = StaticParams.DocumentFactory.Open(input, output, "xlsx"))
-            {
-                document.Process(Data);
-            };
-            return File(output.ToArray(), "application/octet-stream", "LocationLog.xlsx");
-        }
+        //    string path = "Templates/LocationLog_Template.xlsx";
+        //    byte[] arr = System.IO.File.ReadAllBytes(path);
+        //    MemoryStream input = new MemoryStream(arr);
+        //    MemoryStream output = new MemoryStream();
+        //    dynamic Data = new ExpandoObject();
+        //    using (var document = StaticParams.DocumentFactory.Open(input, output, "xlsx"))
+        //    {
+        //        document.Process(Data);
+        //    };
+        //    return File(output.ToArray(), "application/octet-stream", "LocationLog.xlsx");
+        //}
 
         private async Task<bool> HasPermission(long Id)
         {
-            LocationLogFilter LocationLogFilter = new LocationLogFilter();
-            LocationLogFilter = await LocationLogService.ToFilter(LocationLogFilter);
+            LocationLogFilter LocationLogFilter = new LocationLogFilter
+            {
+                AppUserId = new IdFilter { Equal = CurrentContext.UserId }
+            };
             if (Id == 0)
             {
 
@@ -388,7 +388,7 @@ namespace LocatingApp.Rpc.location_log
             return LocationLog;
         }
 
-        private LocationLogFilter ConvertFilterDTOToFilterEntity(LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
+        private LocationLogFilter ConvertFilterDTOToFilterEntityAsync(LocationLog_LocationLogFilterDTO LocationLog_LocationLogFilterDTO)
         {
             LocationLogFilter LocationLogFilter = new LocationLogFilter();
             LocationLogFilter.Selects = LocationLogSelect.ALL;
