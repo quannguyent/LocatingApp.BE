@@ -23,6 +23,9 @@ namespace LocatingApp.Services.MAppUser
         Task<int> Count(AppUserFilter AppUserFilter);
         Task<List<AppUser>> List(AppUserFilter AppUserFilter);
         Task<List<AppUser>> ListFriends(AppUser AppUser);
+        Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
+        Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
+        Task<AppUserAppUserMapping> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUser> Get(long Id);
         Task<AppUser> Create(AppUser AppUser);
         Task<AppUser> Update(AppUser AppUser);
@@ -107,6 +110,44 @@ namespace LocatingApp.Services.MAppUser
                 await Logging.CreateSystemLog(ex, nameof(AppUserService));
             }
             return null;
+        }
+
+        public async Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            if (!await AppUserValidator.SendFriendRequest(AppUserAppUserMapping))
+                return AppUserAppUserMapping;
+            AppUser AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            AppUser.AppUserAppUserMappingAppUsers.Add(new AppUserAppUserMapping
+            {
+                AppUserId = AppUserAppUserMapping.AppUserId,
+                FriendId = AppUserAppUserMapping.FriendId,
+            });
+            await UOW.AppUserRepository.Update(AppUser);
+            return AppUserAppUserMapping;
+        }
+
+        public async Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            if (!await AppUserValidator.AcceptFriendRequest(AppUserAppUserMapping))
+                return AppUserAppUserMapping;
+            AppUser AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            AppUser.AppUserAppUserMappingAppUsers.Add(new AppUserAppUserMapping 
+            {
+                AppUserId = AppUserAppUserMapping.FriendId,
+                FriendId = AppUserAppUserMapping.AppUserId,
+            });
+            await UOW.AppUserRepository.Update(AppUser);
+            return AppUserAppUserMapping;
+        }
+
+        public async Task<AppUserAppUserMapping> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            if (!await AppUserValidator.DeleteFriend(AppUserAppUserMapping))
+                return AppUserAppUserMapping;
+            AppUser AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            AppUser Friend = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
+            await UOW.AppUserRepository.Update(AppUser);
+            return AppUserAppUserMapping;
         }
         
         public async Task<AppUser> Get(long Id)

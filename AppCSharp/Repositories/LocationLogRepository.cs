@@ -279,9 +279,12 @@ namespace LocatingApp.Repositories
         }
         public async Task<bool> Create(LocationLog LocationLog)
         {
+            LocationLogDAO Previous = await DataContext.LocationLog
+                .Where(x => x.AppUserId == LocationLog.AppUserId)
+                .FirstOrDefaultAsync();
+
             LocationLogDAO LocationLogDAO = new LocationLogDAO();
-            LocationLogDAO.Id = LocationLog.Id;
-            LocationLogDAO.PreviousId = LocationLog.PreviousId;
+            LocationLogDAO.PreviousId = Previous?.Id;
             LocationLogDAO.AppUserId = LocationLog.AppUserId;
             LocationLogDAO.Latitude = LocationLog.Latitude;
             LocationLogDAO.Longtitude = LocationLog.Longtitude;

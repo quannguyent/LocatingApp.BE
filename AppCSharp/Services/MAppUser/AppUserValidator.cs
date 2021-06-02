@@ -21,6 +21,10 @@ namespace LocatingApp.Services.MAppUser
         Task<bool> Delete(AppUser AppUser);
         Task<bool> BulkDelete(List<AppUser> AppUsers);
         Task<bool> Import(List<AppUser> AppUsers);
+        Task<bool> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
+        Task<bool> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
+        Task<bool> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
+
     }
 
     public class AppUserValidator : IAppUserValidator
@@ -46,6 +50,8 @@ namespace LocatingApp.Services.MAppUser
             PhoneOverLength,
             SexEmpty,
             UsernameEmpty,
+            FriendshipExisted,
+            FriendRequestNotExisted,
         }
 
         private IUOW UOW;
@@ -335,6 +341,63 @@ namespace LocatingApp.Services.MAppUser
             {
                 return false;
             }
+        }
+
+        public async Task<bool> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            var Friend = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
+            if (await ValidateId(AppUser) && await ValidateId(Friend))
+            {
+                await ValidateSendRequest(AppUserAppUserMapping);
+            }
+            else AppUserAppUserMapping.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.IdNotExisted);
+            return AppUserAppUserMapping.IsValidated;
+        }
+
+        public async Task<bool> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            var Friend = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
+            if (await ValidateId(AppUser) && await ValidateId(Friend))
+            {
+                await ValidateReceivedRequest(AppUserAppUserMapping);
+            }
+            else AppUserAppUserMapping.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.IdNotExisted);
+
+            return AppUser.IsValidated;
+        }
+
+        public async Task<bool> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            var Friend = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
+            if (await ValidateId(AppUser) && await ValidateId(Friend))
+            {
+            }
+            else AppUserAppUserMapping.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.IdNotExisted);
+
+            return AppUser.IsValidated;
+        }
+
+        private async Task<bool> ValidateSendRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            if (AppUser.AppUserAppUserMappingAppUsers.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId))
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendshipExisted);
+            }
+            return AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId);
+        }
+        
+        private async Task<bool> ValidateReceivedRequest(AppUserAppUserMapping AppUserAppUserMapping)
+        {
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            if (!AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId))
+            {
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendRequestNotExisted);
+            }
+            return (!AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId));
         }
     }
 }

@@ -23,6 +23,7 @@ namespace LocatingApp.Services.MLocationLog
         public enum ErrorCode
         {
             IdNotExisted,
+            NotCurrentUser,
         }
 
         private IUOW UOW;
@@ -50,8 +51,16 @@ namespace LocatingApp.Services.MLocationLog
             return count == 1;
         }
 
-        public async Task<bool>Create(LocationLog LocationLog)
+        public async Task<bool> ValidateUser(LocationLog LocationLog)
         {
+            if (LocationLog.AppUserId != CurrentContext.UserId)
+                LocationLog.AddError(nameof(LocationLogValidator), nameof(LocationLog.Id), ErrorCode.NotCurrentUser);
+            return LocationLog.AppUserId == CurrentContext.UserId;
+        }
+
+        public async Task<bool> Create(LocationLog LocationLog)
+        {
+            await ValidateUser(LocationLog);
             return LocationLog.IsValidated;
         }
 
