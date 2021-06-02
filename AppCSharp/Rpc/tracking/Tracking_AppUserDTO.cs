@@ -40,8 +40,6 @@ namespace LocatingApp.Rpc.tracking
             
             this.Phone = AppUser.Phone;
             
-            this.Used = AppUser.Used;
-            
             this.Errors = AppUser.Errors;
         }
     }

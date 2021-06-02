@@ -27,7 +27,6 @@ namespace LocatingApp.Rpc.place
             this.Radius = Place.Radius;
             this.Latitude = Place.Latitude;
             this.Longtitude = Place.Longtitude;
-            this.Used = Place.Used;
             this.PlaceGroup = Place.PlaceGroup == null ? null : new Place_PlaceGroupDTO(Place.PlaceGroup);
             this.CreatedAt = Place.CreatedAt;
             this.UpdatedAt = Place.UpdatedAt;

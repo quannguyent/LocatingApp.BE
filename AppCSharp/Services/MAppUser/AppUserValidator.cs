@@ -385,17 +385,17 @@ namespace LocatingApp.Services.MAppUser
             var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
             if (AppUser.AppUserAppUserMappingAppUsers.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId))
             {
-                AppUser.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendshipExisted);
+                AppUserAppUserMapping.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendshipExisted);
             }
             return AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId);
         }
         
         private async Task<bool> ValidateReceivedRequest(AppUserAppUserMapping AppUserAppUserMapping)
         {
-            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            var AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
             if (!AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId))
             {
-                AppUser.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendRequestNotExisted);
+                AppUserAppUserMapping.AddError(nameof(AppUserValidator), nameof(AppUserAppUserMapping), ErrorCode.FriendRequestNotExisted);
             }
             return (!AppUser.AppUserAppUserMappingFriends.Exists(x => x.FriendId == AppUserAppUserMapping.FriendId));
         }

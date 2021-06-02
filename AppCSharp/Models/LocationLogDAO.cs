@@ -19,7 +19,6 @@ namespace LocatingApp.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public bool Used { get; set; }
 
         public virtual AppUserDAO AppUser { get; set; }
         public virtual LocationLogDAO Previous { get; set; }

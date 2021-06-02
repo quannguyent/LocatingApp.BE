@@ -12,7 +12,6 @@ namespace LocatingApp.Entities
         public long? ParentId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-        public bool Used { get; set; }
         public PlaceGroup Parent { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -25,7 +24,6 @@ namespace LocatingApp.Entities
             if (this.ParentId != other.ParentId) return false;
             if (this.Name != other.Name) return false;
             if (this.Code != other.Code) return false;
-            if (this.Used != other.Used) return false;
             return true;
         }
         public override int GetHashCode()
@@ -54,7 +52,6 @@ namespace LocatingApp.Entities
         Parent = 1,
         Name = 2,
         Code = 3,
-        Used = 7,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
@@ -67,6 +64,5 @@ namespace LocatingApp.Entities
         Parent = E._1,
         Name = E._2,
         Code = E._3,
-        Used = E._7,
     }
 }

@@ -121,6 +121,7 @@ namespace LocatingApp.Services.MAppUser
             {
                 AppUserId = AppUserAppUserMapping.AppUserId,
                 FriendId = AppUserAppUserMapping.FriendId,
+                CreatedAt = StaticParams.DateTimeNow,
             });
             await UOW.AppUserRepository.Update(AppUser);
             return AppUserAppUserMapping;
@@ -130,11 +131,12 @@ namespace LocatingApp.Services.MAppUser
         {
             if (!await AppUserValidator.AcceptFriendRequest(AppUserAppUserMapping))
                 return AppUserAppUserMapping;
-            AppUser AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.AppUserId);
+            AppUser AppUser = await UOW.AppUserRepository.Get(AppUserAppUserMapping.FriendId);
             AppUser.AppUserAppUserMappingAppUsers.Add(new AppUserAppUserMapping 
             {
                 AppUserId = AppUserAppUserMapping.FriendId,
                 FriendId = AppUserAppUserMapping.AppUserId,
+                CreatedAt = StaticParams.DateTimeNow,
             });
             await UOW.AppUserRepository.Update(AppUser);
             return AppUserAppUserMapping;

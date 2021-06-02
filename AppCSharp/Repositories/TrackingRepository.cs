@@ -98,9 +98,6 @@ namespace LocatingApp.Repositories
                         case TrackingOrder.PlaceChecking:
                             query = query.OrderBy(q => q.PlaceCheckingId);
                             break;
-                        case TrackingOrder.Used:
-                            query = query.OrderBy(q => q.Used);
-                            break;
                     }
                     break;
                 case OrderType.DESC:
@@ -121,9 +118,6 @@ namespace LocatingApp.Repositories
                         case TrackingOrder.PlaceChecking:
                             query = query.OrderByDescending(q => q.PlaceCheckingId);
                             break;
-                        case TrackingOrder.Used:
-                            query = query.OrderByDescending(q => q.Used);
-                            break;
                     }
                     break;
             }
@@ -140,7 +134,6 @@ namespace LocatingApp.Repositories
                 TargetId = filter.Selects.Contains(TrackingSelect.Target) ? q.TargetId : default(long),
                 PlaceId = filter.Selects.Contains(TrackingSelect.Place) ? q.PlaceId : default(long),
                 PlaceCheckingId = filter.Selects.Contains(TrackingSelect.PlaceChecking) ? q.PlaceCheckingId : default(long),
-                Used = filter.Selects.Contains(TrackingSelect.Used) ? q.Used : default(bool),
                 Place = filter.Selects.Contains(TrackingSelect.Place) && q.Place != null ? new Place
                 {
                     Id = q.Place.Id,
@@ -149,7 +142,6 @@ namespace LocatingApp.Repositories
                     Radius = q.Place.Radius,
                     Latitude = q.Place.Latitude,
                     Longtitude = q.Place.Longtitude,
-                    Used = q.Place.Used,
                 } : null,
                 PlaceChecking = filter.Selects.Contains(TrackingSelect.PlaceChecking) && q.PlaceChecking != null ? new PlaceChecking
                 {
@@ -168,7 +160,6 @@ namespace LocatingApp.Repositories
                     DisplayName = q.Target.DisplayName,
                     Email = q.Target.Email,
                     Phone = q.Target.Phone,
-                    Used = q.Target.Used,
                 } : null,
                 Tracker = filter.Selects.Contains(TrackingSelect.Tracker) && q.Tracker != null ? new AppUser
                 {
@@ -178,7 +169,6 @@ namespace LocatingApp.Repositories
                     DisplayName = q.Tracker.DisplayName,
                     Email = q.Tracker.Email,
                     Phone = q.Tracker.Phone,
-                    Used = q.Tracker.Used,
                 } : null,
             }).ToListAsync();
             return Trackings;
@@ -214,7 +204,6 @@ namespace LocatingApp.Repositories
                 TargetId = x.TargetId,
                 PlaceId = x.PlaceId,
                 PlaceCheckingId = x.PlaceCheckingId,
-                Used = x.Used,
                 Place = x.Place == null ? null : new Place
                 {
                     Id = x.Place.Id,
@@ -223,7 +212,6 @@ namespace LocatingApp.Repositories
                     Radius = x.Place.Radius,
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
-                    Used = x.Place.Used,
                 },
                 PlaceChecking = x.PlaceChecking == null ? null : new PlaceChecking
                 {
@@ -242,7 +230,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.Target.DisplayName,
                     Email = x.Target.Email,
                     Phone = x.Target.Phone,
-                    Used = x.Target.Used,
                 },
                 Tracker = x.Tracker == null ? null : new AppUser
                 {
@@ -252,7 +239,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.Tracker.DisplayName,
                     Email = x.Tracker.Email,
                     Phone = x.Tracker.Phone,
-                    Used = x.Tracker.Used,
                 },
             }).ToListAsync();
             
@@ -274,7 +260,6 @@ namespace LocatingApp.Repositories
                 TargetId = x.TargetId,
                 PlaceId = x.PlaceId,
                 PlaceCheckingId = x.PlaceCheckingId,
-                Used = x.Used,
                 Place = x.Place == null ? null : new Place
                 {
                     Id = x.Place.Id,
@@ -283,7 +268,6 @@ namespace LocatingApp.Repositories
                     Radius = x.Place.Radius,
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
-                    Used = x.Place.Used,
                 },
                 PlaceChecking = x.PlaceChecking == null ? null : new PlaceChecking
                 {
@@ -302,7 +286,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.Target.DisplayName,
                     Email = x.Target.Email,
                     Phone = x.Target.Phone,
-                    Used = x.Target.Used,
                 },
                 Tracker = x.Tracker == null ? null : new AppUser
                 {
@@ -312,7 +295,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.Tracker.DisplayName,
                     Email = x.Tracker.Email,
                     Phone = x.Tracker.Phone,
-                    Used = x.Tracker.Used,
                 },
             }).FirstOrDefaultAsync();
 
@@ -329,7 +311,6 @@ namespace LocatingApp.Repositories
             TrackingDAO.TargetId = Tracking.TargetId;
             TrackingDAO.PlaceId = Tracking.PlaceId;
             TrackingDAO.PlaceCheckingId = Tracking.PlaceCheckingId;
-            TrackingDAO.Used = Tracking.Used;
             TrackingDAO.CreatedAt = StaticParams.DateTimeNow;
             TrackingDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.Tracking.Add(TrackingDAO);
@@ -349,7 +330,6 @@ namespace LocatingApp.Repositories
             TrackingDAO.TargetId = Tracking.TargetId;
             TrackingDAO.PlaceId = Tracking.PlaceId;
             TrackingDAO.PlaceCheckingId = Tracking.PlaceCheckingId;
-            TrackingDAO.Used = Tracking.Used;
             TrackingDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(Tracking);
@@ -373,7 +353,6 @@ namespace LocatingApp.Repositories
                 TrackingDAO.TargetId = Tracking.TargetId;
                 TrackingDAO.PlaceId = Tracking.PlaceId;
                 TrackingDAO.PlaceCheckingId = Tracking.PlaceCheckingId;
-                TrackingDAO.Used = Tracking.Used;
                 TrackingDAO.CreatedAt = StaticParams.DateTimeNow;
                 TrackingDAO.UpdatedAt = StaticParams.DateTimeNow;
                 TrackingDAOs.Add(TrackingDAO);

@@ -16,6 +16,7 @@ namespace LocatingApp.Rpc.app_user
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
+        public AppUser_AppUserAppUserMappingDTO() { }
         public AppUser_AppUserAppUserMappingDTO(AppUserAppUserMapping AppUserAppUserMapping)
         {
             this.AppUserId = AppUserAppUserMapping.AppUserId;
@@ -24,8 +25,7 @@ namespace LocatingApp.Rpc.app_user
             this.Friend = AppUserAppUserMapping.Friend;
             this.CreatedAt = AppUserAppUserMapping.CreatedAt;
             this.UpdatedAt = AppUserAppUserMapping.UpdatedAt;
-            this.Used = AppUserAppUserMapping.Used;
-            this.Errors = AppUser.Errors;
+            this.Errors = AppUserAppUserMapping.Errors;
         }
     }
 

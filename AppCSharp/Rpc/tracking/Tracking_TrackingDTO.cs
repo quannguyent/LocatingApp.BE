@@ -28,7 +28,6 @@ namespace LocatingApp.Rpc.tracking
             this.TargetId = Tracking.TargetId;
             this.PlaceId = Tracking.PlaceId;
             this.PlaceCheckingId = Tracking.PlaceCheckingId;
-            this.Used = Tracking.Used;
             this.Place = Tracking.Place == null ? null : new Tracking_PlaceDTO(Tracking.Place);
             this.PlaceChecking = Tracking.PlaceChecking == null ? null : new Tracking_PlaceCheckingDTO(Tracking.PlaceChecking);
             this.Target = Tracking.Target == null ? null : new Tracking_AppUserDTO(Tracking.Target);

@@ -209,8 +209,6 @@ namespace LocatingApp.Rpc.app_user
                             Error += AppUser.Errors[nameof(AppUser.Email)];
                         if (AppUser.Errors.ContainsKey(nameof(AppUser.Phone)))
                             Error += AppUser.Errors[nameof(AppUser.Phone)];
-                        if (AppUser.Errors.ContainsKey(nameof(AppUser.Used)))
-                            Error += AppUser.Errors[nameof(AppUser.Used)];
                         Errors.Add(Error);
                     }
                 }
@@ -242,7 +240,6 @@ namespace LocatingApp.Rpc.app_user
                         "DisplayName",
                         "Email",
                         "Phone",
-                        "Used",
                     }
                 };
                 List<object[]> AppUserData = new List<object[]>();
@@ -257,7 +254,6 @@ namespace LocatingApp.Rpc.app_user
                         AppUser.DisplayName,
                         AppUser.Email,
                         AppUser.Phone,
-                        AppUser.Used,
                     });
                 }
                 excel.GenerateWorksheet("AppUser", AppUserHeaders, AppUserData);
@@ -281,7 +277,6 @@ namespace LocatingApp.Rpc.app_user
                         "Latitude",
                         "Longtitude",
                         "UpdateInterval",
-                        "Used",
                     }
                 };
                 List<object[]> LocationLogData = new List<object[]>();
@@ -296,7 +291,6 @@ namespace LocatingApp.Rpc.app_user
                         LocationLog.Latitude,
                         LocationLog.Longtitude,
                         LocationLog.UpdateInterval,
-                        LocationLog.Used,
                     });
                 }
                 excel.GenerateWorksheet("LocationLog", LocationLogHeaders, LocationLogData);
@@ -350,7 +344,6 @@ namespace LocatingApp.Rpc.app_user
             AppUser.DisplayName = AppUser_AppUserDTO.DisplayName;
             AppUser.Email = AppUser_AppUserDTO.Email;
             AppUser.Phone = AppUser_AppUserDTO.Phone;
-            AppUser.Used = AppUser_AppUserDTO.Used;
             AppUser.LocationLogs = AppUser_AppUserDTO.LocationLogs?
                 .Select(x => new LocationLog
                 {
@@ -359,7 +352,6 @@ namespace LocatingApp.Rpc.app_user
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Used = x.Used,
                     Previous = x.Previous == null ? null : new LocationLog
                     {
                         Id = x.Previous.Id,
@@ -368,7 +360,6 @@ namespace LocatingApp.Rpc.app_user
                         Latitude = x.Previous.Latitude,
                         Longtitude = x.Previous.Longtitude,
                         UpdateInterval = x.Previous.UpdateInterval,
-                        Used = x.Previous.Used,
                     },
                 }).ToList();
             AppUser.BaseLanguage = CurrentContext.Language;

@@ -40,8 +40,6 @@ namespace LocatingApp.Rpc.location_log
             
             this.Phone = AppUser.Phone;
             
-            this.Used = AppUser.Used;
-            
             this.Errors = AppUser.Errors;
         }
     }

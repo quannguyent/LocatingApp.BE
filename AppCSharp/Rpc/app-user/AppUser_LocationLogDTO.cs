@@ -14,7 +14,6 @@ namespace LocatingApp.Rpc.app_user
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
         public long UpdateInterval { get; set; }
-        public bool Used { get; set; }
         public AppUser_LocationLogDTO Previous { get; set; }   
 
         public AppUser_LocationLogDTO() {}
@@ -26,7 +25,6 @@ namespace LocatingApp.Rpc.app_user
             this.Latitude = LocationLog.Latitude;
             this.Longtitude = LocationLog.Longtitude;
             this.UpdateInterval = LocationLog.UpdateInterval;
-            this.Used = LocationLog.Used;
             this.Previous = LocationLog.Previous == null ? null : new AppUser_LocationLogDTO(LocationLog.Previous);
             this.Errors = LocationLog.Errors;
         }

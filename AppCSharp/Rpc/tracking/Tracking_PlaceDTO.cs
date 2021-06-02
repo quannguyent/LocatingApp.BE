@@ -40,8 +40,6 @@ namespace LocatingApp.Rpc.tracking
             
             this.Longtitude = Place.Longtitude;
             
-            this.Used = Place.Used;
-            
             this.Errors = Place.Errors;
         }
     }

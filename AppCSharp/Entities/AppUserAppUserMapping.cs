@@ -6,11 +6,10 @@ using Newtonsoft.Json.Converters;
 
 namespace LocatingApp.Entities
 {
-    public class AppUserAppUserMapping : DataEntity,  IEquatable<AppUserAppUserMapping>
+    public class AppUserAppUserMapping : DataEntity, IEquatable<AppUserAppUserMapping>
     {
         public long AppUserId { get; set; }
         public long FriendId { get; set; }
-        public bool Used { get; set; }
         public AppUser AppUser { get; set; }
         public AppUser Friend { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -22,7 +21,6 @@ namespace LocatingApp.Entities
             if (other == null) return false;
             if (this.AppUserId != other.AppUserId) return false;
             if (this.FriendId != other.FriendId) return false;
-            if (this.Used != other.Used) return false;
             return true;
         }
         public override int GetHashCode()

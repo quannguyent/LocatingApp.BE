@@ -29,7 +29,6 @@ namespace LocatingApp.Models
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
-        public bool Used { get; set; }
 
         public virtual ICollection<AppUserAppUserMappingDAO> AppUserAppUserMappingAppUsers { get; set; }
         public virtual ICollection<AppUserAppUserMappingDAO> AppUserAppUserMappingFriends { get; set; }

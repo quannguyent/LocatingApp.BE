@@ -22,7 +22,6 @@ namespace LocatingApp.Entities
         public DateTime? OtpExpired { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
-        public bool Used { get; set; }
         public List<LocationLog> LocationLogs { get; set; }
         public Sex Sex { get; set; }
         public Role Role { get; set; }
@@ -45,7 +44,6 @@ namespace LocatingApp.Entities
             if (this.SexId != other.SexId) return false;
             if (this.Email != other.Email) return false;
             if (this.Phone != other.Phone) return false;
-            if (this.Used != other.Used) return false;
             if (this.LocationLogs?.Count != other.LocationLogs?.Count) return false;
             else if (this.LocationLogs != null && other.LocationLogs != null)
             {
@@ -99,7 +97,6 @@ namespace LocatingApp.Entities
         Email = 6,
         Phone = 7,
         Role = 8,
-        Used = 9,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
@@ -117,6 +114,5 @@ namespace LocatingApp.Entities
         Email = E._6,
         Phone = E._7,
         Role = E._8,
-        Used = E._9,
     }
 }

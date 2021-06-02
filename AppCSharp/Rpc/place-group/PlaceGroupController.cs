@@ -197,8 +197,6 @@ namespace LocatingApp.Rpc.place_group
                             Error += PlaceGroup.Errors[nameof(PlaceGroup.Name)];
                         if (PlaceGroup.Errors.ContainsKey(nameof(PlaceGroup.Code)))
                             Error += PlaceGroup.Errors[nameof(PlaceGroup.Code)];
-                        if (PlaceGroup.Errors.ContainsKey(nameof(PlaceGroup.Used)))
-                            Error += PlaceGroup.Errors[nameof(PlaceGroup.Used)];
                         Errors.Add(Error);
                     }
                 }
@@ -229,7 +227,6 @@ namespace LocatingApp.Rpc.place_group
                         "ParentId",
                         "Name",
                         "Code",
-                        "Used",
                     }
                 };
                 List<object[]> PlaceGroupData = new List<object[]>();
@@ -242,7 +239,6 @@ namespace LocatingApp.Rpc.place_group
                         PlaceGroup.ParentId,
                         PlaceGroup.Name,
                         PlaceGroup.Code,
-                        PlaceGroup.Used,
                     });
                 }
                 excel.GenerateWorksheet("PlaceGroup", PlaceGroupHeaders, PlaceGroupData);
@@ -296,14 +292,12 @@ namespace LocatingApp.Rpc.place_group
             PlaceGroup.ParentId = PlaceGroup_PlaceGroupDTO.ParentId;
             PlaceGroup.Name = PlaceGroup_PlaceGroupDTO.Name;
             PlaceGroup.Code = PlaceGroup_PlaceGroupDTO.Code;
-            PlaceGroup.Used = PlaceGroup_PlaceGroupDTO.Used;
             PlaceGroup.Parent = PlaceGroup_PlaceGroupDTO.Parent == null ? null : new PlaceGroup
             {
                 Id = PlaceGroup_PlaceGroupDTO.Parent.Id,
                 ParentId = PlaceGroup_PlaceGroupDTO.Parent.ParentId,
                 Name = PlaceGroup_PlaceGroupDTO.Parent.Name,
                 Code = PlaceGroup_PlaceGroupDTO.Parent.Code,
-                Used = PlaceGroup_PlaceGroupDTO.Parent.Used,
             };
             PlaceGroup.BaseLanguage = CurrentContext.Language;
             return PlaceGroup;

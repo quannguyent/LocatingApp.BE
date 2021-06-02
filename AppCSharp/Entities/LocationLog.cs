@@ -14,7 +14,6 @@ namespace LocatingApp.Entities
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
         public long UpdateInterval { get; set; }
-        public bool Used { get; set; }
         public AppUser AppUser { get; set; }
         public LocationLog Previous { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -30,7 +29,6 @@ namespace LocatingApp.Entities
             if (this.Latitude != other.Latitude) return false;
             if (this.Longtitude != other.Longtitude) return false;
             if (this.UpdateInterval != other.UpdateInterval) return false;
-            if (this.Used != other.Used) return false;
             return true;
         }
         public override int GetHashCode()
@@ -63,7 +61,6 @@ namespace LocatingApp.Entities
         Latitude = 3,
         Longtitude = 4,
         UpdateInterval = 5,
-        Used = 9,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
@@ -78,6 +75,5 @@ namespace LocatingApp.Entities
         Latitude = E._3,
         Longtitude = E._4,
         UpdateInterval = E._5,
-        Used = E._9,
     }
 }

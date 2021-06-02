@@ -329,7 +329,6 @@ namespace LocatingApp.Rpc.place_checking
                         AppUser.DisplayName,
                         AppUser.Email,
                         AppUser.Phone,
-                        AppUser.Used,
                     });
                 }
                 excel.GenerateWorksheet("AppUser", AppUserHeaders, AppUserData);
@@ -352,7 +351,6 @@ namespace LocatingApp.Rpc.place_checking
                         "Radius",
                         "Latitude",
                         "Longtitude",
-                        "Used",
                     }
                 };
                 List<object[]> PlaceData = new List<object[]>();
@@ -367,7 +365,6 @@ namespace LocatingApp.Rpc.place_checking
                         Place.Radius,
                         Place.Latitude,
                         Place.Longtitude,
-                        Place.Used,
                     });
                 }
                 excel.GenerateWorksheet("Place", PlaceHeaders, PlaceData);
@@ -460,7 +457,6 @@ namespace LocatingApp.Rpc.place_checking
                 DisplayName = PlaceChecking_PlaceCheckingDTO.AppUser.DisplayName,
                 Email = PlaceChecking_PlaceCheckingDTO.AppUser.Email,
                 Phone = PlaceChecking_PlaceCheckingDTO.AppUser.Phone,
-                Used = PlaceChecking_PlaceCheckingDTO.AppUser.Used,
             };
             PlaceChecking.Place = PlaceChecking_PlaceCheckingDTO.Place == null ? null : new Place
             {
@@ -470,7 +466,6 @@ namespace LocatingApp.Rpc.place_checking
                 Radius = PlaceChecking_PlaceCheckingDTO.Place.Radius,
                 Latitude = PlaceChecking_PlaceCheckingDTO.Place.Latitude,
                 Longtitude = PlaceChecking_PlaceCheckingDTO.Place.Longtitude,
-                Used = PlaceChecking_PlaceCheckingDTO.Place.Used,
             };
             PlaceChecking.PlaceCheckingStatus = PlaceChecking_PlaceCheckingDTO.PlaceCheckingStatus == null ? null : new CheckingStatus
             {

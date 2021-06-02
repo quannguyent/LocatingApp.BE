@@ -81,7 +81,6 @@ namespace LocatingApp.Rpc
                     Birthday = DateTime.Now,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now,
-                    Used = true,
                     DeletedAt = null,
                     DisplayName = "Administrator",
                     Email = "",

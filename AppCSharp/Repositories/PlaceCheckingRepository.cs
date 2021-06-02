@@ -148,7 +148,6 @@ namespace LocatingApp.Repositories
                     DisplayName = q.AppUser.DisplayName,
                     Email = q.AppUser.Email,
                     Phone = q.AppUser.Phone,
-                    Used = q.AppUser.Used,
                 } : null,
                 Place = filter.Selects.Contains(PlaceCheckingSelect.Place) && q.Place != null ? new Place
                 {
@@ -158,7 +157,6 @@ namespace LocatingApp.Repositories
                     Radius = q.Place.Radius,
                     Latitude = q.Place.Latitude,
                     Longtitude = q.Place.Longtitude,
-                    Used = q.Place.Used,
                 } : null,
                 PlaceCheckingStatus = filter.Selects.Contains(PlaceCheckingSelect.PlaceCheckingStatus) && q.PlaceCheckingStatus != null ? new CheckingStatus
                 {
@@ -206,7 +204,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                    Used = x.AppUser.Used,
                 },
                 Place = x.Place == null ? null : new Place
                 {
@@ -216,7 +213,6 @@ namespace LocatingApp.Repositories
                     Radius = x.Place.Radius,
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
-                    Used = x.Place.Used,
                 },
                 PlaceCheckingStatus = x.PlaceCheckingStatus == null ? null : new CheckingStatus
                 {
@@ -250,7 +246,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                    Used = x.AppUser.Used,
                 },
                 Place = x.Place == null ? null : new Place
                 {
@@ -260,7 +255,6 @@ namespace LocatingApp.Repositories
                     Radius = x.Place.Radius,
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
-                    Used = x.Place.Used,
                 },
                 PlaceCheckingStatus = x.PlaceCheckingStatus == null ? null : new CheckingStatus
                 {

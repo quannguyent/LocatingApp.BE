@@ -105,9 +105,6 @@ namespace LocatingApp.Repositories
                         case LocationLogOrder.UpdateInterval:
                             query = query.OrderBy(q => q.UpdateInterval);
                             break;
-                        case LocationLogOrder.Used:
-                            query = query.OrderBy(q => q.Used);
-                            break;
                     }
                     break;
                 case OrderType.DESC:
@@ -131,9 +128,6 @@ namespace LocatingApp.Repositories
                         case LocationLogOrder.UpdateInterval:
                             query = query.OrderByDescending(q => q.UpdateInterval);
                             break;
-                        case LocationLogOrder.Used:
-                            query = query.OrderByDescending(q => q.Used);
-                            break;
                     }
                     break;
             }
@@ -151,7 +145,6 @@ namespace LocatingApp.Repositories
                 Latitude = filter.Selects.Contains(LocationLogSelect.Latitude) ? q.Latitude : default(decimal),
                 Longtitude = filter.Selects.Contains(LocationLogSelect.Longtitude) ? q.Longtitude : default(decimal),
                 UpdateInterval = filter.Selects.Contains(LocationLogSelect.UpdateInterval) ? q.UpdateInterval : default(long),
-                Used = filter.Selects.Contains(LocationLogSelect.Used) ? q.Used : default(bool),
                 AppUser = filter.Selects.Contains(LocationLogSelect.AppUser) && q.AppUser != null ? new AppUser
                 {
                     Id = q.AppUser.Id,
@@ -160,7 +153,6 @@ namespace LocatingApp.Repositories
                     DisplayName = q.AppUser.DisplayName,
                     Email = q.AppUser.Email,
                     Phone = q.AppUser.Phone,
-                    Used = q.AppUser.Used,
                 } : null,
                 Previous = filter.Selects.Contains(LocationLogSelect.Previous) && q.Previous != null ? new LocationLog
                 {
@@ -170,7 +162,6 @@ namespace LocatingApp.Repositories
                     Latitude = q.Previous.Latitude,
                     Longtitude = q.Previous.Longtitude,
                     UpdateInterval = q.Previous.UpdateInterval,
-                    Used = q.Previous.Used,
                 } : null,
             }).ToListAsync();
             return LocationLogs;
@@ -207,7 +198,6 @@ namespace LocatingApp.Repositories
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
                 UpdateInterval = x.UpdateInterval,
-                Used = x.Used,
                 AppUser = x.AppUser == null ? null : new AppUser
                 {
                     Id = x.AppUser.Id,
@@ -216,7 +206,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                    Used = x.AppUser.Used,
                 },
                 Previous = x.Previous == null ? null : new LocationLog
                 {
@@ -226,7 +215,6 @@ namespace LocatingApp.Repositories
                     Latitude = x.Previous.Latitude,
                     Longtitude = x.Previous.Longtitude,
                     UpdateInterval = x.Previous.UpdateInterval,
-                    Used = x.Previous.Used,
                 },
             }).ToListAsync();
             
@@ -249,7 +237,6 @@ namespace LocatingApp.Repositories
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
                 UpdateInterval = x.UpdateInterval,
-                Used = x.Used,
                 AppUser = x.AppUser == null ? null : new AppUser
                 {
                     Id = x.AppUser.Id,
@@ -258,7 +245,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                    Used = x.AppUser.Used,
                 },
                 Previous = x.Previous == null ? null : new LocationLog
                 {
@@ -268,7 +254,6 @@ namespace LocatingApp.Repositories
                     Latitude = x.Previous.Latitude,
                     Longtitude = x.Previous.Longtitude,
                     UpdateInterval = x.Previous.UpdateInterval,
-                    Used = x.Previous.Used,
                 },
             }).FirstOrDefaultAsync();
 
@@ -289,7 +274,6 @@ namespace LocatingApp.Repositories
             LocationLogDAO.Latitude = LocationLog.Latitude;
             LocationLogDAO.Longtitude = LocationLog.Longtitude;
             LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-            LocationLogDAO.Used = LocationLog.Used;
             LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
             LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.LocationLog.Add(LocationLogDAO);
@@ -310,7 +294,6 @@ namespace LocatingApp.Repositories
             LocationLogDAO.Latitude = LocationLog.Latitude;
             LocationLogDAO.Longtitude = LocationLog.Longtitude;
             LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-            LocationLogDAO.Used = LocationLog.Used;
             LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(LocationLog);
@@ -335,7 +318,6 @@ namespace LocatingApp.Repositories
                 LocationLogDAO.Latitude = LocationLog.Latitude;
                 LocationLogDAO.Longtitude = LocationLog.Longtitude;
                 LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-                LocationLogDAO.Used = LocationLog.Used;
                 LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
                 LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
                 LocationLogDAOs.Add(LocationLogDAO);

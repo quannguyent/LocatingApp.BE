@@ -211,8 +211,6 @@ namespace LocatingApp.Rpc.place
                             Error += Place.Errors[nameof(Place.Latitude)];
                         if (Place.Errors.ContainsKey(nameof(Place.Longtitude)))
                             Error += Place.Errors[nameof(Place.Longtitude)];
-                        if (Place.Errors.ContainsKey(nameof(Place.Used)))
-                            Error += Place.Errors[nameof(Place.Used)];
                         Errors.Add(Error);
                     }
                 }
@@ -245,7 +243,6 @@ namespace LocatingApp.Rpc.place
                         "Radius",
                         "Latitude",
                         "Longtitude",
-                        "Used",
                     }
                 };
                 List<object[]> PlaceData = new List<object[]>();
@@ -260,7 +257,6 @@ namespace LocatingApp.Rpc.place
                         Place.Radius,
                         Place.Latitude,
                         Place.Longtitude,
-                        Place.Used,
                     });
                 }
                 excel.GenerateWorksheet("Place", PlaceHeaders, PlaceData);
@@ -282,7 +278,6 @@ namespace LocatingApp.Rpc.place
                         "ParentId",
                         "Name",
                         "Code",
-                        "Used",
                     }
                 };
                 List<object[]> PlaceGroupData = new List<object[]>();
@@ -295,7 +290,6 @@ namespace LocatingApp.Rpc.place
                         PlaceGroup.ParentId,
                         PlaceGroup.Name,
                         PlaceGroup.Code,
-                        PlaceGroup.Used,
                     });
                 }
                 excel.GenerateWorksheet("PlaceGroup", PlaceGroupHeaders, PlaceGroupData);
@@ -350,14 +344,12 @@ namespace LocatingApp.Rpc.place
             Place.Radius = Place_PlaceDTO.Radius;
             Place.Latitude = Place_PlaceDTO.Latitude;
             Place.Longtitude = Place_PlaceDTO.Longtitude;
-            Place.Used = Place_PlaceDTO.Used;
             Place.PlaceGroup = Place_PlaceDTO.PlaceGroup == null ? null : new PlaceGroup
             {
                 Id = Place_PlaceDTO.PlaceGroup.Id,
                 ParentId = Place_PlaceDTO.PlaceGroup.ParentId,
                 Name = Place_PlaceDTO.PlaceGroup.Name,
                 Code = Place_PlaceDTO.PlaceGroup.Code,
-                Used = Place_PlaceDTO.PlaceGroup.Used,
             };
             Place.BaseLanguage = CurrentContext.Language;
             return Place;

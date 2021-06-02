@@ -251,8 +251,6 @@ namespace LocatingApp.Rpc.tracking
                             Error += Tracking.Errors[nameof(Tracking.PlaceId)];
                         if (Tracking.Errors.ContainsKey(nameof(Tracking.PlaceCheckingId)))
                             Error += Tracking.Errors[nameof(Tracking.PlaceCheckingId)];
-                        if (Tracking.Errors.ContainsKey(nameof(Tracking.Used)))
-                            Error += Tracking.Errors[nameof(Tracking.Used)];
                         Errors.Add(Error);
                     }
                 }
@@ -284,7 +282,6 @@ namespace LocatingApp.Rpc.tracking
                         "TargetId",
                         "PlaceId",
                         "PlaceCheckingId",
-                        "Used",
                     }
                 };
                 List<object[]> TrackingData = new List<object[]>();
@@ -298,7 +295,6 @@ namespace LocatingApp.Rpc.tracking
                         Tracking.TargetId,
                         Tracking.PlaceId,
                         Tracking.PlaceCheckingId,
-                        Tracking.Used,
                     });
                 }
                 excel.GenerateWorksheet("Tracking", TrackingHeaders, TrackingData);
@@ -322,7 +318,6 @@ namespace LocatingApp.Rpc.tracking
                         "Radius",
                         "Latitude",
                         "Longtitude",
-                        "Used",
                     }
                 };
                 List<object[]> PlaceData = new List<object[]>();
@@ -337,7 +332,6 @@ namespace LocatingApp.Rpc.tracking
                         Place.Radius,
                         Place.Latitude,
                         Place.Longtitude,
-                        Place.Used,
                     });
                 }
                 excel.GenerateWorksheet("Place", PlaceHeaders, PlaceData);
@@ -396,7 +390,6 @@ namespace LocatingApp.Rpc.tracking
                         "DisplayName",
                         "Email",
                         "Phone",
-                        "Used",
                     }
                 };
                 List<object[]> AppUserData = new List<object[]>();
@@ -411,7 +404,6 @@ namespace LocatingApp.Rpc.tracking
                         AppUser.DisplayName,
                         AppUser.Email,
                         AppUser.Phone,
-                        AppUser.Used,
                     });
                 }
                 excel.GenerateWorksheet("AppUser", AppUserHeaders, AppUserData);
@@ -465,7 +457,6 @@ namespace LocatingApp.Rpc.tracking
             Tracking.TargetId = Tracking_TrackingDTO.TargetId;
             Tracking.PlaceId = Tracking_TrackingDTO.PlaceId;
             Tracking.PlaceCheckingId = Tracking_TrackingDTO.PlaceCheckingId;
-            Tracking.Used = Tracking_TrackingDTO.Used;
             Tracking.Place = Tracking_TrackingDTO.Place == null ? null : new Place
             {
                 Id = Tracking_TrackingDTO.Place.Id,
@@ -474,7 +465,6 @@ namespace LocatingApp.Rpc.tracking
                 Radius = Tracking_TrackingDTO.Place.Radius,
                 Latitude = Tracking_TrackingDTO.Place.Latitude,
                 Longtitude = Tracking_TrackingDTO.Place.Longtitude,
-                Used = Tracking_TrackingDTO.Place.Used,
             };
             Tracking.PlaceChecking = Tracking_TrackingDTO.PlaceChecking == null ? null : new PlaceChecking
             {
@@ -493,7 +483,6 @@ namespace LocatingApp.Rpc.tracking
                 DisplayName = Tracking_TrackingDTO.Target.DisplayName,
                 Email = Tracking_TrackingDTO.Target.Email,
                 Phone = Tracking_TrackingDTO.Target.Phone,
-                Used = Tracking_TrackingDTO.Target.Used,
             };
             Tracking.Tracker = Tracking_TrackingDTO.Tracker == null ? null : new AppUser
             {
@@ -503,7 +492,6 @@ namespace LocatingApp.Rpc.tracking
                 DisplayName = Tracking_TrackingDTO.Tracker.DisplayName,
                 Email = Tracking_TrackingDTO.Tracker.Email,
                 Phone = Tracking_TrackingDTO.Tracker.Phone,
-                Used = Tracking_TrackingDTO.Tracker.Used,
             };
             Tracking.BaseLanguage = CurrentContext.Language;
             return Tracking;

@@ -20,7 +20,6 @@ namespace LocatingApp.Rpc.app_user
         public DateTime? OtpExpired { get; set; }
         public string Token { get; set; }
         public string RefreshToken { get; set; }
-        public bool Used { get; set; }
         public long RoleId { get; set; }
         public List<AppUser_LocationLogDTO> LocationLogs { get; set; }
         public Sex Sex { get; set; }
@@ -36,7 +35,6 @@ namespace LocatingApp.Rpc.app_user
             this.DisplayName = AppUser.DisplayName;
             this.Email = AppUser.Email;
             this.Phone = AppUser.Phone;
-            this.Used = AppUser.Used;
             this.SexId = AppUser.SexId;
             this.Birthday = AppUser.Birthday;
             this.RoleId = AppUser.RoleId;

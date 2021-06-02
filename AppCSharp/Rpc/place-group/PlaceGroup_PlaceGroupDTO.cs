@@ -23,7 +23,6 @@ namespace LocatingApp.Rpc.place_group
             this.ParentId = PlaceGroup.ParentId;
             this.Name = PlaceGroup.Name;
             this.Code = PlaceGroup.Code;
-            this.Used = PlaceGroup.Used;
             this.Parent = PlaceGroup.Parent == null ? null : new PlaceGroup_PlaceGroupDTO(PlaceGroup.Parent);
             this.CreatedAt = PlaceGroup.CreatedAt;
             this.UpdatedAt = PlaceGroup.UpdatedAt;

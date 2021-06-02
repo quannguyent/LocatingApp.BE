@@ -13,7 +13,6 @@ namespace LocatingApp.Entities
         public long TargetId { get; set; }
         public long PlaceId { get; set; }
         public long PlaceCheckingId { get; set; }
-        public bool Used { get; set; }
         public Place Place { get; set; }
         public PlaceChecking PlaceChecking { get; set; }
         public AppUser Target { get; set; }
@@ -30,7 +29,6 @@ namespace LocatingApp.Entities
             if (this.TargetId != other.TargetId) return false;
             if (this.PlaceId != other.PlaceId) return false;
             if (this.PlaceCheckingId != other.PlaceCheckingId) return false;
-            if (this.Used != other.Used) return false;
             return true;
         }
         public override int GetHashCode()
@@ -61,7 +59,6 @@ namespace LocatingApp.Entities
         Target = 2,
         Place = 3,
         PlaceChecking = 4,
-        Used = 8,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
@@ -75,6 +72,5 @@ namespace LocatingApp.Entities
         Target = E._2,
         Place = E._3,
         PlaceChecking = E._4,
-        Used = E._8,
     }
 }

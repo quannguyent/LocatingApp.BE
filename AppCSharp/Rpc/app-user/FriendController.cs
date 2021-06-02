@@ -20,8 +20,7 @@ namespace LocatingApp.Rpc.app_user
         public const string SendFriendRequest = "rpc/locating-app/friend/send-friend-request";
         public const string AcceptFriendRequest = "rpc/locating-app/friend/accept-friend-request";
     }
-    [Authorize]
-    public class FriendController : ControllerBase
+    public class FriendController : RpcController
     {
         private IAppUserService AppUserService;
         private ISexService SexService;
@@ -40,6 +39,11 @@ namespace LocatingApp.Rpc.app_user
         [Route(FriendRoute.SendFriendRequest), HttpPost]
         public async Task<ActionResult<AppUser_AppUserAppUserMappingDTO>> SendFriendRequest([FromBody]AppUser_AppUserAppUserMappingDTO AppUser_AppUserAppUserMappingDTO)
         {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+            if (!await HasPermission(AppUser_AppUserAppUserMappingDTO.AppUserId))
+                return Forbid();
+            
             var AppUserAppUserMapping = ConvertDTOToEntity(AppUser_AppUserAppUserMappingDTO);
             AppUserAppUserMapping = await AppUserService.SendFriendRequest(AppUserAppUserMapping);
             AppUser_AppUserAppUserMappingDTO = new AppUser_AppUserAppUserMappingDTO(AppUserAppUserMapping);
@@ -49,6 +53,11 @@ namespace LocatingApp.Rpc.app_user
         [Route(FriendRoute.AcceptFriendRequest), HttpPost]
         public async Task<ActionResult<AppUser_AppUserAppUserMappingDTO>> AcceptFriendRequest([FromBody] AppUser_AppUserAppUserMappingDTO AppUser_AppUserAppUserMappingDTO)
         {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+            if (!await HasPermission(AppUser_AppUserAppUserMappingDTO.FriendId))
+                return Forbid();
+
             var AppUserAppUserMapping = ConvertDTOToEntity(AppUser_AppUserAppUserMappingDTO);
             AppUserAppUserMapping = await AppUserService.AcceptFriendRequest(AppUserAppUserMapping);
             AppUser_AppUserAppUserMappingDTO = new AppUser_AppUserAppUserMappingDTO(AppUserAppUserMapping);
@@ -63,6 +72,14 @@ namespace LocatingApp.Rpc.app_user
                 FriendId = AppUser_AppUserAppUserMappingDTO.FriendId,
             };
             return AppUserAppUserMapping;
+        }
+
+        public async Task<bool> HasPermission(long UserId)
+        {
+            AppUser CurrentUser = await AppUserService.Get(CurrentContext.UserId);
+            if (CurrentContext.RoleId == RoleEnum.Admin.Id)
+                return true;
+            else return CurrentUser.Id == UserId;
         }
     }
 }

@@ -32,8 +32,6 @@ namespace LocatingApp.Rpc.place
             
             this.Code = PlaceGroup.Code;
             
-            this.Used = PlaceGroup.Used;
-            
             this.Errors = PlaceGroup.Errors;
         }
     }

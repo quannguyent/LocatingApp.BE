@@ -39,9 +39,7 @@ namespace LocatingApp.Rpc.place_checking
             this.Email = AppUser.Email;
             
             this.Phone = AppUser.Phone;
-            
-            this.Used = AppUser.Used;
-            
+                        
             this.Errors = AppUser.Errors;
         }
     }

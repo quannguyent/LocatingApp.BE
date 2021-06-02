@@ -14,7 +14,6 @@ namespace LocatingApp.Entities
         public long Radius { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
-        public bool Used { get; set; }
         public PlaceGroup PlaceGroup { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
@@ -29,7 +28,6 @@ namespace LocatingApp.Entities
             if (this.Radius != other.Radius) return false;
             if (this.Latitude != other.Latitude) return false;
             if (this.Longtitude != other.Longtitude) return false;
-            if (this.Used != other.Used) return false;
             return true;
         }
         public override int GetHashCode()
@@ -62,7 +60,6 @@ namespace LocatingApp.Entities
         Radius = 3,
         Latitude = 4,
         Longtitude = 5,
-        Used = 9,
         CreatedAt = 50,
         UpdatedAt = 51,
     }
@@ -77,6 +74,5 @@ namespace LocatingApp.Entities
         Radius = E._3,
         Latitude = E._4,
         Longtitude = E._5,
-        Used = E._9,
     }
 }

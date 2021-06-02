@@ -117,9 +117,6 @@ namespace LocatingApp.Repositories
                         case AppUserOrder.Phone:
                             query = query.OrderBy(q => q.Phone);
                             break;
-                        case AppUserOrder.Used:
-                            query = query.OrderBy(q => q.Used);
-                            break;
                         case AppUserOrder.Sex:
                                 query = query.OrderBy(q => q.SexId);
                                 break;
@@ -153,9 +150,6 @@ namespace LocatingApp.Repositories
                         case AppUserOrder.Phone:
                             query = query.OrderByDescending(q => q.Phone);
                             break;
-                        case AppUserOrder.Used:
-                            query = query.OrderByDescending(q => q.Used);
-                            break;
                         case AppUserOrder.Sex:
                             query = query.OrderBy(q => q.SexId);
                             break;
@@ -185,7 +179,6 @@ namespace LocatingApp.Repositories
                 SexId = filter.Selects.Contains(AppUserSelect.Sex) ? q.SexId : default(long),
                 Birthday = filter.Selects.Contains(AppUserSelect.Birthday) ? q.Birthday : default(DateTime),
                 RoleId = filter.Selects.Contains(AppUserSelect.Role) ? q.RoleId : default(long),
-                Used = filter.Selects.Contains(AppUserSelect.Used) ? q.Used : default(bool),
             }).ToListAsync();
             return AppUsers;
         }
@@ -221,7 +214,6 @@ namespace LocatingApp.Repositories
                 DisplayName = x.DisplayName,
                 Email = x.Email,
                 Phone = x.Phone,
-                Used = x.Used,
             }).ToListAsync();
             
             List<LocationLog> LocationLogs = await DataContext.LocationLog.AsNoTracking()
@@ -235,7 +227,6 @@ namespace LocatingApp.Repositories
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Used = x.Used,
                     Previous = new LocationLog
                     {
                         Id = x.Previous.Id,
@@ -244,7 +235,6 @@ namespace LocatingApp.Repositories
                         Latitude = x.Previous.Latitude,
                         Longtitude = x.Previous.Longtitude,
                         UpdateInterval = x.Previous.UpdateInterval,
-                        Used = x.Previous.Used,
                     },
                 }).ToListAsync();
             foreach(AppUser AppUser in AppUsers)
@@ -275,7 +265,6 @@ namespace LocatingApp.Repositories
                 SexId = x.SexId,
                 Birthday = x.Birthday,
                 RoleId = x.RoleId,
-                Used = x.Used,
             }).FirstOrDefaultAsync();
 
             if (AppUser == null)
@@ -307,7 +296,6 @@ namespace LocatingApp.Repositories
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Used = x.Used,
                     Previous = new LocationLog
                     {
                         Id = x.Previous.Id,
@@ -316,7 +304,6 @@ namespace LocatingApp.Repositories
                         Latitude = x.Previous.Latitude,
                         Longtitude = x.Previous.Longtitude,
                         UpdateInterval = x.Previous.UpdateInterval,
-                        Used = x.Previous.Used,
                     },
                 }).ToListAsync();
             AppUser.AppUserAppUserMappingAppUsers = await DataContext.AppUserAppUserMapping.AsNoTracking()
@@ -336,7 +323,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
-                        Used = x.AppUser.Used,
                     },
                     Friend = x.Friend == null ? null : new AppUser
                     {
@@ -347,7 +333,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
-                        Used = x.AppUser.Used,
                     },
                 }).ToListAsync();
             AppUser.AppUserAppUserMappingFriends = await DataContext.AppUserAppUserMapping.AsNoTracking()
@@ -367,7 +352,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.AppUser.DisplayName,
                         Email = x.AppUser.Email,
                         Phone = x.AppUser.Phone,
-                        Used = x.AppUser.Used,
                     },
                     Friend = x.Friend == null ? null : new AppUser
                     {
@@ -378,7 +362,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.Friend.DisplayName,
                         Email = x.Friend.Email,
                         Phone = x.Friend.Phone,
-                        Used = x.Friend.Used,
                     }
 
                 }).ToListAsync();
@@ -402,7 +385,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.Target.DisplayName,
                         Email = x.Target.Email,
                         Phone = x.Target.Phone,
-                        Used = x.Target.Used,
                     },
                     Tracker = x.Tracker == null ? null : new AppUser
                     {
@@ -413,7 +395,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.Tracker.DisplayName,
                         Email = x.Tracker.Email,
                         Phone = x.Tracker.Phone,
-                        Used = x.Tracker.Used,
                     },
                 }).ToListAsync();
             AppUser.TrackingTrackers = await DataContext.Tracking.AsNoTracking()
@@ -436,7 +417,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.Target.DisplayName,
                         Email = x.Target.Email,
                         Phone = x.Target.Phone,
-                        Used = x.Target.Used,
                     },
                     Tracker = x.Tracker == null ? null : new AppUser
                     {
@@ -447,7 +427,6 @@ namespace LocatingApp.Repositories
                         DisplayName = x.Tracker.DisplayName,
                         Email = x.Tracker.Email,
                         Phone = x.Tracker.Phone,
-                        Used = x.Tracker.Used,
                     },
                 }).ToListAsync();
 
@@ -462,7 +441,6 @@ namespace LocatingApp.Repositories
             AppUserDAO.DisplayName = AppUser.DisplayName;
             AppUserDAO.Email = AppUser.Email;
             AppUserDAO.Phone = AppUser.Phone;
-            AppUserDAO.Used = AppUser.Used;
             AppUserDAO.SexId = AppUser.SexId;
             AppUserDAO.Birthday = AppUser.Birthday;
             AppUserDAO.RoleId = AppUser.RoleId;
@@ -488,7 +466,6 @@ namespace LocatingApp.Repositories
             AppUserDAO.Phone = AppUser.Phone;
             AppUserDAO.SexId = AppUser.SexId;
             AppUserDAO.Birthday = AppUser.Birthday;
-            AppUserDAO.Used = AppUser.Used;
             AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(AppUser);
@@ -513,10 +490,8 @@ namespace LocatingApp.Repositories
                 AppUserDAO.DisplayName = AppUser.DisplayName;
                 AppUserDAO.Email = AppUser.Email;
                 AppUserDAO.Phone = AppUser.Phone;
-                AppUserDAO.Used = AppUser.Used;
                 AppUserDAO.SexId = AppUser.SexId;
                 AppUserDAO.Birthday = AppUser.Birthday;
-                AppUserDAO.Used = AppUser.Used;
                 AppUserDAO.CreatedAt = StaticParams.DateTimeNow;
                 AppUserDAO.UpdatedAt = StaticParams.DateTimeNow;
                 AppUserDAOs.Add(AppUserDAO);
@@ -554,7 +529,6 @@ namespace LocatingApp.Repositories
                         LocationLogDAO.Latitude = LocationLog.Latitude;
                         LocationLogDAO.Longtitude = LocationLog.Longtitude;
                         LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-                        LocationLogDAO.Used = LocationLog.Used;
                         LocationLogDAOs.Add(LocationLogDAO);
                         LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
                         LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
@@ -568,7 +542,6 @@ namespace LocatingApp.Repositories
                         LocationLogDAO.Latitude = LocationLog.Latitude;
                         LocationLogDAO.Longtitude = LocationLog.Longtitude;
                         LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-                        LocationLogDAO.Used = LocationLog.Used;
                         LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
                         LocationLogDAO.DeletedAt = null;
                     }
@@ -588,7 +561,6 @@ namespace LocatingApp.Repositories
                         CreatedAt = x.CreatedAt,
                         UpdatedAt = StaticParams.DateTimeNow,
                         DeletedAt = x.DeletedAt,
-                        Used = x.Used,
                     }).ToList();
                 await DataContext.BulkMergeAsync(AppUserAppUserMappingDAOs);
             }
@@ -605,7 +577,6 @@ namespace LocatingApp.Repositories
                         CreatedAt = x.CreatedAt,
                         UpdatedAt = StaticParams.DateTimeNow,
                         DeletedAt = x.DeletedAt,
-                        Used = x.Used,
                     }).ToList();
                 await DataContext.BulkMergeAsync(AppUserAppUserMappingDAOs);
             }

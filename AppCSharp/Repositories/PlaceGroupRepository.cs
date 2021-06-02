@@ -91,9 +91,6 @@ namespace LocatingApp.Repositories
                         case PlaceGroupOrder.Code:
                             query = query.OrderBy(q => q.Code);
                             break;
-                        case PlaceGroupOrder.Used:
-                            query = query.OrderBy(q => q.Used);
-                            break;
                     }
                     break;
                 case OrderType.DESC:
@@ -111,9 +108,6 @@ namespace LocatingApp.Repositories
                         case PlaceGroupOrder.Code:
                             query = query.OrderByDescending(q => q.Code);
                             break;
-                        case PlaceGroupOrder.Used:
-                            query = query.OrderByDescending(q => q.Used);
-                            break;
                     }
                     break;
             }
@@ -129,14 +123,12 @@ namespace LocatingApp.Repositories
                 ParentId = filter.Selects.Contains(PlaceGroupSelect.Parent) ? q.ParentId : default(long?),
                 Name = filter.Selects.Contains(PlaceGroupSelect.Name) ? q.Name : default(string),
                 Code = filter.Selects.Contains(PlaceGroupSelect.Code) ? q.Code : default(string),
-                Used = filter.Selects.Contains(PlaceGroupSelect.Used) ? q.Used : default(bool),
                 Parent = filter.Selects.Contains(PlaceGroupSelect.Parent) && q.Parent != null ? new PlaceGroup
                 {
                     Id = q.Parent.Id,
                     ParentId = q.Parent.ParentId,
                     Name = q.Parent.Name,
                     Code = q.Parent.Code,
-                    Used = q.Parent.Used,
                 } : null,
             }).ToListAsync();
             return PlaceGroups;
@@ -171,14 +163,12 @@ namespace LocatingApp.Repositories
                 ParentId = x.ParentId,
                 Name = x.Name,
                 Code = x.Code,
-                Used = x.Used,
                 Parent = x.Parent == null ? null : new PlaceGroup
                 {
                     Id = x.Parent.Id,
                     ParentId = x.Parent.ParentId,
                     Name = x.Parent.Name,
                     Code = x.Parent.Code,
-                    Used = x.Parent.Used,
                 },
             }).ToListAsync();
             
@@ -199,14 +189,12 @@ namespace LocatingApp.Repositories
                 ParentId = x.ParentId,
                 Name = x.Name,
                 Code = x.Code,
-                Used = x.Used,
                 Parent = x.Parent == null ? null : new PlaceGroup
                 {
                     Id = x.Parent.Id,
                     ParentId = x.Parent.ParentId,
                     Name = x.Parent.Name,
                     Code = x.Parent.Code,
-                    Used = x.Parent.Used,
                 },
             }).FirstOrDefaultAsync();
 
@@ -222,7 +210,6 @@ namespace LocatingApp.Repositories
             PlaceGroupDAO.ParentId = PlaceGroup.ParentId;
             PlaceGroupDAO.Name = PlaceGroup.Name;
             PlaceGroupDAO.Code = PlaceGroup.Code;
-            PlaceGroupDAO.Used = PlaceGroup.Used;
             PlaceGroupDAO.Path = "";
             PlaceGroupDAO.Level = 1;
             PlaceGroupDAO.CreatedAt = StaticParams.DateTimeNow;
@@ -244,7 +231,6 @@ namespace LocatingApp.Repositories
             PlaceGroupDAO.ParentId = PlaceGroup.ParentId;
             PlaceGroupDAO.Name = PlaceGroup.Name;
             PlaceGroupDAO.Code = PlaceGroup.Code;
-            PlaceGroupDAO.Used = PlaceGroup.Used;
             PlaceGroupDAO.Path = "";
             PlaceGroupDAO.Level = 1;
             PlaceGroupDAO.UpdatedAt = StaticParams.DateTimeNow;
@@ -273,7 +259,6 @@ namespace LocatingApp.Repositories
                 PlaceGroupDAO.ParentId = PlaceGroup.ParentId;
                 PlaceGroupDAO.Name = PlaceGroup.Name;
                 PlaceGroupDAO.Code = PlaceGroup.Code;
-                PlaceGroupDAO.Used = PlaceGroup.Used;
                 PlaceGroupDAO.CreatedAt = StaticParams.DateTimeNow;
                 PlaceGroupDAO.UpdatedAt = StaticParams.DateTimeNow;
                 PlaceGroupDAOs.Add(PlaceGroupDAO);

@@ -105,9 +105,6 @@ namespace LocatingApp.Repositories
                         case PlaceOrder.Longtitude:
                             query = query.OrderBy(q => q.Longtitude);
                             break;
-                        case PlaceOrder.Used:
-                            query = query.OrderBy(q => q.Used);
-                            break;
                     }
                     break;
                 case OrderType.DESC:
@@ -131,9 +128,6 @@ namespace LocatingApp.Repositories
                         case PlaceOrder.Longtitude:
                             query = query.OrderByDescending(q => q.Longtitude);
                             break;
-                        case PlaceOrder.Used:
-                            query = query.OrderByDescending(q => q.Used);
-                            break;
                     }
                     break;
             }
@@ -151,14 +145,12 @@ namespace LocatingApp.Repositories
                 Radius = filter.Selects.Contains(PlaceSelect.Radius) ? q.Radius : default(long),
                 Latitude = filter.Selects.Contains(PlaceSelect.Latitude) ? q.Latitude : default(decimal),
                 Longtitude = filter.Selects.Contains(PlaceSelect.Longtitude) ? q.Longtitude : default(decimal),
-                Used = filter.Selects.Contains(PlaceSelect.Used) ? q.Used : default(bool),
                 PlaceGroup = filter.Selects.Contains(PlaceSelect.PlaceGroup) && q.PlaceGroup != null ? new PlaceGroup
                 {
                     Id = q.PlaceGroup.Id,
                     ParentId = q.PlaceGroup.ParentId,
                     Name = q.PlaceGroup.Name,
                     Code = q.PlaceGroup.Code,
-                    Used = q.PlaceGroup.Used,
                 } : null,
             }).ToListAsync();
             return Places;
@@ -195,14 +187,12 @@ namespace LocatingApp.Repositories
                 Radius = x.Radius,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
-                Used = x.Used,
                 PlaceGroup = x.PlaceGroup == null ? null : new PlaceGroup
                 {
                     Id = x.PlaceGroup.Id,
                     ParentId = x.PlaceGroup.ParentId,
                     Name = x.PlaceGroup.Name,
                     Code = x.PlaceGroup.Code,
-                    Used = x.PlaceGroup.Used,
                 },
             }).ToListAsync();
             
@@ -225,14 +215,12 @@ namespace LocatingApp.Repositories
                 Radius = x.Radius,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
-                Used = x.Used,
                 PlaceGroup = x.PlaceGroup == null ? null : new PlaceGroup
                 {
                     Id = x.PlaceGroup.Id,
                     ParentId = x.PlaceGroup.ParentId,
                     Name = x.PlaceGroup.Name,
                     Code = x.PlaceGroup.Code,
-                    Used = x.PlaceGroup.Used,
                 },
             }).FirstOrDefaultAsync();
 
@@ -250,7 +238,6 @@ namespace LocatingApp.Repositories
             PlaceDAO.Radius = Place.Radius;
             PlaceDAO.Latitude = Place.Latitude;
             PlaceDAO.Longtitude = Place.Longtitude;
-            PlaceDAO.Used = Place.Used;
             PlaceDAO.CreatedAt = StaticParams.DateTimeNow;
             PlaceDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.Place.Add(PlaceDAO);
@@ -271,7 +258,6 @@ namespace LocatingApp.Repositories
             PlaceDAO.Radius = Place.Radius;
             PlaceDAO.Latitude = Place.Latitude;
             PlaceDAO.Longtitude = Place.Longtitude;
-            PlaceDAO.Used = Place.Used;
             PlaceDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(Place);
@@ -296,7 +282,6 @@ namespace LocatingApp.Repositories
                 PlaceDAO.Radius = Place.Radius;
                 PlaceDAO.Latitude = Place.Latitude;
                 PlaceDAO.Longtitude = Place.Longtitude;
-                PlaceDAO.Used = Place.Used;
                 PlaceDAO.CreatedAt = StaticParams.DateTimeNow;
                 PlaceDAO.UpdatedAt = StaticParams.DateTimeNow;
                 PlaceDAOs.Add(PlaceDAO);

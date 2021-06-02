@@ -11,6 +11,7 @@ using System.Security.Claims;
 using LocatingApp.Services.MAppUser;
 using LocatingApp.Entities;
 using LocatingApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LocatingApp.Rpc
 {
@@ -66,6 +67,8 @@ namespace LocatingApp.Rpc
             CurrentContext.TimeZone = int.TryParse(TimeZone, out int t) ? t : 0;
             CurrentContext.Language = Language ?? "vi";
             context.Succeed(requirement);
+            var RoleId = await DataContext.AppUser.Where(x => x.Id == UserId).Select(x => x.RoleId).FirstOrDefaultAsync();
+            CurrentContext.RoleId = RoleId;
             context.Succeed(requirement);
         }
        

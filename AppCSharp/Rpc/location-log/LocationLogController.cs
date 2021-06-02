@@ -363,7 +363,6 @@ namespace LocatingApp.Rpc.location_log
             LocationLog.Latitude = LocationLog_LocationLogDTO.Latitude;
             LocationLog.Longtitude = LocationLog_LocationLogDTO.Longtitude;
             LocationLog.UpdateInterval = LocationLog_LocationLogDTO.UpdateInterval;
-            LocationLog.Used = LocationLog_LocationLogDTO.Used;
             LocationLog.AppUser = LocationLog_LocationLogDTO.AppUser == null ? null : new AppUser
             {
                 Id = LocationLog_LocationLogDTO.AppUser.Id,
@@ -372,7 +371,6 @@ namespace LocatingApp.Rpc.location_log
                 DisplayName = LocationLog_LocationLogDTO.AppUser.DisplayName,
                 Email = LocationLog_LocationLogDTO.AppUser.Email,
                 Phone = LocationLog_LocationLogDTO.AppUser.Phone,
-                Used = LocationLog_LocationLogDTO.AppUser.Used,
             };
             LocationLog.Previous = LocationLog_LocationLogDTO.Previous == null ? null : new LocationLog
             {
@@ -382,7 +380,6 @@ namespace LocatingApp.Rpc.location_log
                 Latitude = LocationLog_LocationLogDTO.Previous.Latitude,
                 Longtitude = LocationLog_LocationLogDTO.Previous.Longtitude,
                 UpdateInterval = LocationLog_LocationLogDTO.Previous.UpdateInterval,
-                Used = LocationLog_LocationLogDTO.Previous.Used,
             };
             LocationLog.BaseLanguage = CurrentContext.Language;
             return LocationLog;
