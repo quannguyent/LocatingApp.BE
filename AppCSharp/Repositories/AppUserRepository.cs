@@ -174,6 +174,8 @@ namespace LocatingApp.Repositories
                 Username = filter.Selects.Contains(AppUserSelect.Username) ? q.Username : default(string),
                 Password = filter.Selects.Contains(AppUserSelect.Password) ? q.Password : default(string),
                 DisplayName = filter.Selects.Contains(AppUserSelect.DisplayName) ? q.DisplayName : default(string),
+                OtpCode = filter.Selects.Contains(AppUserSelect.OtpCode) ? q.OtpCode : default(string),
+                OtpExpired = filter.Selects.Contains(AppUserSelect.OtpExpired) ? q.OtpExpired : default(DateTime),
                 Email = filter.Selects.Contains(AppUserSelect.Email) ? q.Email : default(string),
                 Phone = filter.Selects.Contains(AppUserSelect.Phone) ? q.Phone : default(string),
                 SexId = filter.Selects.Contains(AppUserSelect.Sex) ? q.SexId : default(long),
@@ -250,6 +252,8 @@ namespace LocatingApp.Repositories
                 Username = x.Username,
                 Password = x.Password,
                 DisplayName = x.DisplayName,
+                OtpCode = x.OtpCode,
+                OtpExpired = x.OtpExpired,
                 Email = x.Email,
                 Phone = x.Phone,
                 SexId = x.SexId,
@@ -442,6 +446,8 @@ namespace LocatingApp.Repositories
             AppUserDAO.Username = AppUser.Username;
             AppUserDAO.Password = AppUser.Password;
             AppUserDAO.DisplayName = AppUser.DisplayName;
+            AppUserDAO.OtpCode = AppUser.OtpCode;
+            AppUserDAO.OtpExpired = AppUser.OtpExpired;
             AppUserDAO.Email = AppUser.Email;
             AppUserDAO.Phone = AppUser.Phone;
             AppUserDAO.SexId = AppUser.SexId;

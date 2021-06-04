@@ -296,9 +296,10 @@ namespace LocatingApp.Services.MAppUser
             })).FirstOrDefault();
             if (oldData == null)
                 AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Email), ErrorCode.EmailNotExisted);
-            if (oldData.OtpCode != AppUser.OtpCode)
+            bool verify = VerifyPassword(oldData.OtpCode, AppUser.OtpCode);
+            if (verify == false)
             {
-                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.OtpCode), ErrorCode.OtpCodeInvalid);
+                AppUser.AddError(nameof(AppUserValidator), nameof(AppUser.Password), ErrorCode.PasswordNotMatch);
             }
             if (DateTime.Now > oldData.OtpExpired)
             {

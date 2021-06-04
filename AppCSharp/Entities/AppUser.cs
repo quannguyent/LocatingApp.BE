@@ -77,6 +77,8 @@ namespace LocatingApp.Entities
         public DateFilter Birthday { get; set; }
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
+        public StringFilter OtpCode { get; set; }
+        public DateFilter OtpExpired { get; set; }
         public IdFilter RoleId { get; set; }
         public DateFilter CreatedAt { get; set; }
         public DateFilter UpdatedAt { get; set; }
@@ -114,5 +116,7 @@ namespace LocatingApp.Entities
         Email = E._6,
         Phone = E._7,
         Role = E._8,
+        OtpCode = E._9,
+        OtpExpired = E._10,
     }
 }

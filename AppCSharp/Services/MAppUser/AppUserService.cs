@@ -344,8 +344,9 @@ namespace LocatingApp.Services.MAppUser
 
                 CurrentContext.UserId = oldData.Id;
 
-                oldData.OtpCode = GenerateOTPCode();
-                oldData.OtpExpired = StaticParams.DateTimeNow.AddHours(1);
+                var OtpCode = GenerateOTPCode();
+                oldData.OtpCode = HashPassword(OtpCode);
+                oldData.OtpExpired = StaticParams.DateTimeNow.AddMinutes(5);
 
                 await UOW.Begin();
                 await UOW.AppUserRepository.Update(oldData);
@@ -356,7 +357,7 @@ namespace LocatingApp.Services.MAppUser
                 Mail mail = new Mail
                 {
                     Subject = "Otp Code",
-                    Body = $"Otp Code recovery password: {newData.OtpCode}",
+                    Body = $"Otp Code recovery password: {OtpCode}",
                     Recipients = newData.Email,
                     RowId = Guid.NewGuid()
                 };
