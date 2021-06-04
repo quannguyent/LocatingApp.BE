@@ -19,6 +19,7 @@ namespace LocatingApp.Rpc.app_user
     {
         public const string SendFriendRequest = "rpc/locating-app/friend/send-friend-request";
         public const string AcceptFriendRequest = "rpc/locating-app/friend/accept-friend-request";
+        public const string GetFriendFromContact = "rpc/locating-app/friend/get-friend-from-contact";
     }
     public class FriendController : RpcController
     {
@@ -34,6 +35,21 @@ namespace LocatingApp.Rpc.app_user
             this.AppUserService = AppUserService;
             this.SexService = SexService;
             this.CurrentContext = CurrentContext;
+        }
+
+        [Route(FriendRoute.GetFriendFromContact), HttpPost]
+        public async Task<ActionResult<List<AppUser_AppUserDTO>>> GetFriendFromContact([FromBody] List<AppUser_UserPhoneDTO> AppUser_UserPhoneDTOs)
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+
+            List<AppUser_AppUserDTO> AppUser_AppUserDTOs = new List<AppUser_AppUserDTO>();
+            foreach (var AppUser_UserPhoneDTO in AppUser_UserPhoneDTOs)
+            {
+                var AppUser = await AppUserService.GetFriendFromContact(AppUser_UserPhoneDTO.Phone);
+                AppUser_AppUserDTOs.Add(new AppUser_AppUserDTO(AppUser));
+            }
+            return AppUser_AppUserDTOs;
         }
 
         [Route(FriendRoute.SendFriendRequest), HttpPost]

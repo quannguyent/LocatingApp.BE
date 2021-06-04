@@ -26,6 +26,7 @@ namespace LocatingApp.Services.MAppUser
         Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
+        Task<AppUser> GetFriendFromContact(string Phone);
         Task<AppUser> Get(long Id);
         Task<AppUser> Create(AppUser AppUser);
         Task<AppUser> Update(AppUser AppUser);
@@ -125,6 +126,22 @@ namespace LocatingApp.Services.MAppUser
             });
             await UOW.AppUserRepository.Update(AppUser);
             return AppUserAppUserMapping;
+        }
+
+        public async Task<AppUser> GetFriendFromContact(string Phone)
+        {
+            AppUser CurrentUser = await Get(CurrentContext.UserId);
+            var FriendList = await ListFriends(CurrentUser);
+            AppUserFilter AppUserFilter = new AppUserFilter
+            {
+                Id = new IdFilter { NotIn = FriendList.Select(x => x.Id).ToList() },
+                Phone = new StringFilter { Equal = Phone },
+                Selects = AppUserSelect.ALL,
+                Take = int.MaxValue,
+                Skip = 0,
+            };
+            var AppUser = await UOW.AppUserRepository.List(AppUserFilter);
+            return AppUser.FirstOrDefault();
         }
 
         public async Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
