@@ -358,7 +358,6 @@ namespace LocatingApp.Rpc.location_log
         {
             LocationLog LocationLog = new LocationLog();
             LocationLog.Id = LocationLog_LocationLogDTO.Id;
-            LocationLog.PreviousId = LocationLog_LocationLogDTO.PreviousId;
             LocationLog.AppUserId = LocationLog_LocationLogDTO.AppUserId;
             LocationLog.Latitude = LocationLog_LocationLogDTO.Latitude;
             LocationLog.Longtitude = LocationLog_LocationLogDTO.Longtitude;
@@ -375,7 +374,6 @@ namespace LocatingApp.Rpc.location_log
             LocationLog.Previous = LocationLog_LocationLogDTO.Previous == null ? null : new LocationLog
             {
                 Id = LocationLog_LocationLogDTO.Previous.Id,
-                PreviousId = LocationLog_LocationLogDTO.Previous.PreviousId,
                 AppUserId = LocationLog_LocationLogDTO.Previous.AppUserId,
                 Latitude = LocationLog_LocationLogDTO.Previous.Latitude,
                 Longtitude = LocationLog_LocationLogDTO.Previous.Longtitude,
@@ -395,13 +393,11 @@ namespace LocatingApp.Rpc.location_log
             LocationLogFilter.OrderType = LocationLog_LocationLogFilterDTO.OrderType;
 
             LocationLogFilter.Id = LocationLog_LocationLogFilterDTO.Id;
-            LocationLogFilter.PreviousId = LocationLog_LocationLogFilterDTO.PreviousId;
             LocationLogFilter.AppUserId = LocationLog_LocationLogFilterDTO.AppUserId;
             LocationLogFilter.Latitude = LocationLog_LocationLogFilterDTO.Latitude;
             LocationLogFilter.Longtitude = LocationLog_LocationLogFilterDTO.Longtitude;
             LocationLogFilter.UpdateInterval = LocationLog_LocationLogFilterDTO.UpdateInterval;
             LocationLogFilter.CreatedAt = LocationLog_LocationLogFilterDTO.CreatedAt;
-            LocationLogFilter.UpdatedAt = LocationLog_LocationLogFilterDTO.UpdatedAt;
             return LocationLogFilter;
         }
     }

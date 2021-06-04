@@ -222,20 +222,10 @@ namespace LocatingApp.Repositories
                 .Select(x => new LocationLog
                 {
                     Id = x.Id,
-                    PreviousId = x.PreviousId,
                     AppUserId = x.AppUserId,
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Previous = new LocationLog
-                    {
-                        Id = x.Previous.Id,
-                        PreviousId = x.Previous.PreviousId,
-                        AppUserId = x.Previous.AppUserId,
-                        Latitude = x.Previous.Latitude,
-                        Longtitude = x.Previous.Longtitude,
-                        UpdateInterval = x.Previous.UpdateInterval,
-                    },
                 }).ToListAsync();
             foreach(AppUser AppUser in AppUsers)
             {
@@ -291,20 +281,10 @@ namespace LocatingApp.Repositories
                 .Select(x => new LocationLog
                 {
                     Id = x.Id,
-                    PreviousId = x.PreviousId,
                     AppUserId = x.AppUserId,
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Previous = new LocationLog
-                    {
-                        Id = x.Previous.Id,
-                        PreviousId = x.Previous.PreviousId,
-                        AppUserId = x.Previous.AppUserId,
-                        Latitude = x.Previous.Latitude,
-                        Longtitude = x.Previous.Longtitude,
-                        UpdateInterval = x.Previous.UpdateInterval,
-                    },
                 }).ToListAsync();
             AppUser.AppUserAppUserMappingAppUsers = await DataContext.AppUserAppUserMapping.AsNoTracking()
                 .Where(x => x.AppUserId == AppUser.Id).Where(x => x.DeletedAt == null)
@@ -524,25 +504,21 @@ namespace LocatingApp.Repositories
                     {
                         LocationLogDAO = new LocationLogDAO();
                         LocationLogDAO.Id = LocationLog.Id;
-                        LocationLogDAO.PreviousId = LocationLog.PreviousId;
                         LocationLogDAO.AppUserId = AppUser.Id;
                         LocationLogDAO.Latitude = LocationLog.Latitude;
                         LocationLogDAO.Longtitude = LocationLog.Longtitude;
                         LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
                         LocationLogDAOs.Add(LocationLogDAO);
                         LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
-                        LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
                         LocationLogDAO.DeletedAt = null;
                     }
                     else
                     {
                         LocationLogDAO.Id = LocationLog.Id;
-                        LocationLogDAO.PreviousId = LocationLog.PreviousId;
                         LocationLogDAO.AppUserId = AppUser.Id;
                         LocationLogDAO.Latitude = LocationLog.Latitude;
                         LocationLogDAO.Longtitude = LocationLog.Longtitude;
                         LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-                        LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
                         LocationLogDAO.DeletedAt = null;
                     }
                 }

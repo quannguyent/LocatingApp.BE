@@ -243,18 +243,11 @@ namespace LocatingApp.Models
 
                 entity.Property(e => e.Longtitude).HasColumnType("decimal(8, 2)");
 
-                entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-
                 entity.HasOne(d => d.AppUser)
                     .WithMany(p => p.LocationLogs)
                     .HasForeignKey(d => d.AppUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Location_AppUser");
-
-                entity.HasOne(d => d.Previous)
-                    .WithMany(p => p.InversePrevious)
-                    .HasForeignKey(d => d.PreviousId)
-                    .HasConstraintName("FK_LocationLog_LocationLog");
             });
 
             modelBuilder.Entity<PageDAO>(entity =>

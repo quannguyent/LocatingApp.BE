@@ -37,12 +37,8 @@ namespace LocatingApp.Repositories
             query = query.Where(q => !q.DeletedAt.HasValue);
             if (filter.CreatedAt != null && filter.CreatedAt.HasValue)
                 query = query.Where(q => q.CreatedAt, filter.CreatedAt);
-            if (filter.UpdatedAt != null && filter.UpdatedAt.HasValue)
-                query = query.Where(q => q.UpdatedAt, filter.UpdatedAt);
             if (filter.Id != null && filter.Id.HasValue)
                 query = query.Where(q => q.Id, filter.Id);
-            if (filter.PreviousId != null && filter.PreviousId.HasValue)
-                query = query.Where(q => q.PreviousId.HasValue).Where(q => q.PreviousId.Value, filter.PreviousId);
             if (filter.AppUserId != null && filter.AppUserId.HasValue)
                 query = query.Where(q => q.AppUserId, filter.AppUserId);
             if (filter.Latitude != null && filter.Latitude.HasValue)
@@ -90,9 +86,6 @@ namespace LocatingApp.Repositories
                         case LocationLogOrder.Id:
                             query = query.OrderBy(q => q.Id);
                             break;
-                        case LocationLogOrder.Previous:
-                            query = query.OrderBy(q => q.PreviousId);
-                            break;
                         case LocationLogOrder.AppUser:
                             query = query.OrderBy(q => q.AppUserId);
                             break;
@@ -112,9 +105,6 @@ namespace LocatingApp.Repositories
                     {
                         case LocationLogOrder.Id:
                             query = query.OrderByDescending(q => q.Id);
-                            break;
-                        case LocationLogOrder.Previous:
-                            query = query.OrderByDescending(q => q.PreviousId);
                             break;
                         case LocationLogOrder.AppUser:
                             query = query.OrderByDescending(q => q.AppUserId);
@@ -140,7 +130,6 @@ namespace LocatingApp.Repositories
             List<LocationLog> LocationLogs = await query.Select(q => new LocationLog()
             {
                 Id = filter.Selects.Contains(LocationLogSelect.Id) ? q.Id : default(long),
-                PreviousId = filter.Selects.Contains(LocationLogSelect.Previous) ? q.PreviousId : default(long?),
                 AppUserId = filter.Selects.Contains(LocationLogSelect.AppUser) ? q.AppUserId : default(long),
                 Latitude = filter.Selects.Contains(LocationLogSelect.Latitude) ? q.Latitude : default(decimal),
                 Longtitude = filter.Selects.Contains(LocationLogSelect.Longtitude) ? q.Longtitude : default(decimal),
@@ -153,15 +142,6 @@ namespace LocatingApp.Repositories
                     DisplayName = q.AppUser.DisplayName,
                     Email = q.AppUser.Email,
                     Phone = q.AppUser.Phone,
-                } : null,
-                Previous = filter.Selects.Contains(LocationLogSelect.Previous) && q.Previous != null ? new LocationLog
-                {
-                    Id = q.Previous.Id,
-                    PreviousId = q.Previous.PreviousId,
-                    AppUserId = q.Previous.AppUserId,
-                    Latitude = q.Previous.Latitude,
-                    Longtitude = q.Previous.Longtitude,
-                    UpdateInterval = q.Previous.UpdateInterval,
                 } : null,
             }).ToListAsync();
             return LocationLogs;
@@ -190,10 +170,8 @@ namespace LocatingApp.Repositories
             .Where(x => Ids.Contains(x.Id)).Select(x => new LocationLog()
             {
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt,
                 DeletedAt = x.DeletedAt,
                 Id = x.Id,
-                PreviousId = x.PreviousId,
                 AppUserId = x.AppUserId,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
@@ -206,15 +184,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                },
-                Previous = x.Previous == null ? null : new LocationLog
-                {
-                    Id = x.Previous.Id,
-                    PreviousId = x.Previous.PreviousId,
-                    AppUserId = x.Previous.AppUserId,
-                    Latitude = x.Previous.Latitude,
-                    Longtitude = x.Previous.Longtitude,
-                    UpdateInterval = x.Previous.UpdateInterval,
                 },
             }).ToListAsync();
             
@@ -230,9 +199,7 @@ namespace LocatingApp.Repositories
             .Select(x => new LocationLog()
             {
                 CreatedAt = x.CreatedAt,
-                UpdatedAt = x.UpdatedAt,
                 Id = x.Id,
-                PreviousId = x.PreviousId,
                 AppUserId = x.AppUserId,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
@@ -245,15 +212,6 @@ namespace LocatingApp.Repositories
                     DisplayName = x.AppUser.DisplayName,
                     Email = x.AppUser.Email,
                     Phone = x.AppUser.Phone,
-                },
-                Previous = x.Previous == null ? null : new LocationLog
-                {
-                    Id = x.Previous.Id,
-                    PreviousId = x.Previous.PreviousId,
-                    AppUserId = x.Previous.AppUserId,
-                    Latitude = x.Previous.Latitude,
-                    Longtitude = x.Previous.Longtitude,
-                    UpdateInterval = x.Previous.UpdateInterval,
                 },
             }).FirstOrDefaultAsync();
 
@@ -269,13 +227,11 @@ namespace LocatingApp.Repositories
                 .FirstOrDefaultAsync();
 
             LocationLogDAO LocationLogDAO = new LocationLogDAO();
-            LocationLogDAO.PreviousId = Previous?.Id;
             LocationLogDAO.AppUserId = LocationLog.AppUserId;
             LocationLogDAO.Latitude = LocationLog.Latitude;
             LocationLogDAO.Longtitude = LocationLog.Longtitude;
             LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
             LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
-            LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
             DataContext.LocationLog.Add(LocationLogDAO);
             await DataContext.SaveChangesAsync();
             LocationLog.Id = LocationLogDAO.Id;
@@ -289,12 +245,10 @@ namespace LocatingApp.Repositories
             if (LocationLogDAO == null)
                 return false;
             LocationLogDAO.Id = LocationLog.Id;
-            LocationLogDAO.PreviousId = LocationLog.PreviousId;
             LocationLogDAO.AppUserId = LocationLog.AppUserId;
             LocationLogDAO.Latitude = LocationLog.Latitude;
             LocationLogDAO.Longtitude = LocationLog.Longtitude;
             LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
-            LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
             await DataContext.SaveChangesAsync();
             await SaveReference(LocationLog);
             return true;
@@ -302,7 +256,7 @@ namespace LocatingApp.Repositories
 
         public async Task<bool> Delete(LocationLog LocationLog)
         {
-            await DataContext.LocationLog.Where(x => x.Id == LocationLog.Id).UpdateFromQueryAsync(x => new LocationLogDAO { DeletedAt = StaticParams.DateTimeNow, UpdatedAt = StaticParams.DateTimeNow });
+            await DataContext.LocationLog.Where(x => x.Id == LocationLog.Id).UpdateFromQueryAsync(x => new LocationLogDAO { DeletedAt = StaticParams.DateTimeNow});
             return true;
         }
         
@@ -313,13 +267,11 @@ namespace LocatingApp.Repositories
             {
                 LocationLogDAO LocationLogDAO = new LocationLogDAO();
                 LocationLogDAO.Id = LocationLog.Id;
-                LocationLogDAO.PreviousId = LocationLog.PreviousId;
                 LocationLogDAO.AppUserId = LocationLog.AppUserId;
                 LocationLogDAO.Latitude = LocationLog.Latitude;
                 LocationLogDAO.Longtitude = LocationLog.Longtitude;
                 LocationLogDAO.UpdateInterval = LocationLog.UpdateInterval;
                 LocationLogDAO.CreatedAt = StaticParams.DateTimeNow;
-                LocationLogDAO.UpdatedAt = StaticParams.DateTimeNow;
                 LocationLogDAOs.Add(LocationLogDAO);
             }
             await DataContext.BulkMergeAsync(LocationLogDAOs);
@@ -331,7 +283,7 @@ namespace LocatingApp.Repositories
             List<long> Ids = LocationLogs.Select(x => x.Id).ToList();
             await DataContext.LocationLog
                 .Where(x => Ids.Contains(x.Id))
-                .UpdateFromQueryAsync(x => new LocationLogDAO { DeletedAt = StaticParams.DateTimeNow, UpdatedAt = StaticParams.DateTimeNow });
+                .UpdateFromQueryAsync(x => new LocationLogDAO { DeletedAt = StaticParams.DateTimeNow});
             return true;
         }
 

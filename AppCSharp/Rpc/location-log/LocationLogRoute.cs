@@ -43,7 +43,6 @@ namespace LocatingApp.Rpc.location_log
         public static Dictionary<string, long> Filters = new Dictionary<string, long>
         {
             { nameof(LocationLogFilter.Id), FieldTypeEnum.ID.Id },
-            { nameof(LocationLogFilter.PreviousId), FieldTypeEnum.ID.Id },
             { nameof(LocationLogFilter.AppUserId), FieldTypeEnum.ID.Id },
             { nameof(LocationLogFilter.Latitude), FieldTypeEnum.DECIMAL.Id },
             { nameof(LocationLogFilter.Longtitude), FieldTypeEnum.DECIMAL.Id },

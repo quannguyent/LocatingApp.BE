@@ -23,7 +23,6 @@ namespace LocatingApp.Rpc.location_log
         public LocationLog_LocationLogDTO(LocationLog LocationLog)
         {
             this.Id = LocationLog.Id;
-            this.PreviousId = LocationLog.PreviousId;
             this.AppUserId = LocationLog.AppUserId;
             this.Latitude = LocationLog.Latitude;
             this.Longtitude = LocationLog.Longtitude;
@@ -31,7 +30,6 @@ namespace LocatingApp.Rpc.location_log
             this.AppUser = LocationLog.AppUser == null ? null : new LocationLog_AppUserDTO(LocationLog.AppUser);
             this.Previous = LocationLog.Previous == null ? null : new LocationLog_LocationLogDTO(LocationLog.Previous);
             this.CreatedAt = LocationLog.CreatedAt;
-            this.UpdatedAt = LocationLog.UpdatedAt;
             this.Errors = LocationLog.Errors;
         }
     }

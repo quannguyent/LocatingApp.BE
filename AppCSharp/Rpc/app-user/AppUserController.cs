@@ -272,7 +272,6 @@ namespace LocatingApp.Rpc.app_user
                 {
                     new string[] { 
                         "Id",
-                        "PreviousId",
                         "AppUserId",
                         "Latitude",
                         "Longtitude",
@@ -286,7 +285,6 @@ namespace LocatingApp.Rpc.app_user
                     LocationLogData.Add(new Object[]
                     {
                         LocationLog.Id,
-                        LocationLog.PreviousId,
                         LocationLog.AppUserId,
                         LocationLog.Latitude,
                         LocationLog.Longtitude,
@@ -348,14 +346,12 @@ namespace LocatingApp.Rpc.app_user
                 .Select(x => new LocationLog
                 {
                     Id = x.Id,
-                    PreviousId = x.PreviousId,
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
                     Previous = x.Previous == null ? null : new LocationLog
                     {
                         Id = x.Previous.Id,
-                        PreviousId = x.Previous.PreviousId,
                         AppUserId = x.Previous.AppUserId,
                         Latitude = x.Previous.Latitude,
                         Longtitude = x.Previous.Longtitude,

@@ -9,7 +9,6 @@ namespace LocatingApp.Entities
     public class LocationLog : DataEntity,  IEquatable<LocationLog>
     {
         public long Id { get; set; }
-        public long? PreviousId { get; set; }
         public long AppUserId { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
@@ -17,14 +16,12 @@ namespace LocatingApp.Entities
         public AppUser AppUser { get; set; }
         public LocationLog Previous { get; set; }
         public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
         
         public bool Equals(LocationLog other)
         {
             if (other == null) return false;
             if (this.Id != other.Id) return false;
-            if (this.PreviousId != other.PreviousId) return false;
             if (this.AppUserId != other.AppUserId) return false;
             if (this.Latitude != other.Latitude) return false;
             if (this.Longtitude != other.Longtitude) return false;
@@ -40,13 +37,11 @@ namespace LocatingApp.Entities
     public class LocationLogFilter : FilterEntity
     {
         public IdFilter Id { get; set; }
-        public IdFilter PreviousId { get; set; }
         public IdFilter AppUserId { get; set; }
         public DecimalFilter Latitude { get; set; }
         public DecimalFilter Longtitude { get; set; }
         public LongFilter UpdateInterval { get; set; }
         public DateFilter CreatedAt { get; set; }
-        public DateFilter UpdatedAt { get; set; }
         public List<LocationLogFilter> OrFilter { get; set; }
         public LocationLogOrder OrderBy {get; set;}
         public LocationLogSelect Selects {get; set;}
@@ -56,13 +51,11 @@ namespace LocatingApp.Entities
     public enum LocationLogOrder
     {
         Id = 0,
-        Previous = 1,
         AppUser = 2,
         Latitude = 3,
         Longtitude = 4,
         UpdateInterval = 5,
         CreatedAt = 50,
-        UpdatedAt = 51,
     }
 
     [Flags]
@@ -70,7 +63,6 @@ namespace LocatingApp.Entities
     {
         ALL = E.ALL,
         Id = E._0,
-        Previous = E._1,
         AppUser = E._2,
         Latitude = E._3,
         Longtitude = E._4,

@@ -9,7 +9,6 @@ namespace LocatingApp.Rpc.app_user
     public class AppUser_LocationLogDTO : DataDTO
     {
         public long Id { get; set; }
-        public long? PreviousId { get; set; }
         public long AppUserId { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
@@ -20,7 +19,6 @@ namespace LocatingApp.Rpc.app_user
         public AppUser_LocationLogDTO(LocationLog LocationLog)
         {
             this.Id = LocationLog.Id;
-            this.PreviousId = LocationLog.PreviousId;
             this.AppUserId = LocationLog.AppUserId;
             this.Latitude = LocationLog.Latitude;
             this.Longtitude = LocationLog.Longtitude;
@@ -34,9 +32,7 @@ namespace LocatingApp.Rpc.app_user
     {
         
         public IdFilter Id { get; set; }
-        
-        public IdFilter PreviousId { get; set; }
-        
+                
         public IdFilter AppUserId { get; set; }
         
         public DecimalFilter Latitude { get; set; }

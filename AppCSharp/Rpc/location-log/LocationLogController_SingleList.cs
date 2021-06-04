@@ -53,7 +53,6 @@ namespace LocatingApp.Rpc.location_log
             LocationLogFilter.OrderType = OrderType.ASC;
             LocationLogFilter.Selects = LocationLogSelect.ALL;
             LocationLogFilter.Id = LocationLog_LocationLogFilterDTO.Id;
-            LocationLogFilter.PreviousId = LocationLog_LocationLogFilterDTO.PreviousId;
             LocationLogFilter.AppUserId = LocationLog_LocationLogFilterDTO.AppUserId;
             LocationLogFilter.Latitude = LocationLog_LocationLogFilterDTO.Latitude;
             LocationLogFilter.Longtitude = LocationLog_LocationLogFilterDTO.Longtitude;
