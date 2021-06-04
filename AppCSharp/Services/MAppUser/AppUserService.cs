@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
+using LocatingApp.Services.MMail;
 
 namespace LocatingApp.Services.MAppUser
 {
@@ -46,18 +47,21 @@ namespace LocatingApp.Services.MAppUser
         private ILogging Logging;
         private ICurrentContext CurrentContext;
         private IAppUserValidator AppUserValidator;
+        private IMailService MailService;
         private IConfiguration Configuration;
 
         public AppUserService(
             IUOW UOW,
             ICurrentContext CurrentContext,
             IAppUserValidator AppUserValidator,
+            IMailService MailService,
             ILogging Logging,
             IConfiguration Configuration
         )
         {
             this.UOW = UOW;
             this.Logging = Logging;
+            this.MailService = MailService;
             this.CurrentContext = CurrentContext;
             this.AppUserValidator = AppUserValidator;
             this.Configuration = Configuration;
@@ -301,9 +305,10 @@ namespace LocatingApp.Services.MAppUser
                 {
                     Subject = "Change Password AppUser",
                     Body = $"Your password has been changed at {StaticParams.DateTimeNow.ToString()}",
-                    Recipients = new List<string> { newData.Email },
+                    Recipients = newData.Email,
                     RowId = Guid.NewGuid()
                 };
+                await MailService.SendMail(mail);
                 await Logging.CreateAuditLog(newData, oldData, nameof(AppUserService));
                 return newData;
             }
@@ -352,9 +357,10 @@ namespace LocatingApp.Services.MAppUser
                 {
                     Subject = "Otp Code",
                     Body = $"Otp Code recovery password: {newData.OtpCode}",
-                    Recipients = new List<string> { newData.Email },
+                    Recipients = newData.Email,
                     RowId = Guid.NewGuid()
                 };
+                await MailService.SendMail(mail);
                 await Logging.CreateAuditLog(newData, oldData, nameof(AppUserService));
                 return newData;
             }
@@ -393,9 +399,10 @@ namespace LocatingApp.Services.MAppUser
                 {
                     Subject = "Recovery Password",
                     Body = $"Your password has been recovered.",
-                    Recipients = new List<string> { newData.Email },
+                    Recipients = newData.Email,
                     RowId = Guid.NewGuid()
                 };
+                await MailService.SendMail(mail);
                 await Logging.CreateAuditLog(newData, oldData, nameof(AppUserService));
                 return newData;
             }

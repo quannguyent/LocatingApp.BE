@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 using LocatingApp.Models;
 using LocatingApp.Rpc;
 using LocatingApp.Services;
+using LocatingApp.Entities;
 
 namespace LocatingApp
 {
@@ -162,6 +163,11 @@ namespace LocatingApp
                     tzi = TimeZoneInfo.FindSystemTimeZoneById("Asia/Ho_Chi_Minh");
                 RecurringJob.AddOrUpdate<MaintenanceService>("CleanHangfire", x => x.CleanHangfire(), Cron.Daily, tzi);
             };
+
+            services.AddOptions();
+            var mailsettings = Configuration.GetSection("MailSettings"); 
+            services.Configure<MailSettings>(mailsettings);
+
             onChange();
             ChangeToken.OnChange(() => Configuration.GetReloadToken(), onChange);
         }
