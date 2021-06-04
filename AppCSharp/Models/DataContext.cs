@@ -63,6 +63,8 @@ namespace LocatingApp.Models
 
             modelBuilder.Entity<AppUserDAO>(entity =>
             {
+                entity.Property(e => e.Avatar).HasMaxLength(4000);
+
                 entity.Property(e => e.Birthday).HasColumnType("datetime");
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
@@ -83,8 +85,7 @@ namespace LocatingApp.Models
 
                 entity.Property(e => e.Password)
                     .IsRequired()
-                    .HasMaxLength(1000)
-                    .IsFixedLength();
+                    .HasMaxLength(1000);
 
                 entity.Property(e => e.Phone).HasMaxLength(4000);
 

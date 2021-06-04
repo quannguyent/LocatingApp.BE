@@ -13,6 +13,7 @@ namespace LocatingApp.Entities
         public string Password { get; set; }
         public string NewPassword { get; set; }
         public string DisplayName { get; set; }
+        public string Avatar { get; set; }
         public long SexId { get; set; }
         public DateTime? Birthday { get; set; }
         public string Email { get; set; }
@@ -38,27 +39,6 @@ namespace LocatingApp.Entities
         {
             if (other == null) return false;
             if (this.Id != other.Id) return false;
-            if (this.Username != other.Username) return false;
-            if (this.Password != other.Password) return false;
-            if (this.DisplayName != other.DisplayName) return false;
-            if (this.SexId != other.SexId) return false;
-            if (this.Email != other.Email) return false;
-            if (this.Phone != other.Phone) return false;
-            if (this.LocationLogs?.Count != other.LocationLogs?.Count) return false;
-            else if (this.LocationLogs != null && other.LocationLogs != null)
-            {
-                for (int i = 0; i < LocationLogs.Count; i++)
-                {
-                    LocationLog LocationLog = LocationLogs[i];
-                    LocationLog otherLocationLog = other.LocationLogs[i];
-                    if (LocationLog == null && otherLocationLog != null)
-                        return false;
-                    if (LocationLog != null && otherLocationLog == null)
-                        return false;
-                    if (LocationLog.Equals(otherLocationLog) == false)
-                        return false;
-                }
-            }
             return true;
         }
         public override int GetHashCode()
@@ -73,6 +53,7 @@ namespace LocatingApp.Entities
         public StringFilter Username { get; set; }
         public StringFilter Password { get; set; }
         public StringFilter DisplayName { get; set; }
+        public StringFilter Avatar { get; set; }
         public IdFilter SexId { get; set; }
         public DateFilter Birthday { get; set; }
         public StringFilter Email { get; set; }
@@ -118,5 +99,6 @@ namespace LocatingApp.Entities
         Role = E._8,
         OtpCode = E._9,
         OtpExpired = E._10,
+        Avatar = E._11,
     }
 }

@@ -12,6 +12,7 @@ namespace LocatingApp.Rpc.app_user
         public string Username { get; set; }
         public string Password { get; set; }
         public string DisplayName { get; set; }
+        public string Avatar { get; set; }
         public long SexId { get; set; }
         public DateTime? Birthday { get; set; }
         public string Email { get; set; }
@@ -31,16 +32,14 @@ namespace LocatingApp.Rpc.app_user
         {
             this.Id = AppUser.Id;
             this.Username = AppUser.Username;
-            this.Password = AppUser.Password;
             this.DisplayName = AppUser.DisplayName;
+            this.Avatar = AppUser.Avatar;
             this.Email = AppUser.Email;
             this.Phone = AppUser.Phone;
             this.SexId = AppUser.SexId;
             this.Birthday = AppUser.Birthday;
-            this.RoleId = AppUser.RoleId;
             this.LocationLogs = AppUser.LocationLogs?.Select(x => new AppUser_LocationLogDTO(x)).ToList();
             this.Sex = AppUser.Sex;
-            this.Role = AppUser.Role;
             this.CreatedAt = AppUser.CreatedAt;
             this.UpdatedAt = AppUser.UpdatedAt;
             this.Errors = AppUser.Errors;
@@ -53,6 +52,7 @@ namespace LocatingApp.Rpc.app_user
         public StringFilter Username { get; set; }
         public StringFilter Password { get; set; }
         public StringFilter DisplayName { get; set; }
+        public StringFilter Avatar { get; set; }
         public StringFilter Email { get; set; }
         public StringFilter Phone { get; set; }
         public IdFilter RoleId { get; set; }

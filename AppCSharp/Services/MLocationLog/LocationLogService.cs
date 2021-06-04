@@ -191,8 +191,7 @@ namespace LocatingApp.Services.MLocationLog
 
         private async Task<List<long>> FilterAppUser(IAppUserService AppUserService, ICurrentContext CurrentContext)
         {
-            AppUser AppUser = await AppUserService.Get(CurrentContext.UserId);
-            List<AppUser> AppUsers = await AppUserService.ListFriends(AppUser);
+            List<AppUser> AppUsers = await AppUserService.ListFriends(CurrentContext.UserId);
             List<long> In = AppUsers.Select(x => x.Id).ToList();
             In.Add(CurrentContext.UserId);
             return In;

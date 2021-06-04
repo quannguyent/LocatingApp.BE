@@ -16,6 +16,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using LocatingApp.Services.MMail;
+using RestSharp;
 
 namespace LocatingApp.Services.MAppUser
 {
@@ -23,7 +24,8 @@ namespace LocatingApp.Services.MAppUser
     {
         Task<int> Count(AppUserFilter AppUserFilter);
         Task<List<AppUser>> List(AppUserFilter AppUserFilter);
-        Task<List<AppUser>> ListFriends(AppUser AppUser);
+        Task<List<AppUser>> ListFriends(long AppUserId);
+        Task<List<AppUser>> ListFriends(AppUserFilter AppUserFilter, long AppUserId);
         Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
@@ -39,6 +41,7 @@ namespace LocatingApp.Services.MAppUser
         Task<AppUser> ForgotPassword(AppUser AppUser);
         Task<AppUser> VerifyOtpCode(AppUser AppUser);
         Task<AppUser> RecoveryPassword(AppUser AppUser);
+        Task<string> SaveImage(Image Image);
     }
 
     public class AppUserService : BaseService, IAppUserService
@@ -94,11 +97,11 @@ namespace LocatingApp.Services.MAppUser
             return null;
         }
 
-        public async Task<List<AppUser>> ListFriends(AppUser AppUser)
+        public async Task<List<AppUser>> ListFriends(long AppUserId)
         {
             try
             {
-                AppUser = await UOW.AppUserRepository.Get(AppUser.Id);
+                var AppUser = await UOW.AppUserRepository.Get(AppUserId);
                 List<long> FriendIds = new List<long>();
                 foreach (var AppUserMapping in AppUser.AppUserAppUserMappingAppUsers)
                 {
@@ -116,6 +119,14 @@ namespace LocatingApp.Services.MAppUser
             }
             return null;
         }
+
+        public async Task<List<AppUser>> ListFriends(AppUserFilter AppUserFilter, long AppUserId)
+        {
+            var FriendIds = (await ListFriends(AppUserId)).Select(x => x.Id).ToList();
+            AppUserFilter.Id = FilterBuilder.Merge(new IdFilter { In = FriendIds }, AppUserFilter.Id);
+            return await UOW.AppUserRepository.List(AppUserFilter);
+        }
+
 
         public async Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping)
         {
@@ -135,7 +146,7 @@ namespace LocatingApp.Services.MAppUser
         public async Task<AppUser> GetFriendFromContact(string Phone)
         {
             AppUser CurrentUser = await Get(CurrentContext.UserId);
-            var FriendList = await ListFriends(CurrentUser);
+            var FriendList = await ListFriends(CurrentUser.Id);
             AppUserFilter AppUserFilter = new AppUserFilter
             {
                 Id = new IdFilter { NotIn = FriendList.Select(x => x.Id).ToList() },
@@ -436,6 +447,36 @@ namespace LocatingApp.Services.MAppUser
             })).FirstOrDefault();
             appUser.Token = CreateToken(appUser.Id, appUser.Username, 300);
             return appUser;
+        }
+
+        public async Task<string> SaveImage(Image Image)
+        {
+            FileInfo fileInfo = new FileInfo(Image.Name);
+            string path = $"/avatar/{StaticParams.DateTimeNow.ToString("yyyyMMdd")}/{Guid.NewGuid()}{fileInfo.Extension}";
+            RestClient restClient = new RestClient($"{InternalServices.UTILS}");
+            RestRequest restRequest = new RestRequest("/rpc/utils/file/upload");
+            restRequest.RequestFormat = DataFormat.Json;
+            restRequest.Method = Method.POST;
+            restRequest.AddCookie("Token", CurrentContext.Token);
+            restRequest.AddCookie("X-Language", CurrentContext.Language);
+            restRequest.AddHeader("Content-Type", "multipart/form-data");
+            restRequest.AddFile("file", Image.Content, Image.Name);
+            restRequest.AddParameter("path", path);
+            try
+            {
+                var response = await restClient.ExecuteAsync<Entities.File>(restRequest);
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    Image.Id = response.Data.Id;
+                    Image.Url = "/rpc/utils/file/download" + response.Data.Path;
+                    return Image.Url;
+                }
+            }
+            catch
+            {
+                return null;
+            }
+            return null;
         }
 
         public AppUserFilter ToFilter(AppUserFilter filter)

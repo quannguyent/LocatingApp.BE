@@ -20,6 +20,7 @@ namespace LocatingApp.Rpc.app_user
         public const string SendFriendRequest = "rpc/locating-app/friend/send-friend-request";
         public const string AcceptFriendRequest = "rpc/locating-app/friend/accept-friend-request";
         public const string GetFriendFromContact = "rpc/locating-app/friend/get-friend-from-contact";
+        public const string ListFriends = "rpc/locating-app/friend/list-friend";
     }
     public class FriendController : RpcController
     {
@@ -80,6 +81,16 @@ namespace LocatingApp.Rpc.app_user
             return AppUser_AppUserAppUserMappingDTO;
         }
 
+        [Route(FriendRoute.ListFriends), HttpPost]
+        public async Task<ActionResult<List<AppUser_AppUserDTO>>> ListFriends([FromBody] AppUser_AppUserFilterDTO AppUser_AppUserFilterDTO)
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+            AppUserFilter AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
+            List<AppUser> Friends = await AppUserService.ListFriends(AppUserFilter, CurrentContext.UserId);
+            return Friends.Select(x => new AppUser_AppUserDTO(x)).ToList();
+        }
+
         private AppUserAppUserMapping ConvertDTOToEntity(AppUser_AppUserAppUserMappingDTO AppUser_AppUserAppUserMappingDTO)
         {
             AppUserAppUserMapping AppUserAppUserMapping = new AppUserAppUserMapping
@@ -88,6 +99,26 @@ namespace LocatingApp.Rpc.app_user
                 FriendId = AppUser_AppUserAppUserMappingDTO.FriendId,
             };
             return AppUserAppUserMapping;
+        }
+
+        private AppUserFilter ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO AppUser_AppUserFilterDTO)
+        {
+            AppUserFilter AppUserFilter = new AppUserFilter();
+            AppUserFilter.Selects = AppUserSelect.ALL;
+            AppUserFilter.Skip = AppUser_AppUserFilterDTO.Skip;
+            AppUserFilter.Take = AppUser_AppUserFilterDTO.Take;
+            AppUserFilter.OrderBy = AppUser_AppUserFilterDTO.OrderBy;
+            AppUserFilter.OrderType = AppUser_AppUserFilterDTO.OrderType;
+
+            AppUserFilter.Id = AppUser_AppUserFilterDTO.Id;
+            AppUserFilter.Username = AppUser_AppUserFilterDTO.Username;
+            AppUserFilter.Password = AppUser_AppUserFilterDTO.Password;
+            AppUserFilter.DisplayName = AppUser_AppUserFilterDTO.DisplayName;
+            AppUserFilter.Email = AppUser_AppUserFilterDTO.Email;
+            AppUserFilter.Phone = AppUser_AppUserFilterDTO.Phone;
+            AppUserFilter.CreatedAt = AppUser_AppUserFilterDTO.CreatedAt;
+            AppUserFilter.UpdatedAt = AppUser_AppUserFilterDTO.UpdatedAt;
+            return AppUserFilter;
         }
 
         public async Task<bool> HasPermission(long UserId)

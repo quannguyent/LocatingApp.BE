@@ -20,6 +20,7 @@ namespace LocatingApp.Models
         public string Password { get; set; }
         public long RoleId { get; set; }
         public string DisplayName { get; set; }
+        public string Avatar { get; set; }
         public long SexId { get; set; }
         public DateTime? Birthday { get; set; }
         public string Email { get; set; }

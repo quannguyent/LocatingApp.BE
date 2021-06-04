@@ -200,22 +200,22 @@ namespace LocatingApp.Rpc.app_user
         }
         #endregion
 
-        //[Route(ProfileRoot.SaveImage), HttpPost]
-        //public async Task<ActionResult<string>> SaveImage(IFormFile file)
-        //{
-        //    if (!ModelState.IsValid)
-        //        throw new BindException(ModelState);
-        //    MemoryStream memoryStream = new MemoryStream();
-        //    file.CopyTo(memoryStream);
-        //    Image Image = new Image
-        //    {
-        //        Name = file.FileName,
-        //        Content = memoryStream.ToArray()
-        //    };
-        //    CurrentContext.Token = Request.Cookies["Token"];
-        //    string str = await AppUserService.SaveImage(Image);
-        //    return str;
-        //}
+        [Route(ProfileRoute.SaveImage), HttpPost]
+        public async Task<ActionResult<string>> SaveImage(IFormFile file)
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+            MemoryStream memoryStream = new MemoryStream();
+            file.CopyTo(memoryStream);
+            Image Image = new Image
+            {
+                Name = file.FileName,
+                Content = memoryStream.ToArray()
+            };
+            CurrentContext.Token = Request.Cookies["Token"];
+            string str = await AppUserService.SaveImage(Image);
+            return str;
+        }
 
         [Route(ProfileRoute.GetForWeb), HttpPost]
         public async Task<ActionResult<AppUser_AppUserDTO>> GetForWeb()

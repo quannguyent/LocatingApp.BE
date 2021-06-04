@@ -47,6 +47,8 @@ namespace LocatingApp.Repositories
                 query = query.Where(q => q.Password, filter.Password);
             if (filter.DisplayName != null && filter.DisplayName.HasValue)
                 query = query.Where(q => q.DisplayName, filter.DisplayName);
+            if (filter.Avatar != null && filter.Avatar.HasValue)
+                query = query.Where(q => q.Avatar, filter.Avatar);
             if (filter.Email != null && filter.Email.HasValue)
                 query = query.Where(q => q.Email, filter.Email);
             if (filter.Phone != null && filter.Phone.HasValue)
@@ -77,6 +79,8 @@ namespace LocatingApp.Repositories
                     queryable = queryable.Where(q => q.Password, filter.Password);
                 if (AppUserFilter.DisplayName != null && AppUserFilter.DisplayName.HasValue)
                     queryable = queryable.Where(q => q.DisplayName, filter.DisplayName);
+                if (AppUserFilter.Avatar != null && AppUserFilter.Avatar.HasValue)
+                    queryable = queryable.Where(q => q.Avatar, filter.Avatar);
                 if (AppUserFilter.Email != null && AppUserFilter.Email.HasValue)
                     queryable = queryable.Where(q => q.Email, filter.Email);
                 if (AppUserFilter.Phone != null && AppUserFilter.Phone.HasValue)
@@ -174,6 +178,7 @@ namespace LocatingApp.Repositories
                 Username = filter.Selects.Contains(AppUserSelect.Username) ? q.Username : default(string),
                 Password = filter.Selects.Contains(AppUserSelect.Password) ? q.Password : default(string),
                 DisplayName = filter.Selects.Contains(AppUserSelect.DisplayName) ? q.DisplayName : default(string),
+                Avatar = filter.Selects.Contains(AppUserSelect.Avatar) ? q.Avatar : default(string),
                 OtpCode = filter.Selects.Contains(AppUserSelect.OtpCode) ? q.OtpCode : default(string),
                 OtpExpired = filter.Selects.Contains(AppUserSelect.OtpExpired) ? q.OtpExpired : default(DateTime),
                 Email = filter.Selects.Contains(AppUserSelect.Email) ? q.Email : default(string),
@@ -214,6 +219,7 @@ namespace LocatingApp.Repositories
                 Username = x.Username,
                 Password = x.Password,
                 DisplayName = x.DisplayName,
+                Avatar = x.Avatar,
                 Email = x.Email,
                 Phone = x.Phone,
             }).ToListAsync();
@@ -254,6 +260,7 @@ namespace LocatingApp.Repositories
                 DisplayName = x.DisplayName,
                 OtpCode = x.OtpCode,
                 OtpExpired = x.OtpExpired,
+                Avatar = x.Avatar,
                 Email = x.Email,
                 Phone = x.Phone,
                 SexId = x.SexId,
@@ -423,6 +430,7 @@ namespace LocatingApp.Repositories
             AppUserDAO.Username = AppUser.Username;
             AppUserDAO.Password = AppUser.Password;
             AppUserDAO.DisplayName = AppUser.DisplayName;
+            AppUserDAO.Avatar = AppUser.Avatar;
             AppUserDAO.Email = AppUser.Email;
             AppUserDAO.Phone = AppUser.Phone;
             AppUserDAO.SexId = AppUser.SexId;
@@ -446,6 +454,7 @@ namespace LocatingApp.Repositories
             AppUserDAO.Username = AppUser.Username;
             AppUserDAO.Password = AppUser.Password;
             AppUserDAO.DisplayName = AppUser.DisplayName;
+            AppUserDAO.Avatar = AppUser.Avatar;
             AppUserDAO.OtpCode = AppUser.OtpCode;
             AppUserDAO.OtpExpired = AppUser.OtpExpired;
             AppUserDAO.Email = AppUser.Email;
@@ -474,6 +483,7 @@ namespace LocatingApp.Repositories
                 AppUserDAO.Username = AppUser.Username;
                 AppUserDAO.Password = AppUser.Password;
                 AppUserDAO.DisplayName = AppUser.DisplayName;
+                AppUserDAO.Avatar = AppUser.Avatar;
                 AppUserDAO.Email = AppUser.Email;
                 AppUserDAO.Phone = AppUser.Phone;
                 AppUserDAO.SexId = AppUser.SexId;
