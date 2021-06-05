@@ -218,6 +218,9 @@ namespace LocatingApp.Services.MAppUser
             try
             {
                 var oldData = await UOW.AppUserRepository.Get(AppUser.Id);
+                AppUser.Password = oldData.Password;
+                AppUser.CreatedAt = oldData.CreatedAt;
+                AppUser.DeletedAt = oldData.DeletedAt;
 
                 await UOW.AppUserRepository.Update(AppUser);
 

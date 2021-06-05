@@ -259,6 +259,7 @@ namespace LocatingApp.Rpc.app_user
             this.CurrentContext.UserId = ExtractUserId();
             AppUser AppUser = ConvertDTOToEntity(AppUser_AppUserDTO);
             AppUser.Id = CurrentContext.UserId;
+            AppUser.RoleId = CurrentContext.RoleId;
             AppUser = await AppUserService.Update(AppUser);
             AppUser_AppUserDTO = new AppUser_AppUserDTO(AppUser);
             if (AppUser.IsValidated)
