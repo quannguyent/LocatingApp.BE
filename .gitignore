@@ -2,6 +2,7 @@
 /AppCSharp/bin/
 /AppCSharp/obj
 docker-compose.override.*
+/avatar/
 
 AppCSharp/appsettings.Development.json
 /AppCSharp/LocatingApp.csproj.user
