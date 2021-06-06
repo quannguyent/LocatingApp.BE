@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using LocatingApp.Enums;
 using System.IO;
 using LocatingApp.Services.MSex;
+using Microsoft.Extensions.Configuration;
 
 namespace LocatingApp.Rpc.app_user
 {
@@ -33,20 +34,23 @@ namespace LocatingApp.Rpc.app_user
         public const string SingleListProvince = "rpc/locating-app/profile/single-list-province";
     }
     [Authorize]
-    public class ProfileController : ControllerBase
+    public class ProfileController : RpcController
     {
         private IAppUserService AppUserService;
         private ISexService SexService;
         private ICurrentContext CurrentContext;
+        private IConfiguration Configuration;
         public ProfileController(
             IAppUserService AppUserService,
             ISexService SexService,
-            ICurrentContext CurrentContext
+            ICurrentContext CurrentContext,
+            IConfiguration Configuration
             )
         {
             this.AppUserService = AppUserService;
             this.SexService = SexService;
             this.CurrentContext = CurrentContext;
+            this.Configuration = Configuration;
         }
 
         [AllowAnonymous]
@@ -201,20 +205,23 @@ namespace LocatingApp.Rpc.app_user
         #endregion
 
         [Route(ProfileRoute.SaveImage), HttpPost]
-        public async Task<ActionResult<string>> SaveImage(IFormFile file)
+        public async Task<ActionResult<AppUser_AppUserDTO>> SaveImage(IFormFile file)
         {
             if (!ModelState.IsValid)
                 throw new BindException(ModelState);
-            MemoryStream memoryStream = new MemoryStream();
-            file.CopyTo(memoryStream);
-            Image Image = new Image
+            var FileSizeLimit = Configuration.GetValue<long>("Config:FileSizeLimit");
+            if (file.Length > 0 && file.Length <= FileSizeLimit)
             {
-                Name = file.FileName,
-                Content = memoryStream.ToArray()
-            };
-            CurrentContext.Token = Request.Cookies["Token"];
-            string str = await AppUserService.SaveImage(Image);
-            return str;
+                string pic = Path.GetFileName(file.FileName);
+                string path = Path.Combine(Configuration["Config:StoredFilesPath"], pic);
+                using (var stream = System.IO.File.Create(path))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                return new AppUser_AppUserDTO(await AppUserService.SaveImage(path));
+            }
+            else
+                return BadRequest();
         }
 
         [Route(ProfileRoute.GetForWeb), HttpPost]

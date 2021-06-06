@@ -87,60 +87,60 @@ namespace LocatingApp.Rpc.location_log
                 return BadRequest(LocationLog_LocationLogDTO);
         }
 
-        [Route(LocationLogRoute.Update), HttpPost]
-        public async Task<ActionResult<LocationLog_LocationLogDTO>> Update([FromBody] LocationLog_LocationLogDTO LocationLog_LocationLogDTO)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
+        //[Route(LocationLogRoute.Update), HttpPost]
+        //public async Task<ActionResult<LocationLog_LocationLogDTO>> Update([FromBody] LocationLog_LocationLogDTO LocationLog_LocationLogDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
             
-            if (!await HasPermission(LocationLog_LocationLogDTO.Id))
-                return Forbid();
+        //    if (!await HasPermission(LocationLog_LocationLogDTO.Id))
+        //        return Forbid();
 
-            LocationLog LocationLog = ConvertDTOToEntity(LocationLog_LocationLogDTO);
-            LocationLog = await LocationLogService.Update(LocationLog);
-            LocationLog_LocationLogDTO = new LocationLog_LocationLogDTO(LocationLog);
-            if (LocationLog.IsValidated)
-                return LocationLog_LocationLogDTO;
-            else
-                return BadRequest(LocationLog_LocationLogDTO);
-        }
+        //    LocationLog LocationLog = ConvertDTOToEntity(LocationLog_LocationLogDTO);
+        //    LocationLog = await LocationLogService.Update(LocationLog);
+        //    LocationLog_LocationLogDTO = new LocationLog_LocationLogDTO(LocationLog);
+        //    if (LocationLog.IsValidated)
+        //        return LocationLog_LocationLogDTO;
+        //    else
+        //        return BadRequest(LocationLog_LocationLogDTO);
+        //}
 
-        [Route(LocationLogRoute.Delete), HttpPost]
-        public async Task<ActionResult<LocationLog_LocationLogDTO>> Delete([FromBody] LocationLog_LocationLogDTO LocationLog_LocationLogDTO)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
+        //[Route(LocationLogRoute.Delete), HttpPost]
+        //public async Task<ActionResult<LocationLog_LocationLogDTO>> Delete([FromBody] LocationLog_LocationLogDTO LocationLog_LocationLogDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
 
-            if (!await HasPermission(LocationLog_LocationLogDTO.Id))
-                return Forbid();
+        //    if (!await HasPermission(LocationLog_LocationLogDTO.Id))
+        //        return Forbid();
 
-            LocationLog LocationLog = ConvertDTOToEntity(LocationLog_LocationLogDTO);
-            LocationLog = await LocationLogService.Delete(LocationLog);
-            LocationLog_LocationLogDTO = new LocationLog_LocationLogDTO(LocationLog);
-            if (LocationLog.IsValidated)
-                return LocationLog_LocationLogDTO;
-            else
-                return BadRequest(LocationLog_LocationLogDTO);
-        }
+        //    LocationLog LocationLog = ConvertDTOToEntity(LocationLog_LocationLogDTO);
+        //    LocationLog = await LocationLogService.Delete(LocationLog);
+        //    LocationLog_LocationLogDTO = new LocationLog_LocationLogDTO(LocationLog);
+        //    if (LocationLog.IsValidated)
+        //        return LocationLog_LocationLogDTO;
+        //    else
+        //        return BadRequest(LocationLog_LocationLogDTO);
+        //}
         
-        [Route(LocationLogRoute.BulkDelete), HttpPost]
-        public async Task<ActionResult<bool>> BulkDelete([FromBody] List<long> Ids)
-        {
-            if (!ModelState.IsValid)
-                throw new BindException(ModelState);
+        //[Route(LocationLogRoute.BulkDelete), HttpPost]
+        //public async Task<ActionResult<bool>> BulkDelete([FromBody] List<long> Ids)
+        //{
+        //    if (!ModelState.IsValid)
+        //        throw new BindException(ModelState);
 
-            LocationLogFilter LocationLogFilter = new LocationLogFilter();
-            LocationLogFilter.Id = new IdFilter { In = Ids };
-            LocationLogFilter.Selects = LocationLogSelect.Id;
-            LocationLogFilter.Skip = 0;
-            LocationLogFilter.Take = int.MaxValue;
+        //    LocationLogFilter LocationLogFilter = new LocationLogFilter();
+        //    LocationLogFilter.Id = new IdFilter { In = Ids };
+        //    LocationLogFilter.Selects = LocationLogSelect.Id;
+        //    LocationLogFilter.Skip = 0;
+        //    LocationLogFilter.Take = int.MaxValue;
 
-            List<LocationLog> LocationLogs = await LocationLogService.List(LocationLogFilter);
-            LocationLogs = await LocationLogService.BulkDelete(LocationLogs);
-            if (LocationLogs.Any(x => !x.IsValidated))
-                return BadRequest(LocationLogs.Where(x => !x.IsValidated));
-            return true;
-        }
+        //    List<LocationLog> LocationLogs = await LocationLogService.List(LocationLogFilter);
+        //    LocationLogs = await LocationLogService.BulkDelete(LocationLogs);
+        //    if (LocationLogs.Any(x => !x.IsValidated))
+        //        return BadRequest(LocationLogs.Where(x => !x.IsValidated));
+        //    return true;
+        //}
 
         //Import Export
         //[Route(LocationLogRoute.Import), HttpPost]

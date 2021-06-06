@@ -20,7 +20,8 @@ namespace LocatingApp.Rpc.app_user
         public const string SendFriendRequest = "rpc/locating-app/friend/send-friend-request";
         public const string AcceptFriendRequest = "rpc/locating-app/friend/accept-friend-request";
         public const string GetFriendFromContact = "rpc/locating-app/friend/get-friend-from-contact";
-        public const string ListFriends = "rpc/locating-app/friend/list-friend";
+        public const string ListFriends = "rpc/locating-app/friend/list-friends";
+        public const string ListFriendRequests = "rpc/locating-app/friend/list-friend-request";
     }
     public class FriendController : RpcController
     {
@@ -88,6 +89,16 @@ namespace LocatingApp.Rpc.app_user
                 throw new BindException(ModelState);
             AppUserFilter AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
             List<AppUser> Friends = await AppUserService.ListFriends(AppUserFilter, CurrentContext.UserId);
+            return Friends.Select(x => new AppUser_AppUserDTO(x)).ToList();
+        }
+        
+        [Route(FriendRoute.ListFriendRequests), HttpPost]
+        public async Task<ActionResult<List<AppUser_AppUserDTO>>> ListFriendRequests([FromBody] AppUser_AppUserFilterDTO AppUser_AppUserFilterDTO)
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+            AppUserFilter AppUserFilter = ConvertFilterDTOToFilterEntity(AppUser_AppUserFilterDTO);
+            List<AppUser> Friends = await AppUserService.ListFriendRequests(AppUserFilter, CurrentContext.UserId);
             return Friends.Select(x => new AppUser_AppUserDTO(x)).ToList();
         }
 

@@ -24,7 +24,6 @@ namespace LocatingApp.Services.MAppUser
         Task<bool> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<bool> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<bool> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
-
     }
 
     public class AppUserValidator : IAppUserValidator
@@ -52,6 +51,7 @@ namespace LocatingApp.Services.MAppUser
             UsernameEmpty,
             FriendshipExisted,
             FriendRequestNotExisted,
+            FileTooLagre,
         }
 
         private IUOW UOW;

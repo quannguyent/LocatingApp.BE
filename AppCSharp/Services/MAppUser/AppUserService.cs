@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using Microsoft.Extensions.Configuration;
 using LocatingApp.Services.MMail;
 using RestSharp;
+using LocatingApp.Models;
 
 namespace LocatingApp.Services.MAppUser
 {
@@ -26,6 +27,7 @@ namespace LocatingApp.Services.MAppUser
         Task<List<AppUser>> List(AppUserFilter AppUserFilter);
         Task<List<AppUser>> ListFriends(long AppUserId);
         Task<List<AppUser>> ListFriends(AppUserFilter AppUserFilter, long AppUserId);
+        Task<List<AppUser>> ListFriendRequests(AppUserFilter AppUserFilter, long AppUserId);
         Task<AppUserAppUserMapping> SendFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> AcceptFriendRequest(AppUserAppUserMapping AppUserAppUserMapping);
         Task<AppUserAppUserMapping> DeleteFriend(AppUserAppUserMapping AppUserAppUserMapping);
@@ -41,7 +43,7 @@ namespace LocatingApp.Services.MAppUser
         Task<AppUser> ForgotPassword(AppUser AppUser);
         Task<AppUser> VerifyOtpCode(AppUser AppUser);
         Task<AppUser> RecoveryPassword(AppUser AppUser);
-        Task<string> SaveImage(Image Image);
+        Task<AppUser> SaveImage(string path);
     }
 
     public class AppUserService : BaseService, IAppUserService
@@ -124,6 +126,15 @@ namespace LocatingApp.Services.MAppUser
         {
             var FriendIds = (await ListFriends(AppUserId)).Select(x => x.Id).ToList();
             AppUserFilter.Id = FilterBuilder.Merge(new IdFilter { In = FriendIds }, AppUserFilter.Id);
+            return await UOW.AppUserRepository.List(AppUserFilter);
+        }
+
+        public async Task<List<AppUser>> ListFriendRequests(AppUserFilter AppUserFilter, long AppUserId)
+        {
+            var CurrentUser = await UOW.AppUserRepository.Get(AppUserId);
+            var FriendIds = (await ListFriends(AppUserId)).Select(x => x.Id).ToList();
+            var FriendRequests = CurrentUser.AppUserAppUserMappingFriends.Select(x => x.AppUserId).ToList();
+            AppUserFilter.Id = FilterBuilder.Merge(new IdFilter { In = FriendRequests, NotIn = FriendIds }, AppUserFilter.Id);
             return await UOW.AppUserRepository.List(AppUserFilter);
         }
 
@@ -452,34 +463,12 @@ namespace LocatingApp.Services.MAppUser
             return appUser;
         }
 
-        public async Task<string> SaveImage(Image Image)
+        public async Task<AppUser> SaveImage(string path)
         {
-            FileInfo fileInfo = new FileInfo(Image.Name);
-            string path = $"/avatar/{StaticParams.DateTimeNow.ToString("yyyyMMdd")}/{Guid.NewGuid()}{fileInfo.Extension}";
-            RestClient restClient = new RestClient($"{InternalServices.UTILS}");
-            RestRequest restRequest = new RestRequest("/rpc/utils/file/upload");
-            restRequest.RequestFormat = DataFormat.Json;
-            restRequest.Method = Method.POST;
-            restRequest.AddCookie("Token", CurrentContext.Token);
-            restRequest.AddCookie("X-Language", CurrentContext.Language);
-            restRequest.AddHeader("Content-Type", "multipart/form-data");
-            restRequest.AddFile("file", Image.Content, Image.Name);
-            restRequest.AddParameter("path", path);
-            try
-            {
-                var response = await restClient.ExecuteAsync<Entities.File>(restRequest);
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    Image.Id = response.Data.Id;
-                    Image.Url = "/rpc/utils/file/download" + response.Data.Path;
-                    return Image.Url;
-                }
-            }
-            catch
-            {
-                return null;
-            }
-            return null;
+            var AppUser = await UOW.AppUserRepository.Get(CurrentContext.UserId);
+            AppUser.Avatar = path;
+            await UOW.AppUserRepository.Update(AppUser);
+            return AppUser;
         }
 
         public AppUserFilter ToFilter(AppUserFilter filter)

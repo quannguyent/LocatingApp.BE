@@ -11,6 +11,7 @@ namespace LocatingApp.Models
         public virtual DbSet<AppUserAppUserMappingDAO> AppUserAppUserMapping { get; set; }
         public virtual DbSet<CheckingStatusDAO> CheckingStatus { get; set; }
         public virtual DbSet<CounterDAO> Counter { get; set; }
+        public virtual DbSet<FileDAO> File { get; set; }
         public virtual DbSet<HashDAO> Hash { get; set; }
         public virtual DbSet<JobDAO> Job { get; set; }
         public virtual DbSet<JobParameterDAO> JobParameter { get; set; }
@@ -146,6 +147,23 @@ namespace LocatingApp.Models
                 entity.Property(e => e.Key)
                     .IsRequired()
                     .HasMaxLength(100);
+            });
+
+            modelBuilder.Entity<FileDAO>(entity =>
+            {
+                entity.Property(e => e.Content).HasMaxLength(4000);
+
+                entity.Property(e => e.GridId).HasMaxLength(4000);
+
+                entity.Property(e => e.Key).HasMaxLength(4000);
+
+                entity.Property(e => e.MimeType).HasMaxLength(4000);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(4000);
+
+                entity.Property(e => e.Path).HasMaxLength(4000);
             });
 
             modelBuilder.Entity<HashDAO>(entity =>
