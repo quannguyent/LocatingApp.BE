@@ -9,7 +9,6 @@ namespace LocatingApp.Rpc.location_log
     public class LocationLog_LocationLogDTO : DataDTO
     {
         public long Id { get; set; }
-        public long? PreviousId { get; set; }
         public long AppUserId { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
@@ -28,7 +27,6 @@ namespace LocatingApp.Rpc.location_log
             this.Longtitude = LocationLog.Longtitude;
             this.UpdateInterval = LocationLog.UpdateInterval;
             this.AppUser = LocationLog.AppUser == null ? null : new LocationLog_AppUserDTO(LocationLog.AppUser);
-            this.Previous = LocationLog.Previous == null ? null : new LocationLog_LocationLogDTO(LocationLog.Previous);
             this.CreatedAt = LocationLog.CreatedAt;
             this.Errors = LocationLog.Errors;
         }
@@ -37,7 +35,6 @@ namespace LocatingApp.Rpc.location_log
     public class LocationLog_LocationLogFilterDTO : FilterDTO
     {
         public IdFilter Id { get; set; }
-        public IdFilter PreviousId { get; set; }
         public IdFilter AppUserId { get; set; }
         public DecimalFilter Latitude { get; set; }
         public DecimalFilter Longtitude { get; set; }

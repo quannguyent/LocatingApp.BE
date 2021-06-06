@@ -23,7 +23,6 @@ namespace LocatingApp.Rpc.app_user
             this.Latitude = LocationLog.Latitude;
             this.Longtitude = LocationLog.Longtitude;
             this.UpdateInterval = LocationLog.UpdateInterval;
-            this.Previous = LocationLog.Previous == null ? null : new AppUser_LocationLogDTO(LocationLog.Previous);
             this.Errors = LocationLog.Errors;
         }
     }

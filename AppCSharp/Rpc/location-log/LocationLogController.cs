@@ -371,14 +371,6 @@ namespace LocatingApp.Rpc.location_log
                 Email = LocationLog_LocationLogDTO.AppUser.Email,
                 Phone = LocationLog_LocationLogDTO.AppUser.Phone,
             };
-            LocationLog.Previous = LocationLog_LocationLogDTO.Previous == null ? null : new LocationLog
-            {
-                Id = LocationLog_LocationLogDTO.Previous.Id,
-                AppUserId = LocationLog_LocationLogDTO.Previous.AppUserId,
-                Latitude = LocationLog_LocationLogDTO.Previous.Latitude,
-                Longtitude = LocationLog_LocationLogDTO.Previous.Longtitude,
-                UpdateInterval = LocationLog_LocationLogDTO.Previous.UpdateInterval,
-            };
             LocationLog.BaseLanguage = CurrentContext.Language;
             return LocationLog;
         }

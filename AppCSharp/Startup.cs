@@ -27,6 +27,7 @@ using LocatingApp.Models;
 using LocatingApp.Rpc;
 using LocatingApp.Services;
 using LocatingApp.Entities;
+using LocatingApp.Hubs;
 
 namespace LocatingApp
 {
@@ -90,7 +91,7 @@ namespace LocatingApp
                  DisableGlobalLocks = true
              }));
             services.AddHangfireServer();
-
+            services.AddSignalR();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -182,6 +183,7 @@ namespace LocatingApp
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LocationHub>("/location-hub");
             });
 
             app.UseSwagger(c =>

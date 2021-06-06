@@ -14,7 +14,6 @@ namespace LocatingApp.Entities
         public decimal Longtitude { get; set; }
         public long UpdateInterval { get; set; }
         public AppUser AppUser { get; set; }
-        public LocationLog Previous { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
         

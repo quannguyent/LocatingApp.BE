@@ -14,6 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="Hubs\LocationHub.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Elastic.Apm.NetCoreAll" Version="1.6.1" />
         <PackageReference Include="EntityFrameworkCore.Scaffolding.Handlebars" Version="3.8.3" />
         <PackageReference Include="EPPlus" Version="5.3.1" />

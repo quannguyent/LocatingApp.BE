@@ -349,14 +349,6 @@ namespace LocatingApp.Rpc.app_user
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
-                    Previous = x.Previous == null ? null : new LocationLog
-                    {
-                        Id = x.Previous.Id,
-                        AppUserId = x.Previous.AppUserId,
-                        Latitude = x.Previous.Latitude,
-                        Longtitude = x.Previous.Longtitude,
-                        UpdateInterval = x.Previous.UpdateInterval,
-                    },
                 }).ToList();
             AppUser.BaseLanguage = CurrentContext.Language;
             return AppUser;
