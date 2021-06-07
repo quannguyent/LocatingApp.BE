@@ -56,6 +56,18 @@ namespace LocatingApp.Rpc.location_log
             return LocationLog_LocationLogDTOs;
         }
 
+        [Route(LocationLogRoute.GetCurrentLocation), HttpPost]
+        public async Task<ActionResult<List<LocationLog_LocationLogDTO>>> GetCurrentLocation()
+        {
+            if (!ModelState.IsValid)
+                throw new BindException(ModelState);
+
+            var Friends = await AppUserService.ListFriends(CurrentContext.UserId);
+            Friends.Add(await AppUserService.Get(CurrentContext.UserId));
+            var LocationLogs = Friends.Select(x => x.LocationLogs.LastOrDefault()).ToList();
+            return LocationLogs.Select(x => x == null ? null : new LocationLog_LocationLogDTO(x)).ToList();
+        }
+
         [Route(LocationLogRoute.Get), HttpPost]
         public async Task<ActionResult<LocationLog_LocationLogDTO>> Get([FromBody]LocationLog_LocationLogDTO LocationLog_LocationLogDTO)
         {

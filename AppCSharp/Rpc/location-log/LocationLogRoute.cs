@@ -32,6 +32,7 @@ namespace LocatingApp.Rpc.location_log
         public const string Export = Default + "/export";
         public const string ExportTemplate = Default + "/export-template";
         public const string BulkDelete = Default + "/bulk-delete";
+        public const string GetCurrentLocation = Default + "/get-current-location";
         
         public const string FilterListAppUser = Default + "/filter-list-app-user";
         public const string FilterListLocationLog = Default + "/filter-list-location-log";

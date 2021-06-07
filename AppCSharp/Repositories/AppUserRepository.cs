@@ -234,7 +234,9 @@ namespace LocatingApp.Repositories
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
+                    CreatedAt = x.CreatedAt,
                 }).ToListAsync();
+
             foreach(AppUser AppUser in AppUsers)
             {
                 AppUser.LocationLogs = LocationLogs
@@ -296,6 +298,7 @@ namespace LocatingApp.Repositories
                     Latitude = x.Latitude,
                     Longtitude = x.Longtitude,
                     UpdateInterval = x.UpdateInterval,
+                    CreatedAt = x.CreatedAt,
                 }).ToListAsync();
             AppUser.AppUserAppUserMappingAppUsers = await DataContext.AppUserAppUserMapping.AsNoTracking()
                 .Where(x => x.AppUserId == AppUser.Id).Where(x => x.DeletedAt == null)
