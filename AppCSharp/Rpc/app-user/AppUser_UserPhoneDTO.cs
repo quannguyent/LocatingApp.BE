@@ -7,6 +7,6 @@ namespace LocatingApp.Rpc.app_user
 {
     public class AppUser_UserPhoneDTO
     {
-        public string Phone { get; set; }
+        public List<string> Phones { get; set; }
     }
 }

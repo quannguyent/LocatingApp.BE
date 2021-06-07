@@ -40,15 +40,15 @@ namespace LocatingApp.Rpc.app_user
         }
 
         [Route(FriendRoute.GetFriendFromContact), HttpPost]
-        public async Task<ActionResult<List<AppUser_AppUserDTO>>> GetFriendFromContact([FromBody] List<AppUser_UserPhoneDTO> AppUser_UserPhoneDTOs)
+        public async Task<ActionResult<List<AppUser_AppUserDTO>>> GetFriendFromContact([FromBody] AppUser_UserPhoneDTO AppUser_UserPhoneDTO)
         {
             if (!ModelState.IsValid)
                 throw new BindException(ModelState);
 
             List<AppUser_AppUserDTO> AppUser_AppUserDTOs = new List<AppUser_AppUserDTO>();
-            foreach (var AppUser_UserPhoneDTO in AppUser_UserPhoneDTOs)
+            foreach (var Phone in AppUser_UserPhoneDTO.Phones)
             {
-                var AppUser = await AppUserService.GetFriendFromContact(AppUser_UserPhoneDTO.Phone);
+                var AppUser = await AppUserService.GetFriendFromContact(Phone);
                 AppUser_AppUserDTOs.Add(new AppUser_AppUserDTO(AppUser));
             }
             return AppUser_AppUserDTOs;
