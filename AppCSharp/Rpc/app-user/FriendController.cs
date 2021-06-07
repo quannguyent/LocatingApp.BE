@@ -49,7 +49,8 @@ namespace LocatingApp.Rpc.app_user
             foreach (var Phone in AppUser_UserPhoneDTO.Phones)
             {
                 var AppUser = await AppUserService.GetFriendFromContact(Phone);
-                AppUser_AppUserDTOs.Add(new AppUser_AppUserDTO(AppUser));
+                if (AppUser != null)
+                    AppUser_AppUserDTOs.Add(new AppUser_AppUserDTO(AppUser));
             }
             return AppUser_AppUserDTOs;
         }
