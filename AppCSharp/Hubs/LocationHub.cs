@@ -20,14 +20,14 @@ namespace LocatingApp.Hubs
         public async Task SendLocation(long UserId)
         {
             var Friends = await AppUserService.ListFriends(UserId);
-            var LocationLog = Friends.Select(x => new
+            var LocationLogs = Friends.Select(x => new
             {
                 x.Id,
                 x.Avatar,
                 Longtitude = x.LocationLogs.Select(x => x.Longtitude).FirstOrDefault(),
                 Latitude = x.LocationLogs.Select(x => x.Latitude).FirstOrDefault(),
-            });
-            await Clients.Caller.SendAsync("ReceiveFriendLocation", LocationLog);
+            }).ToList();
+            await Clients.Caller.SendAsync("ReceiveFriendLocation", LocationLogs);
         }
     }
 }
