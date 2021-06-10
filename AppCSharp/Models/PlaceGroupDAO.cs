@@ -8,7 +8,6 @@ namespace LocatingApp.Models
         public PlaceGroupDAO()
         {
             InverseParent = new HashSet<PlaceGroupDAO>();
-            Places = new HashSet<PlaceDAO>();
         }
 
         public long Id { get; set; }
@@ -23,6 +22,5 @@ namespace LocatingApp.Models
 
         public virtual PlaceGroupDAO Parent { get; set; }
         public virtual ICollection<PlaceGroupDAO> InverseParent { get; set; }
-        public virtual ICollection<PlaceDAO> Places { get; set; }
     }
 }

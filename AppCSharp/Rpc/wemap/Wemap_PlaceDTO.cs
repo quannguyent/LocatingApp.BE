@@ -4,9 +4,9 @@ using System.Linq;
 using System.Collections.Generic;
 using LocatingApp.Entities;
 
-namespace LocatingApp.Rpc.place
+namespace LocatingApp.Rpc.wemap
 {
-    public class Place_PlaceDTO : DataDTO
+    public class Wemap_PlaceDTO : DataDTO
     {
         public long Id { get; set; }
         public string Name { get; set; }
@@ -15,11 +15,10 @@ namespace LocatingApp.Rpc.place
         public decimal Latitude { get; set; }
         public decimal Longtitude { get; set; }
         public bool Used { get; set; }
-        public Place_PlaceGroupDTO PlaceGroup { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-        public Place_PlaceDTO() {}
-        public Place_PlaceDTO(Place Place)
+        public Wemap_PlaceDTO() {}
+        public Wemap_PlaceDTO(Place Place)
         {
             this.Id = Place.Id;
             this.Name = Place.Name;

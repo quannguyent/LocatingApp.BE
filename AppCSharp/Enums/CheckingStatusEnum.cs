@@ -8,10 +8,11 @@ namespace LocatingApp.Enums
 {
     public class CheckingStatusEnum
     {
-        public static GenericEnum A1 = new GenericEnum { Id = 1, Code = "", Name = "" };
+        public static GenericEnum In = new GenericEnum { Id = 1, Code = "In", Name = "In" };
+        public static GenericEnum Out = new GenericEnum { Id = 2, Code = "In", Name = "Out" };
         public static List<GenericEnum> CheckingStatusEnumList = new List<GenericEnum>
         {
-            A1,
+            In, Out
         };
     }
 }

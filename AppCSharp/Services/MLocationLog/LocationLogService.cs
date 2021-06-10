@@ -10,6 +10,7 @@ using LocatingApp.Repositories;
 using LocatingApp.Entities;
 using LocatingApp.Enums;
 using LocatingApp.Services.MAppUser;
+using LocatingApp.Helpers;
 
 namespace LocatingApp.Services.MLocationLog
 {
@@ -103,6 +104,7 @@ namespace LocatingApp.Services.MLocationLog
             {
                 await UOW.LocationLogRepository.Create(LocationLog);
                 LocationLog = await UOW.LocationLogRepository.Get(LocationLog.Id);
+                await CheckPlaceChecking(LocationLog);
                 await Logging.CreateAuditLog(LocationLog, new { }, nameof(LocationLogService));
                 return LocationLog;
             }
@@ -195,6 +197,67 @@ namespace LocatingApp.Services.MLocationLog
             List<long> In = AppUsers.Select(x => x.Id).ToList();
             In.Add(CurrentContext.UserId);
             return In;
+        }
+
+        private async Task CheckPlaceChecking(LocationLog LocationLog)
+        {
+            PlaceFilter PlaceFilter = new PlaceFilter 
+            {
+                Selects = PlaceSelect.Id,
+                Take = int.MaxValue 
+            };
+            var Places = await UOW.PlaceRepository.List(PlaceFilter);
+            var PlaceIds = Places.Select(x => x.Id).ToList();
+            Places = await UOW.PlaceRepository.List(PlaceIds);
+            foreach (Place Place in Places)
+            {
+                var PlaceChecking = Place.PlaceCheckings
+                    .Where(x => x.AppUserId == LocationLog.AppUserId)
+                    .LastOrDefault();
+                var distance = Coordinate.GetDistance(
+                        LocationLog.Latitude,
+                        LocationLog.Longtitude,
+                        Place.Latitude,
+                        Place.Longtitude);
+                if (PlaceChecking != null)
+                {
+                    if (PlaceChecking.PlaceCheckingStatusId == CheckingStatusEnum.Out.Id
+                        && distance <= Place.Radius)
+                    {
+                        var checking = new PlaceChecking
+                        {
+                            AppUserId = PlaceChecking.AppUserId,
+                            PlaceId = PlaceChecking.PlaceId,
+                            PlaceCheckingStatusId = CheckingStatusEnum.In.Id,
+                            CheckInAt = StaticParams.DateTimeNow
+                        };
+                        Place.PlaceCheckings.Add(checking);
+                        await UOW.PlaceRepository.Update(Place);
+                    }
+                    else if (PlaceChecking.PlaceCheckingStatusId == CheckingStatusEnum.In.Id
+                    && distance > Place.Radius)
+                    {
+                        PlaceChecking.CheckOutAt = StaticParams.DateTimeNow;
+                        PlaceChecking.PlaceCheckingStatusId = CheckingStatusEnum.Out.Id;
+                        await UOW.PlaceRepository.Update(Place);
+                    }
+                }
+                else
+                {
+                    if (distance <= Place.Radius)
+                    {
+                        var checking = new PlaceChecking
+                        {
+                            AppUserId = LocationLog.AppUserId,
+                            PlaceId = Place.Id,
+                            PlaceCheckingStatusId = CheckingStatusEnum.In.Id,
+                            CheckInAt = StaticParams.DateTimeNow
+                        };
+                        Place.PlaceCheckings.Add(checking);
+                        await UOW.PlaceRepository.Update(Place);
+                    }
+                }
+            }
         }
     }
 }

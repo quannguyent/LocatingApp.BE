@@ -43,6 +43,8 @@ namespace LocatingApp.Repositories
                 query = query.Where(q => q.Id, filter.Id);
             if (filter.Name != null && filter.Name.HasValue)
                 query = query.Where(q => q.Name, filter.Name);
+            if (filter.Code != null && filter.Code.HasValue)
+                query = query.Where(q => q.Code, filter.Code);
             if (filter.PlaceGroupId != null && filter.PlaceGroupId.HasValue)
                 query = query.Where(q => q.PlaceGroupId.HasValue).Where(q => q.PlaceGroupId.Value, filter.PlaceGroupId);
             if (filter.Radius != null && filter.Radius.HasValue)
@@ -51,35 +53,8 @@ namespace LocatingApp.Repositories
                 query = query.Where(q => q.Latitude, filter.Latitude);
             if (filter.Longtitude != null && filter.Longtitude.HasValue)
                 query = query.Where(q => q.Longtitude, filter.Longtitude);
-            query = OrFilter(query, filter);
             return query;
         }
-
-        private IQueryable<PlaceDAO> OrFilter(IQueryable<PlaceDAO> query, PlaceFilter filter)
-        {
-            if (filter.OrFilter == null || filter.OrFilter.Count == 0)
-                return query;
-            IQueryable<PlaceDAO> initQuery = query.Where(q => false);
-            foreach (PlaceFilter PlaceFilter in filter.OrFilter)
-            {
-                IQueryable<PlaceDAO> queryable = query;
-                if (PlaceFilter.Id != null && PlaceFilter.Id.HasValue)
-                    queryable = queryable.Where(q => q.Id, filter.Id);
-                if (PlaceFilter.Name != null && PlaceFilter.Name.HasValue)
-                    queryable = queryable.Where(q => q.Name, filter.Name);
-                if (PlaceFilter.PlaceGroupId != null && PlaceFilter.PlaceGroupId.HasValue)
-                    queryable = queryable.Where(q => q.PlaceGroupId.HasValue).Where(q => q.PlaceGroupId.Value, filter.PlaceGroupId);
-                if (PlaceFilter.Radius != null && PlaceFilter.Radius.HasValue)
-                    queryable = queryable.Where(q => q.Radius, filter.Radius);
-                if (PlaceFilter.Latitude != null && PlaceFilter.Latitude.HasValue)
-                    queryable = queryable.Where(q => q.Latitude, filter.Latitude);
-                if (PlaceFilter.Longtitude != null && PlaceFilter.Longtitude.HasValue)
-                    queryable = queryable.Where(q => q.Longtitude, filter.Longtitude);
-                initQuery = initQuery.Union(queryable);
-            }
-            return initQuery;
-        }    
-
         private IQueryable<PlaceDAO> DynamicOrder(IQueryable<PlaceDAO> query, PlaceFilter filter)
         {
             switch (filter.OrderType)
@@ -141,17 +116,11 @@ namespace LocatingApp.Repositories
             {
                 Id = filter.Selects.Contains(PlaceSelect.Id) ? q.Id : default(long),
                 Name = filter.Selects.Contains(PlaceSelect.Name) ? q.Name : default(string),
+                Code = filter.Selects.Contains(PlaceSelect.Code) ? q.Code : default(string),
                 PlaceGroupId = filter.Selects.Contains(PlaceSelect.PlaceGroup) ? q.PlaceGroupId : default(long?),
                 Radius = filter.Selects.Contains(PlaceSelect.Radius) ? q.Radius : default(long),
                 Latitude = filter.Selects.Contains(PlaceSelect.Latitude) ? q.Latitude : default(decimal),
                 Longtitude = filter.Selects.Contains(PlaceSelect.Longtitude) ? q.Longtitude : default(decimal),
-                PlaceGroup = filter.Selects.Contains(PlaceSelect.PlaceGroup) && q.PlaceGroup != null ? new PlaceGroup
-                {
-                    Id = q.PlaceGroup.Id,
-                    ParentId = q.PlaceGroup.ParentId,
-                    Name = q.PlaceGroup.Name,
-                    Code = q.PlaceGroup.Code,
-                } : null,
             }).ToListAsync();
             return Places;
         }
@@ -183,20 +152,31 @@ namespace LocatingApp.Repositories
                 DeletedAt = x.DeletedAt,
                 Id = x.Id,
                 Name = x.Name,
+                Code = x.Code,
                 PlaceGroupId = x.PlaceGroupId,
                 Radius = x.Radius,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
-                PlaceGroup = x.PlaceGroup == null ? null : new PlaceGroup
-                {
-                    Id = x.PlaceGroup.Id,
-                    ParentId = x.PlaceGroup.ParentId,
-                    Name = x.PlaceGroup.Name,
-                    Code = x.PlaceGroup.Code,
-                },
             }).ToListAsync();
-            
-
+            List<PlaceChecking> PlaceCheckings = await DataContext.PlaceChecking.AsNoTracking()
+                .Where(x => Ids.Contains(x.PlaceId)).Select(x => new PlaceChecking
+                {
+                    Id = x.Id,
+                    AppUserId = x.AppUserId,
+                    PlaceCheckingStatusId = x.PlaceCheckingStatusId,
+                    PlaceId = x.PlaceId,
+                    AppUser = new AppUser
+                    {
+                        Id = x.AppUser.Id,
+                        DisplayName = x.AppUser.DisplayName,
+                    },
+                    CheckInAt = x.CheckInAt,
+                    CheckOutAt = x.CheckOutAt,
+                }).ToListAsync();
+            foreach (Place Place in Places)
+            {
+                Place.PlaceCheckings = PlaceCheckings.Where(x => x.PlaceId == Place.Id).ToList();
+            }
             return Places;
         }
 
@@ -210,18 +190,12 @@ namespace LocatingApp.Repositories
                 CreatedAt = x.CreatedAt,
                 UpdatedAt = x.UpdatedAt,
                 Id = x.Id,
+                Code = x.Code,
                 Name = x.Name,
                 PlaceGroupId = x.PlaceGroupId,
                 Radius = x.Radius,
                 Latitude = x.Latitude,
                 Longtitude = x.Longtitude,
-                PlaceGroup = x.PlaceGroup == null ? null : new PlaceGroup
-                {
-                    Id = x.PlaceGroup.Id,
-                    ParentId = x.PlaceGroup.ParentId,
-                    Name = x.PlaceGroup.Name,
-                    Code = x.PlaceGroup.Code,
-                },
             }).FirstOrDefaultAsync();
 
             if (Place == null)
@@ -234,6 +208,7 @@ namespace LocatingApp.Repositories
             PlaceDAO PlaceDAO = new PlaceDAO();
             PlaceDAO.Id = Place.Id;
             PlaceDAO.Name = Place.Name;
+            PlaceDAO.Code = Place.Code;
             PlaceDAO.PlaceGroupId = Place.PlaceGroupId;
             PlaceDAO.Radius = Place.Radius;
             PlaceDAO.Latitude = Place.Latitude;
@@ -254,6 +229,7 @@ namespace LocatingApp.Repositories
                 return false;
             PlaceDAO.Id = Place.Id;
             PlaceDAO.Name = Place.Name;
+            PlaceDAO.Code = Place.Code;
             PlaceDAO.PlaceGroupId = Place.PlaceGroupId;
             PlaceDAO.Radius = Place.Radius;
             PlaceDAO.Latitude = Place.Latitude;
@@ -272,11 +248,12 @@ namespace LocatingApp.Repositories
         
         public async Task<bool> BulkMerge(List<Place> Places)
         {
-            List<PlaceDAO> PlaceDAOs = new List<PlaceDAO>();
+            List<PlaceDAO> PlaceDAOs = await DataContext.Place.ToListAsync();
             foreach (Place Place in Places)
             {
                 PlaceDAO PlaceDAO = new PlaceDAO();
                 PlaceDAO.Id = Place.Id;
+                PlaceDAO.Code = Place.Code;
                 PlaceDAO.Name = Place.Name;
                 PlaceDAO.PlaceGroupId = Place.PlaceGroupId;
                 PlaceDAO.Radius = Place.Radius;
@@ -284,7 +261,9 @@ namespace LocatingApp.Repositories
                 PlaceDAO.Longtitude = Place.Longtitude;
                 PlaceDAO.CreatedAt = StaticParams.DateTimeNow;
                 PlaceDAO.UpdatedAt = StaticParams.DateTimeNow;
-                PlaceDAOs.Add(PlaceDAO);
+
+                if (!PlaceDAOs.Exists(x => x.Code == Place.Code))
+                    PlaceDAOs.Add(PlaceDAO);
             }
             await DataContext.BulkMergeAsync(PlaceDAOs);
             return true;
@@ -301,7 +280,38 @@ namespace LocatingApp.Repositories
 
         private async Task SaveReference(Place Place)
         {
+            List<PlaceCheckingDAO> PlaceCheckingDAOs = await DataContext.PlaceChecking
+                .Where(x => x.PlaceId == Place.Id).ToListAsync();
+            if (Place.PlaceCheckings != null)
+            {
+                foreach (PlaceChecking PlaceChecking in Place.PlaceCheckings)
+                {
+                    PlaceCheckingDAO PlaceCheckingDAO = PlaceCheckingDAOs
+                        .Where(x => x.PlaceId == PlaceChecking.PlaceId &&
+                        x.AppUserId == PlaceChecking.AppUserId &&
+                        x.PlaceId != 0 && x.AppUserId != 0)
+                        .FirstOrDefault();
+                    if (PlaceCheckingDAO == null)
+                    {
+                        PlaceCheckingDAO = new PlaceCheckingDAO();
+                        PlaceCheckingDAO.AppUserId = PlaceChecking.AppUserId;
+                        PlaceCheckingDAO.PlaceCheckingStatusId = PlaceChecking.PlaceCheckingStatusId;
+                        PlaceCheckingDAO.PlaceId = Place.Id;
+                        PlaceCheckingDAO.CheckInAt = PlaceChecking.CheckInAt;
+                        PlaceCheckingDAO.CheckOutAt = PlaceChecking.CheckOutAt;
+                        PlaceCheckingDAOs.Add(PlaceCheckingDAO);
+                    }
+                    else
+                    {
+                        PlaceCheckingDAO.AppUserId = PlaceChecking.AppUserId;
+                        PlaceCheckingDAO.PlaceCheckingStatusId = PlaceChecking.PlaceCheckingStatusId;
+                        PlaceCheckingDAO.PlaceId = Place.Id;
+                        PlaceCheckingDAO.CheckInAt = PlaceChecking.CheckInAt;
+                        PlaceCheckingDAO.CheckOutAt = PlaceChecking.CheckOutAt;
+                    }
+                }
+                await DataContext.PlaceChecking.BulkMergeAsync(PlaceCheckingDAOs);
+            }
         }
-        
     }
 }

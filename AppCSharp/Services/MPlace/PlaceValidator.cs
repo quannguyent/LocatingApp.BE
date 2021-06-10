@@ -52,6 +52,7 @@ namespace LocatingApp.Services.MPlace
 
         public async Task<bool>Create(Place Place)
         {
+            
             return Place.IsValidated;
         }
 

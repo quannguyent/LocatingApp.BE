@@ -258,9 +258,9 @@ namespace LocatingApp.Models
 
                 entity.Property(e => e.DeletedAt).HasColumnType("datetime");
 
-                entity.Property(e => e.Latitude).HasColumnType("decimal(8, 2)");
+                entity.Property(e => e.Latitude).HasColumnType("decimal(18, 10)");
 
-                entity.Property(e => e.Longtitude).HasColumnType("decimal(8, 2)");
+                entity.Property(e => e.Longtitude).HasColumnType("decimal(18, 10)");
 
                 entity.HasOne(d => d.AppUser)
                     .WithMany(p => p.LocationLogs)
@@ -278,26 +278,21 @@ namespace LocatingApp.Models
 
             modelBuilder.Entity<PlaceDAO>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.Code).HasMaxLength(100);
 
                 entity.Property(e => e.CreatedAt).HasColumnType("datetime");
 
                 entity.Property(e => e.DeletedAt).HasColumnType("datetime");
 
-                entity.Property(e => e.Latitude).HasColumnType("decimal(8, 2)");
+                entity.Property(e => e.Latitude).HasColumnType("decimal(18, 10)");
 
-                entity.Property(e => e.Longtitude).HasColumnType("decimal(8, 2)");
+                entity.Property(e => e.Longtitude).HasColumnType("decimal(18, 10)");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(4000);
 
                 entity.Property(e => e.UpdatedAt).HasColumnType("datetime");
-
-                entity.HasOne(d => d.PlaceGroup)
-                    .WithMany(p => p.Places)
-                    .HasForeignKey(d => d.PlaceGroupId)
-                    .HasConstraintName("FK_PlaceTracking_PlaceGroup1");
             });
 
             modelBuilder.Entity<PlaceCheckingDAO>(entity =>
@@ -311,12 +306,6 @@ namespace LocatingApp.Models
                     .HasForeignKey(d => d.AppUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PlaceChecking_AppUser");
-
-                entity.HasOne(d => d.PlaceCheckingStatus)
-                    .WithMany(p => p.PlaceCheckings)
-                    .HasForeignKey(d => d.PlaceCheckingStatusId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_PlaceChecking_CheckingStatus");
 
                 entity.HasOne(d => d.Place)
                     .WithMany(p => p.PlaceCheckings)

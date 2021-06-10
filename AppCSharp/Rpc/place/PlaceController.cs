@@ -344,13 +344,6 @@ namespace LocatingApp.Rpc.place
             Place.Radius = Place_PlaceDTO.Radius;
             Place.Latitude = Place_PlaceDTO.Latitude;
             Place.Longtitude = Place_PlaceDTO.Longtitude;
-            Place.PlaceGroup = Place_PlaceDTO.PlaceGroup == null ? null : new PlaceGroup
-            {
-                Id = Place_PlaceDTO.PlaceGroup.Id,
-                ParentId = Place_PlaceDTO.PlaceGroup.ParentId,
-                Name = Place_PlaceDTO.PlaceGroup.Name,
-                Code = Place_PlaceDTO.PlaceGroup.Code,
-            };
             Place.BaseLanguage = CurrentContext.Language;
             return Place;
         }

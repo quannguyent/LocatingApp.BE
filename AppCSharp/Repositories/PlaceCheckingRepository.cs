@@ -158,12 +158,6 @@ namespace LocatingApp.Repositories
                     Latitude = q.Place.Latitude,
                     Longtitude = q.Place.Longtitude,
                 } : null,
-                PlaceCheckingStatus = filter.Selects.Contains(PlaceCheckingSelect.PlaceCheckingStatus) && q.PlaceCheckingStatus != null ? new CheckingStatus
-                {
-                    Id = q.PlaceCheckingStatus.Id,
-                    Code = q.PlaceCheckingStatus.Code,
-                    Name = q.PlaceCheckingStatus.Name,
-                } : null,
             }).ToListAsync();
             return PlaceCheckings;
         }
@@ -214,12 +208,6 @@ namespace LocatingApp.Repositories
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
                 },
-                PlaceCheckingStatus = x.PlaceCheckingStatus == null ? null : new CheckingStatus
-                {
-                    Id = x.PlaceCheckingStatus.Id,
-                    Code = x.PlaceCheckingStatus.Code,
-                    Name = x.PlaceCheckingStatus.Name,
-                },
             }).ToListAsync();
             
 
@@ -255,12 +243,6 @@ namespace LocatingApp.Repositories
                     Radius = x.Place.Radius,
                     Latitude = x.Place.Latitude,
                     Longtitude = x.Place.Longtitude,
-                },
-                PlaceCheckingStatus = x.PlaceCheckingStatus == null ? null : new CheckingStatus
-                {
-                    Id = x.PlaceCheckingStatus.Id,
-                    Code = x.PlaceCheckingStatus.Code,
-                    Name = x.PlaceCheckingStatus.Name,
                 },
             }).FirstOrDefaultAsync();
 

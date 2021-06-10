@@ -13,6 +13,7 @@ namespace LocatingApp.Models
 
         public long Id { get; set; }
         public string Name { get; set; }
+        public string Code { get; set; }
         public long? PlaceGroupId { get; set; }
         public long Radius { get; set; }
         public decimal Latitude { get; set; }
@@ -21,7 +22,6 @@ namespace LocatingApp.Models
         public DateTime UpdatedAt { get; set; }
         public DateTime? DeletedAt { get; set; }
 
-        public virtual PlaceGroupDAO PlaceGroup { get; set; }
         public virtual ICollection<PlaceCheckingDAO> PlaceCheckings { get; set; }
         public virtual ICollection<TrackingDAO> Trackings { get; set; }
     }

@@ -19,7 +19,6 @@ namespace LocatingApp.Models
 
         public virtual AppUserDAO AppUser { get; set; }
         public virtual PlaceDAO Place { get; set; }
-        public virtual CheckingStatusDAO PlaceCheckingStatus { get; set; }
         public virtual ICollection<TrackingDAO> Trackings { get; set; }
     }
 }
