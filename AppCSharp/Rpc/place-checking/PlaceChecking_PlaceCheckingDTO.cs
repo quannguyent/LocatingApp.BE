@@ -12,6 +12,7 @@ namespace LocatingApp.Rpc.place_checking
         public long AppUserId { get; set; }
         public long PlaceId { get; set; }
         public long PlaceCheckingStatusId { get; set; }
+        public long PlaceGroupId { get; set; }
         public DateTime? CheckInAt { get; set; }
         public DateTime? CheckOutAt { get; set; }
         public PlaceChecking_AppUserDTO AppUser { get; set; }
